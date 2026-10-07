@@ -125,9 +125,13 @@ nav a:hover {
 
   padding: 120px 20px 70px;
 
-  color: #151513;
+  /* TEXTO BLANCO SOBRE EL VIDEO */
+  color: #ffffff;
 
-  text-shadow: none;
+  /* Sombra muy sutil para mantener
+     legibilidad sin crear un efecto pesado */
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.28);
 }
 
 .eyebrow {
@@ -140,21 +144,30 @@ nav a:hover {
   margin: 0 0 22px;
 }
 
+.hero-text .eyebrow {
+  color: #ffffff;
+  opacity: 0.9;
+}
+
 .hero h1 {
   font: 400 clamp(6rem, 15vw, 13rem) / 0.8
     "Cormorant Garamond", serif;
 
   letter-spacing: -0.04em;
   margin: 0;
+
+  color: #ffffff;
 }
 
 .hero-text > p:not(.eyebrow) {
   font-size: 0.9rem;
-  opacity: 0.72;
+  opacity: 0.9;
 
   margin: 34px auto;
 
   max-width: 430px;
+
+  color: #ffffff;
 }
 
 .button {
@@ -162,9 +175,11 @@ nav a:hover {
   letter-spacing: 0.18em;
   text-transform: uppercase;
 
-  border-bottom: 1px solid #15151355;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.75);
 
   padding-bottom: 7px;
+
+  color: #ffffff;
 }
 
 
