@@ -21,7 +21,7 @@ body {
 }
 
 a {
-  color: inherit;
+  color: #151513;
   text-decoration: none;
 }
 
@@ -54,6 +54,8 @@ header {
 }
 
 .brand {
+  color: #151513;
+
   font-size: 0.7rem;
   letter-spacing: 0.23em;
 }
@@ -68,6 +70,7 @@ nav {
 }
 
 nav a {
+  color: #151513;
   opacity: 0.65;
 }
 
@@ -113,8 +116,11 @@ nav a:hover {
 }
 
 .media-note {
+  color: #151513;
+
   font-size: 0.55rem;
   letter-spacing: 0.2em;
+
   opacity: 0.45;
 }
 
@@ -131,12 +137,14 @@ nav a:hover {
 
   padding: 120px 20px 70px;
 
-  color: #f5f4f0;
+  color: #151513;
 
-  text-shadow: 0 1px 12px #00000040;
+  text-shadow: none;
 }
 
 .eyebrow {
+  color: #151513;
+
   margin: 0 0 22px;
 
   font-size: 0.6rem;
@@ -150,6 +158,8 @@ nav a:hover {
 .hero h1 {
   margin: 0;
 
+  color: #151513;
+
   font: 400 clamp(6rem, 15vw, 13rem) / 0.8
     "Cormorant Garamond", serif;
 
@@ -161,6 +171,8 @@ nav a:hover {
 
   margin: 34px auto;
 
+  color: #151513;
+
   font-size: 0.9rem;
 
   opacity: 0.8;
@@ -169,12 +181,14 @@ nav a:hover {
 .button {
   padding-bottom: 7px;
 
+  color: #151513;
+
   font-size: 0.62rem;
   letter-spacing: 0.18em;
 
   text-transform: uppercase;
 
-  border-bottom: 1px solid #f5f4f099;
+  border-bottom: 1px solid #15151366;
 }
 
 
@@ -188,11 +202,15 @@ nav a:hover {
   padding: 18vw 12vw;
 
   background: #f5f4f0;
+
+  color: #151513;
 }
 
 .intro h2,
 .aivideo h2 {
   margin: 0;
+
+  color: #151513;
 
   font: 400 clamp(3.5rem, 7vw, 7rem) / 0.9
     "Cormorant Garamond", serif;
@@ -210,6 +228,8 @@ nav a:hover {
 
   margin: 50px 0 0 auto;
 
+  color: #151513;
+
   font-size: 0.9rem;
 
   opacity: 0.62;
@@ -224,6 +244,8 @@ nav a:hover {
   padding: 8vw 6vw 15vw;
 
   background: #f5f4f0;
+
+  color: #151513;
 }
 
 .heading {
@@ -232,6 +254,8 @@ nav a:hover {
 
 .heading h2 {
   margin: 0;
+
+  color: #151513;
 
   font: 400 clamp(4rem, 9vw, 9rem) / 0.8
     "Cormorant Garamond", serif;
@@ -280,11 +304,6 @@ nav a:hover {
 
   width: 100%;
 
-  /*
-     Formato vertical 2:3.
-     Proporción de las fotografías:
-     1024 × 1536
-  */
   aspect-ratio: 2 / 3;
 
   overflow: hidden;
@@ -320,7 +339,7 @@ nav a:hover {
 
 
 /* =========================================================
-   IMÁGENES / VIDEO
+   IMÁGENES Y VIDEO
 ========================================================= */
 
 .gallery-track img,
@@ -378,10 +397,6 @@ nav a:hover {
   cursor: pointer;
 
   backdrop-filter: blur(5px);
-
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
 }
 
 .gallery-arrow:hover {
@@ -418,7 +433,6 @@ nav a:hover {
   color: #f5f4f0;
 
   font-size: 0.55rem;
-
   letter-spacing: 0.16em;
 
   backdrop-filter: blur(5px);
@@ -436,6 +450,8 @@ nav a:hover {
 }
 
 .copy span {
+  color: #151513;
+
   font: 400 1rem "Cormorant Garamond", serif;
 
   opacity: 0.5;
@@ -444,12 +460,16 @@ nav a:hover {
 .copy h3 {
   margin: 16px 0 25px;
 
+  color: #151513;
+
   font: 400 clamp(2.8rem, 5vw, 5.5rem) / 0.9
     "Cormorant Garamond", serif;
 }
 
 .copy p {
   max-width: 350px;
+
+  color: #151513;
 
   font-size: 0.8rem;
 
@@ -461,6 +481,8 @@ nav a:hover {
 
   margin-top: 32px;
 
+  color: #151513;
+
   font-size: 0.63rem;
 
   opacity: 0.42;
@@ -469,7 +491,6 @@ nav a:hover {
 
 /* =========================================================
    PLACEHOLDERS
-   Piezas todavía sin fotografía
 ========================================================= */
 
 .placeholder {
@@ -490,13 +511,6 @@ nav a:hover {
 
   font-size: 0.55rem;
 }
-
-
-/*
-   Cuando el placeholder es el espacio
-   fotográfico principal de una pieza,
-   conserva el formato vertical 2:3.
-*/
 
 .photo.placeholder {
   aspect-ratio: 2 / 3;
@@ -534,7 +548,174 @@ nav a:hover {
   min-height: 90vh;
 
   background: #ebeae6;
+
+  color: #151513;
 }
 
 .process-photo {
-  min-height: 80
+  min-height: 80vh;
+}
+
+.process > div:last-child {
+  align-self: center;
+
+  padding: 12vw 8vw;
+}
+
+.process h2 {
+  margin: 0;
+
+  color: #151513;
+
+  font: 400 clamp(3.5rem, 6vw, 6.5rem) / 0.88
+    "Cormorant Garamond", serif;
+}
+
+.process p:last-child,
+.aivideo > p:last-child {
+  max-width: 550px;
+
+  margin-top: 45px;
+
+  color: #151513;
+
+  font-size: 0.9rem;
+
+  opacity: 0.65;
+}
+
+
+/* =========================================================
+   AI VIDEO
+========================================================= */
+
+.aivideo {
+  max-width: 1150px;
+
+  padding: 16vw 12vw;
+
+  background: #f5f4f0;
+
+  color: #151513;
+}
+
+.aivideo h2 {
+  max-width: 950px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer {
+  display: grid;
+
+  grid-template-columns: 1fr auto;
+
+  gap: 30px;
+
+  padding: 65px 6vw 35px;
+
+  background: #f5f4f0;
+
+  color: #151513;
+
+  border-top: 1px solid #15151318;
+}
+
+footer strong {
+  color: #151513;
+
+  font: 400 1.6rem "Cormorant Garamond", serif;
+}
+
+footer > div:nth-child(2) {
+  display: flex;
+
+  gap: 25px;
+
+  font-size: 0.65rem;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.12em;
+}
+
+footer > div:nth-child(2) a {
+  color: #151513;
+}
+
+footer small:last-child {
+  grid-column: 1 / -1;
+
+  margin-top: 40px;
+
+  color: #151513;
+
+  font-size: 0.55rem;
+
+  opacity: 0.35;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  nav {
+    display: none;
+  }
+
+
+  /* HERO */
+
+  .hero-text {
+    padding-top: 90px;
+  }
+
+  .hero h1 {
+    font-size: clamp(5rem, 22vw, 8rem);
+  }
+
+
+  /* INTRO */
+
+  .intro,
+  .aivideo {
+    padding: 28vw 7vw;
+  }
+
+
+  /* COLLECTION */
+
+  .collection {
+    padding: 18vw 5vw 28vw;
+  }
+
+
+  /* LOOKS */
+
+  .look,
+  .look.reverse,
+  .process {
+    grid-template-columns: 1fr;
+  }
+
+  .look.reverse .photo,
+  .look.reverse .copy {
+    order: initial;
+  }
+
+
+  /* GALERÍA */
+
+  .gallery {
+    width: 100%;
+
+    aspect-ratio: 2 / 3;
+
+    min-height: 0;
+  }
