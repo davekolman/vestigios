@@ -257,9 +257,10 @@ nav a:hover {
 }
 
 
-/* 
+/*
    Formato vertical 2:3.
-   Equivale a la proporción 1024 × 1536.
+   Proporción original:
+   1024 × 1536
 */
 
 .gallery {
@@ -267,7 +268,7 @@ nav a:hover {
 
   width: 100%;
 
-  height: 600px;
+  aspect-ratio: 2 / 3;
 
   overflow: hidden;
 
@@ -275,7 +276,9 @@ nav a:hover {
 }
 
 
-/* Área desplazable */
+/* =========================
+   ÁREA DESPLAZABLE
+========================= */
 
 .gallery-track {
   width: 100%;
@@ -299,10 +302,9 @@ nav a:hover {
 }
 
 
-/* 
-   Cada imagen o video ocupa un cuadro completo.
-   "contain" evita cortar la prenda.
-*/
+/* =========================
+   IMÁGENES Y VIDEO
+========================= */
 
 .gallery-track img,
 .gallery-track video {
@@ -315,6 +317,10 @@ nav a:hover {
 
   flex: 0 0 100%;
 
+  /*
+     Mantiene completa la fotografía.
+     No corta la prenda.
+  */
   object-fit: contain;
 
   scroll-snap-align: start;
@@ -562,7 +568,9 @@ footer small:last-child {
   }
 
 
-  /* Hero */
+  /* =========================
+     HERO
+  ========================= */
 
   .hero-text {
     padding-top: 90px;
@@ -573,7 +581,9 @@ footer small:last-child {
   }
 
 
-  /* Intro */
+  /* =========================
+     INTRO
+  ========================= */
 
   .intro,
   .aivideo {
@@ -581,14 +591,18 @@ footer small:last-child {
   }
 
 
-  /* Collection */
+  /* =========================
+     COLLECTION
+  ========================= */
 
   .collection {
     padding: 18vw 5vw 28vw;
   }
 
 
-  /* Looks */
+  /* =========================
+     LOOKS
+  ========================= */
 
   .look,
   .look.reverse,
@@ -602,15 +616,15 @@ footer small:last-child {
   }
 
 
-  /* Gallery */
-
-  .photo {
-    min-height: 0;
-  }
+  /* =========================
+     GALERÍA MÓVIL
+  ========================= */
 
   .gallery {
     width: 100%;
+
     aspect-ratio: 2 / 3;
+
     min-height: 0;
   }
 
@@ -622,6 +636,7 @@ footer small:last-child {
   .gallery-track video {
     width: 100%;
     height: 100%;
+
     min-width: 100%;
 
     object-fit: contain;
@@ -641,14 +656,18 @@ footer small:last-child {
   }
 
 
-  /* Copy */
+  /* =========================
+     COPY
+  ========================= */
 
   .copy {
     padding: 0 4vw;
   }
 
 
-  /* Details */
+  /* =========================
+     DETAILS
+  ========================= */
 
   .details {
     grid-template-columns: 1fr;
@@ -659,7 +678,9 @@ footer small:last-child {
   }
 
 
-  /* Process */
+  /* =========================
+     PROCESS
+  ========================= */
 
   .process-photo {
     min-height: 65vh;
@@ -670,7 +691,9 @@ footer small:last-child {
   }
 
 
-  /* Footer */
+  /* =========================
+     FOOTER
+  ========================= */
 
   footer {
     grid-template-columns: 1fr;
