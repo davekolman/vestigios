@@ -9,10 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (heroVideo) {
 
-    /*
-      Configuración necesaria para autoplay móvil.
-    */
-
     heroVideo.muted = true;
     heroVideo.defaultMuted = true;
 
@@ -22,29 +18,15 @@ document.addEventListener("DOMContentLoaded", () => {
     heroVideo.setAttribute("playsinline", "");
     heroVideo.setAttribute("webkit-playsinline", "");
 
-    /*
-      MUY IMPORTANTE:
-      Nunca mostrar controles.
-    */
-
     heroVideo.controls = false;
     heroVideo.removeAttribute("controls");
 
-
-    /* ---------------------------------------------------------
-       INTENTAR REPRODUCIR
-       --------------------------------------------------------- */
 
     const startHeroVideo = () => {
 
       heroVideo.muted = true;
       heroVideo.controls = false;
       heroVideo.removeAttribute("controls");
-
-      /*
-        Si por alguna razón el navegador hubiera detenido
-        el video, volvemos a activar loop.
-      */
 
       heroVideo.loop = true;
 
@@ -53,29 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (playPromise !== undefined) {
 
-        playPromise.catch(() => {
-          /*
-            El navegador puede bloquear temporalmente
-            el autoplay. No mostramos controles ni
-            alteramos la interfaz.
-          */
-        });
+        playPromise.catch(() => {});
 
       }
 
     };
 
 
-    /*
-      Primer intento.
-    */
-
     startHeroVideo();
 
-
-    /*
-      Segundo intento cuando la página termina de cargar.
-    */
 
     window.addEventListener(
       "load",
@@ -83,11 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
       { once: true }
     );
 
-
-    /*
-      Si el usuario abandona la página y vuelve,
-      intentamos reproducir nuevamente.
-    */
 
     document.addEventListener(
       "visibilitychange",
@@ -106,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     GALERÍAS / CARRUSELES
+     GALERÍAS
      ========================================================= */
 
   const galleries =
@@ -130,10 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =======================================================
-       SLIDES
-       ======================================================= */
-
     const slides =
       Array.from(
         track.querySelectorAll("img, video")
@@ -148,15 +107,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =======================================================
-       POSICIÓN
-       ======================================================= */
-
     let current = 0;
 
 
     /* =======================================================
-       ACTUALIZAR CARRUSEL
+       ACTUALIZAR GALERÍA
        ======================================================= */
 
     function updateGallery() {
@@ -164,10 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
       track.style.transform =
         `translate3d(-${current * 100}%, 0, 0)`;
 
-
-      /* -----------------------------------------------------
-         VIDEOS DENTRO DEL CARRUSEL
-         ----------------------------------------------------- */
 
       slides.forEach((slide, index) => {
 
@@ -233,9 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
           current++;
 
           if (current >= total) {
-
             current = 0;
-
           }
 
           updateGallery();
@@ -262,9 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
           current--;
 
           if (current < 0) {
-
             current = total - 1;
-
           }
 
           updateGallery();
@@ -276,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =======================================================
-       SWIPE
+       SWIPE DE LA GALERÍA
        ======================================================= */
 
     let touchStartX = 0;
@@ -288,10 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let gestureDirection = null;
 
 
-    /* -------------------------------------------------------
-       TOUCH START
-       ------------------------------------------------------- */
-
     gallery.addEventListener(
       "touchstart",
       (event) => {
@@ -300,9 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
           !event.touches ||
           !event.touches.length
         ) {
-
           return;
-
         }
 
         const touch =
@@ -329,10 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* -------------------------------------------------------
-       TOUCH MOVE
-       ------------------------------------------------------- */
-
     gallery.addEventListener(
       "touchmove",
       (event) => {
@@ -341,9 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
           !event.touches ||
           !event.touches.length
         ) {
-
           return;
-
         }
 
         const touch =
@@ -365,10 +300,6 @@ document.addEventListener("DOMContentLoaded", () => {
           touchStartY;
 
 
-        /*
-          Determinar dirección del gesto.
-        */
-
         if (
           gestureDirection === null
         ) {
@@ -380,24 +311,17 @@ document.addEventListener("DOMContentLoaded", () => {
             Math.abs(differenceY);
 
 
-          /*
-            Movimiento demasiado pequeño.
-          */
-
           if (
             absX < 8 &&
             absY < 8
           ) {
-
             return;
-
           }
 
 
           /*
-            Movimiento vertical:
-            dejamos que el navegador
-            haga scroll normalmente.
+            Si el gesto es vertical,
+            dejamos libre el scroll de la página.
           */
 
           if (absY > absX) {
@@ -411,8 +335,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
           /*
-            Movimiento horizontal:
-            pertenece al carrusel.
+            Si es horizontal,
+            pertenece a la galería.
           */
 
           gestureDirection =
@@ -420,11 +344,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
-        /*
-          Solo bloqueamos el gesto cuando
-          realmente es horizontal.
-        */
 
         if (
           gestureDirection ===
@@ -442,17 +361,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* -------------------------------------------------------
-       TOUCH END
-       ------------------------------------------------------- */
-
     gallery.addEventListener(
       "touchend",
       () => {
-
-        /*
-          Si era vertical, no hacemos nada.
-        */
 
         if (
           gestureDirection !==
@@ -471,10 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
           touchCurrentX;
 
 
-        /*
-          Movimiento insuficiente.
-        */
-
         if (
           Math.abs(difference) < 50
         ) {
@@ -486,35 +393,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* ---------------------------------------------------
-           IZQUIERDA
-           --------------------------------------------------- */
-
         if (difference > 0) {
 
           current++;
 
           if (current >= total) {
-
             current = 0;
-
           }
 
         }
-
-
-        /* ---------------------------------------------------
-           DERECHA
-           --------------------------------------------------- */
 
         else {
 
           current--;
 
           if (current < 0) {
-
             current = total - 1;
-
           }
 
         }
@@ -531,10 +425,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =======================================================
-       CANCELAR GESTO
-       ======================================================= */
-
     gallery.addEventListener(
       "touchcancel",
       () => {
@@ -544,6 +434,58 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       {
         passive: true
+      }
+    );
+
+
+    /* =======================================================
+       VENTANA AMPLIADA
+       ======================================================= */
+
+    gallery.addEventListener(
+      "click",
+      (event) => {
+
+        /*
+          Si se hizo clic directamente sobre una
+          flecha de la galería, no abrir la ventana.
+        */
+
+        if (
+          event.target.closest(".gallery-arrow")
+        ) {
+          return;
+        }
+
+
+        /*
+          Solo abrir al hacer clic sobre una imagen
+          o video.
+        */
+
+        const clickedSlide =
+          event.target.closest("img, video");
+
+
+        if (!clickedSlide) {
+          return;
+        }
+
+
+        const clickedIndex =
+          slides.indexOf(clickedSlide);
+
+
+        if (clickedIndex === -1) {
+          return;
+        }
+
+
+        openLightbox(
+          slides,
+          clickedIndex
+        );
+
       }
     );
 
@@ -569,6 +511,441 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
   });
+
+
+  /* =========================================================
+     LIGHTBOX / VENTANA DE IMAGEN
+     ========================================================= */
+
+  let lightbox = null;
+  let lightboxTrack = null;
+  let lightboxSlides = [];
+  let lightboxCurrent = 0;
+
+
+  function createLightbox() {
+
+    if (lightbox) {
+      return;
+    }
+
+
+    lightbox =
+      document.createElement("div");
+
+    lightbox.className =
+      "lightbox";
+
+
+    lightbox.innerHTML = `
+
+      <button
+        class="lightbox-close"
+        type="button"
+        aria-label="Cerrar"
+      >
+        ×
+      </button>
+
+      <button
+        class="lightbox-arrow lightbox-prev"
+        type="button"
+        aria-label="Imagen anterior"
+      >
+        ‹
+      </button>
+
+      <div class="lightbox-window">
+
+        <div class="lightbox-track"></div>
+
+      </div>
+
+      <button
+        class="lightbox-arrow lightbox-next"
+        type="button"
+        aria-label="Siguiente imagen"
+      >
+        ›
+      </button>
+
+    `;
+
+
+    document.body.appendChild(lightbox);
+
+
+    lightboxTrack =
+      lightbox.querySelector(
+        ".lightbox-track"
+      );
+
+
+    const closeButton =
+      lightbox.querySelector(
+        ".lightbox-close"
+      );
+
+
+    const prevButton =
+      lightbox.querySelector(
+        ".lightbox-prev"
+      );
+
+
+    const nextButton =
+      lightbox.querySelector(
+        ".lightbox-next"
+      );
+
+
+    closeButton.addEventListener(
+      "click",
+      closeLightbox
+    );
+
+
+    prevButton.addEventListener(
+      "click",
+      (event) => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        lightboxCurrent--;
+
+        if (
+          lightboxCurrent < 0
+        ) {
+
+          lightboxCurrent =
+            lightboxSlides.length - 1;
+
+        }
+
+        updateLightbox();
+
+      }
+    );
+
+
+    nextButton.addEventListener(
+      "click",
+      (event) => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        lightboxCurrent++;
+
+        if (
+          lightboxCurrent >=
+          lightboxSlides.length
+        ) {
+
+          lightboxCurrent = 0;
+
+        }
+
+        updateLightbox();
+
+      }
+    );
+
+
+    /*
+      Clic en el fondo blanco:
+      cerrar ventana.
+    */
+
+    lightbox.addEventListener(
+      "click",
+      (event) => {
+
+        if (
+          event.target === lightbox ||
+          event.target.classList.contains(
+            "lightbox-window"
+          )
+        ) {
+
+          closeLightbox();
+
+        }
+
+      }
+    );
+
+
+    /*
+      Teclado.
+    */
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+
+        if (
+          !lightbox ||
+          !lightbox.classList.contains(
+            "active"
+          )
+        ) {
+          return;
+        }
+
+
+        if (
+          event.key === "Escape"
+        ) {
+
+          closeLightbox();
+
+        }
+
+
+        if (
+          event.key === "ArrowRight"
+        ) {
+
+          lightboxCurrent++;
+
+          if (
+            lightboxCurrent >=
+            lightboxSlides.length
+          ) {
+
+            lightboxCurrent = 0;
+
+          }
+
+          updateLightbox();
+
+        }
+
+
+        if (
+          event.key === "ArrowLeft"
+        ) {
+
+          lightboxCurrent--;
+
+          if (
+            lightboxCurrent < 0
+          ) {
+
+            lightboxCurrent =
+              lightboxSlides.length - 1;
+
+          }
+
+          updateLightbox();
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =========================================================
+     ABRIR LIGHTBOX
+     ========================================================= */
+
+  function openLightbox(
+    slides,
+    startIndex
+  ) {
+
+    createLightbox();
+
+
+    lightboxSlides =
+      slides;
+
+
+    lightboxCurrent =
+      startIndex;
+
+
+    lightboxTrack.innerHTML = "";
+
+
+    /*
+      Copiamos las imágenes/videos
+      de la galería a la ventana.
+    */
+
+    lightboxSlides.forEach(
+      (slide) => {
+
+        const clone =
+          slide.cloneNode(true);
+
+
+        clone.removeAttribute(
+          "style"
+        );
+
+
+        if (
+          clone.tagName === "VIDEO"
+        ) {
+
+          clone.muted = true;
+          clone.controls = false;
+
+          clone.removeAttribute(
+            "controls"
+          );
+
+          clone.setAttribute(
+            "playsinline",
+            ""
+          );
+
+          clone.setAttribute(
+            "muted",
+            ""
+          );
+
+          clone.loop = true;
+
+        }
+
+
+        lightboxTrack.appendChild(
+          clone
+        );
+
+      }
+    );
+
+
+    lightbox.classList.add(
+      "active"
+    );
+
+
+    document.body.classList.add(
+      "lightbox-open"
+    );
+
+
+    updateLightbox();
+
+  }
+
+
+  /* =========================================================
+     ACTUALIZAR LIGHTBOX
+     ========================================================= */
+
+  function updateLightbox() {
+
+    if (
+      !lightboxTrack ||
+      !lightboxSlides.length
+    ) {
+      return;
+    }
+
+
+    lightboxTrack.style.transform =
+      `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
+
+
+    const slides =
+      Array.from(
+        lightboxTrack.children
+      );
+
+
+    slides.forEach(
+      (slide, index) => {
+
+        if (
+          slide.tagName === "VIDEO"
+        ) {
+
+          if (
+            index === lightboxCurrent
+          ) {
+
+            slide.muted = true;
+
+            const playPromise =
+              slide.play();
+
+            if (
+              playPromise !== undefined
+            ) {
+
+              playPromise.catch(
+                () => {}
+              );
+
+            }
+
+          }
+
+          else {
+
+            slide.pause();
+
+            try {
+
+              slide.currentTime = 0;
+
+            } catch (error) {}
+
+          }
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =========================================================
+     CERRAR LIGHTBOX
+     ========================================================= */
+
+  function closeLightbox() {
+
+    if (!lightbox) {
+      return;
+    }
+
+
+    lightbox.classList.remove(
+      "active"
+    );
+
+
+    document.body.classList.remove(
+      "lightbox-open"
+    );
+
+
+    const videos =
+      lightbox.querySelectorAll(
+        "video"
+      );
+
+
+    videos.forEach(
+      (video) => {
+
+        video.pause();
+
+      }
+    );
+
+  }
 
 });
 
