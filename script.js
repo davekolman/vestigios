@@ -8,39 +8,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (heroVideo) {
 
-    /*
-      Configuración necesaria para autoplay
-      en navegadores móviles.
-    */
-
     heroVideo.muted = true;
     heroVideo.defaultMuted = true;
 
-    heroVideo.autoplay = true;
-    heroVideo.loop = true;
-    heroVideo.playsInline = true;
-
-    heroVideo.controls = false;
-
     heroVideo.setAttribute("muted", "");
+    heroVideo.setAttribute("playsinline", "");
+    heroVideo.setAttribute("webkit-playsinline", "");
     heroVideo.setAttribute("autoplay", "");
     heroVideo.setAttribute("loop", "");
-    heroVideo.setAttribute("playsinline", "");
 
-    heroVideo.removeAttribute("controls");
-
-
-    /* ---------------------------------------------------------
-       INICIAR VIDEO
-       --------------------------------------------------------- */
+    /*
+      Nos aseguramos de que el navegador no muestre
+      controles del video.
+    */
+    heroVideo.controls = false;
 
     const startHeroVideo = () => {
 
-      if (document.hidden) {
-        return;
-      }
-
       heroVideo.muted = true;
+      heroVideo.controls = false;
 
       const playPromise = heroVideo.play();
 
@@ -48,8 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         playPromise.catch(() => {
           /*
-            Algunos navegadores pueden bloquear
-            el autoplay hasta que exista interacción.
+            Algunos navegadores móviles pueden bloquear
+            temporalmente el autoplay.
           */
         });
 
@@ -57,35 +43,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     };
 
-
-    /* ---------------------------------------------------------
-       PRIMER INTENTO
-       --------------------------------------------------------- */
-
+    /*
+      Intento inicial.
+    */
     startHeroVideo();
 
 
-    /* ---------------------------------------------------------
-       CUANDO EL VIDEO ESTÁ LISTO
-       --------------------------------------------------------- */
-
-    heroVideo.addEventListener(
-      "loadeddata",
-      startHeroVideo,
-      { once: true }
-    );
-
-    heroVideo.addEventListener(
-      "canplay",
-      startHeroVideo,
-      { once: true }
-    );
-
-
-    /* ---------------------------------------------------------
-       CUANDO TERMINA DE CARGAR LA PÁGINA
-       --------------------------------------------------------- */
-
+    /*
+      Segundo intento cuando la página termina de cargar.
+    */
     window.addEventListener(
       "load",
       startHeroVideo,
@@ -93,28 +59,12 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* ---------------------------------------------------------
-       CUANDO EL USUARIO VUELVE A LA PÁGINA
-       --------------------------------------------------------- */
-
+    /*
+      Si el usuario vuelve a la pestaña,
+      intentamos reanudar el video.
+    */
     document.addEventListener(
       "visibilitychange",
-      () => {
-
-        if (!document.hidden) {
-          startHeroVideo();
-        }
-
-      }
-    );
-
-
-    /* ---------------------------------------------------------
-       SI EL NAVEGADOR PAUSA EL VIDEO
-       --------------------------------------------------------- */
-
-    heroVideo.addEventListener(
-      "pause",
       () => {
 
         if (!document.hidden) {
@@ -131,8 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
      GALERÍAS / CARRUSELES
      ========================================================= */
 
-  const galleries =
-    document.querySelectorAll(".gallery");
+  const galleries = document.querySelectorAll(".gallery");
 
   galleries.forEach((gallery) => {
 
@@ -145,14 +94,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextButton =
       gallery.querySelector(".gallery-arrow.next");
 
-    if (!track) {
-      return;
-    }
+    if (!track) return;
 
 
     /* =======================================================
        SLIDES
-       Imágenes + videos
        ======================================================= */
 
     const slides = Array.from(
@@ -161,9 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const total = slides.length;
 
-    if (total === 0) {
-      return;
-    }
+    if (total === 0) return;
 
 
     /* =======================================================
@@ -184,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       /* -----------------------------------------------------
-         VIDEOS DEL CARRUSEL
+         VIDEOS DENTRO DEL CARRUSEL
          ----------------------------------------------------- */
 
       slides.forEach((slide, index) => {
@@ -198,13 +142,10 @@ document.addEventListener("DOMContentLoaded", () => {
             slide.setAttribute("muted", "");
             slide.setAttribute("playsinline", "");
 
-            const playPromise =
-              slide.play();
+            const playPromise = slide.play();
 
             if (playPromise !== undefined) {
-
               playPromise.catch(() => {});
-
             }
 
           } else {
@@ -212,9 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
             slide.pause();
 
             try {
-
               slide.currentTime = 0;
-
             } catch (error) {}
 
           }
@@ -287,15 +226,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let touchStartX = 0;
     let touchStartY = 0;
 
-    let touchEndX = 0;
-    let touchEndY = 0;
+    let touchCurrentX = 0;
+    let touchCurrentY = 0;
 
-    let trackingTouch = false;
+    let gestureDirection = null;
 
 
-    /* =======================================================
+    /* -------------------------------------------------------
        TOUCH START
-       ======================================================= */
+       ------------------------------------------------------- */
 
     gallery.addEventListener(
       "touchstart",
@@ -308,22 +247,15 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        const touch =
-          event.touches[0];
+        const touch = event.touches[0];
 
-        touchStartX =
-          touch.clientX;
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
 
-        touchStartY =
-          touch.clientY;
+        touchCurrentX = touchStartX;
+        touchCurrentY = touchStartY;
 
-        touchEndX =
-          touchStartX;
-
-        touchEndY =
-          touchStartY;
-
-        trackingTouch = true;
+        gestureDirection = null;
 
       },
       {
@@ -332,85 +264,148 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =======================================================
+    /* -------------------------------------------------------
        TOUCH MOVE
-       ======================================================= */
+       ------------------------------------------------------- */
 
     gallery.addEventListener(
       "touchmove",
       (event) => {
 
         if (
-          !trackingTouch ||
           !event.touches ||
           !event.touches.length
         ) {
           return;
         }
 
-        const touch =
-          event.touches[0];
+        const touch = event.touches[0];
 
-        touchEndX =
-          touch.clientX;
+        touchCurrentX = touch.clientX;
+        touchCurrentY = touch.clientY;
 
-        touchEndY =
-          touch.clientY;
+        const differenceX =
+          touchCurrentX - touchStartX;
+
+        const differenceY =
+          touchCurrentY - touchStartY;
+
+
+        /*
+          Todavía no sabemos si el usuario quiere
+          desplazarse horizontal o verticalmente.
+        */
+
+        if (gestureDirection === null) {
+
+          const absX = Math.abs(differenceX);
+          const absY = Math.abs(differenceY);
+
+          /*
+            Esperamos un pequeño movimiento antes
+            de decidir la dirección.
+          */
+
+          if (
+            absX < 8 &&
+            absY < 8
+          ) {
+            return;
+          }
+
+
+          /*
+            Si el movimiento vertical domina,
+            dejamos completamente libre el scroll
+            de la página.
+          */
+
+          if (absY > absX) {
+
+            gestureDirection = "vertical";
+
+            return;
+          }
+
+
+          /*
+            Si el movimiento horizontal domina,
+            lo tratamos como swipe del carrusel.
+          */
+
+          gestureDirection = "horizontal";
+
+        }
+
+
+        /*
+          IMPORTANTE:
+
+          Solo bloqueamos el comportamiento
+          predeterminado cuando el gesto es
+          HORIZONTAL.
+
+          Los movimientos verticales jamás
+          reciben preventDefault().
+        */
+
+        if (
+          gestureDirection === "horizontal"
+        ) {
+
+          event.preventDefault();
+
+        }
 
       },
       {
-        passive: true
+        passive: false
       }
     );
 
 
-    /* =======================================================
+    /* -------------------------------------------------------
        TOUCH END
-       ======================================================= */
+       ------------------------------------------------------- */
 
     gallery.addEventListener(
       "touchend",
       () => {
 
-        if (!trackingTouch) {
-          return;
-        }
-
-        trackingTouch = false;
-
-
-        const differenceX =
-          touchStartX - touchEndX;
-
-        const differenceY =
-          touchStartY - touchEndY;
-
-
-        const horizontalDistance =
-          Math.abs(differenceX);
-
-        const verticalDistance =
-          Math.abs(differenceY);
-
-
         /*
-          El gesto solo se considera swipe
-          si es claramente horizontal.
-
-          Esto es lo importante:
-
-          Si el usuario desliza hacia arriba
-          o hacia abajo, la galería NO hace nada.
-
-          Por tanto el navegador puede continuar
-          desplazando la página normalmente.
+          Si fue un gesto vertical,
+          no hacemos absolutamente nada.
+          El navegador se encargó del scroll.
         */
 
         if (
-          horizontalDistance < 50 ||
-          horizontalDistance <= verticalDistance
+          gestureDirection !== "horizontal"
         ) {
+
+          gestureDirection = null;
+
           return;
+
+        }
+
+
+        const difference =
+          touchStartX - touchCurrentX;
+
+
+        /*
+          Evitamos cambiar de imagen
+          por movimientos horizontales mínimos.
+        */
+
+        if (
+          Math.abs(difference) < 50
+        ) {
+
+          gestureDirection = null;
+
+          return;
+
         }
 
 
@@ -418,7 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
            SWIPE HACIA LA IZQUIERDA
            --------------------------------------------------- */
 
-        if (differenceX > 0) {
+        if (difference > 0) {
 
           current++;
 
@@ -445,6 +440,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         updateGallery();
+
+        gestureDirection = null;
+
+      },
+      {
+        passive: true
+      }
+    );
+
+
+    /* =======================================================
+       CANCELAR GESTO
+       ======================================================= */
+
+    gallery.addEventListener(
+      "touchcancel",
+      () => {
+
+        gestureDirection = null;
 
       },
       {
