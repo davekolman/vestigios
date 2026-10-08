@@ -125,11 +125,8 @@ nav a:hover {
 
   padding: 120px 20px 70px;
 
-  /* TEXTO BLANCO SOBRE EL VIDEO */
   color: #ffffff;
 
-  /* Sombra muy sutil para mantener
-     legibilidad sin crear un efecto pesado */
   text-shadow:
     0 2px 12px rgba(0, 0, 0, 0.28);
 }
@@ -241,7 +238,7 @@ nav a:hover {
 
 
 /* =========================
-   SEPARADORES DE COLECCIÓN
+   SEPARADORES
 ========================= */
 
 .collection-section-title {
@@ -284,12 +281,6 @@ nav a:hover {
   margin-bottom: 16vw;
 }
 
-
-/*
-   Las piezas con .reverse
-   invierten imagen y texto.
-*/
-
 .look.reverse {
   grid-template-columns: 0.7fr 1.55fr;
 }
@@ -325,7 +316,7 @@ nav a:hover {
 
 
 /* =========================
-   ÁREA DESPLAZABLE
+   CARRUSEL
 ========================= */
 
 .gallery-track {
@@ -334,28 +325,21 @@ nav a:hover {
 
   display: flex;
 
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: hidden;
 
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
+  transform: translateX(0);
 
-  scrollbar-width: none;
+  will-change: transform;
 
-  -webkit-overflow-scrolling: touch;
-}
-
-.gallery-track::-webkit-scrollbar {
-  display: none;
+  transition: transform 0.45s ease;
 }
 
 
 /* =========================
-   IMÁGENES Y VIDEO
+   IMÁGENES
 ========================= */
 
-.gallery-track img,
-.gallery-track video {
+.gallery-track img {
   display: block;
 
   width: 100%;
@@ -366,8 +350,6 @@ nav a:hover {
   flex: 0 0 100%;
 
   object-fit: contain;
-
-  scroll-snap-align: start;
 
   cursor: zoom-in;
 }
@@ -450,6 +432,12 @@ nav a:hover {
   backdrop-filter: blur(5px);
 
   pointer-events: none;
+
+  white-space: nowrap;
+}
+
+.gallery-counter .total {
+  display: inline;
 }
 
 
@@ -502,7 +490,7 @@ nav a:hover {
 
 
 /* =========================
-   PRECIO / ENCARGO / WHATSAPP
+   PRECIO
 ========================= */
 
 .copy .price {
@@ -782,8 +770,7 @@ footer small:last-child {
     height: 100%;
   }
 
-  .gallery-track img,
-  .gallery-track video {
+  .gallery-track img {
     width: 100%;
     height: 100%;
 
@@ -858,3 +845,4 @@ footer small:last-child {
   }
 
 }
+
