@@ -97,10 +97,6 @@ nav a:hover {
 
   z-index: 0;
 
-  /*
-    Permitimos que el gesto vertical
-    siga siendo interpretado por la página.
-  */
   touch-action: pan-y;
 }
 
@@ -113,10 +109,6 @@ nav a:hover {
 
   pointer-events: none;
 
-  /*
-    Evita controles y comportamientos
-    táctiles propios del elemento video.
-  */
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -329,12 +321,6 @@ nav a:hover {
 
   background: #e9e9e7;
 
-  /*
-    MUY IMPORTANTE:
-    permitimos el scroll vertical de la página.
-    JavaScript decidirá si el gesto horizontal
-    corresponde al carrusel.
-  */
   touch-action: pan-y;
 }
 
@@ -853,10 +839,6 @@ footer small:last-child {
 
     min-height: 0;
 
-    /*
-      El navegador conserva el gesto vertical
-      para hacer scroll de la página.
-    */
     touch-action: pan-y;
   }
 
@@ -1004,15 +986,19 @@ footer small:last-child {
 }
 
 
-/* =========================
+/* =========================================================
    VISOR AMPLIADO / LIGHTBOX
-========================= */
+   Compatible con el script actual
+========================================================= */
 
 .lightbox {
   position: fixed;
   inset: 0;
 
   z-index: 1000;
+
+  width: 100%;
+  height: 100%;
 
   background: #f5f4f0;
 
@@ -1032,12 +1018,58 @@ footer small:last-child {
 
 
 /* =========================
-   IMAGEN AMPLIADA
+   CONTENEDOR DEL VISOR
 ========================= */
 
-.lightbox-image {
+.lightbox-window {
+  position: relative;
+
   width: 100%;
   height: 100%;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* =========================
+   CARRUSEL DEL VISOR
+========================= */
+
+.lightbox-track {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-wrap: nowrap;
+
+  overflow: visible;
+
+  transform: translate3d(0, 0, 0);
+
+  transition: transform 0.45s ease;
+
+  will-change: transform;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  pointer-events: none;
+}
+
+.lightbox-track > * {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+
+  height: 100%;
+
+  flex: 0 0 100%;
+
+  margin: 0;
 
   object-fit: contain;
 
@@ -1052,7 +1084,47 @@ footer small:last-child {
 
 
 /* =========================
+   IMÁGENES DEL VISOR
+========================= */
+
+.lightbox-track img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  display: block;
+
+  pointer-events: none;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+
+/* =========================
+   VIDEOS DEL VISOR
+========================= */
+
+.lightbox-track video {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  display: block;
+
+  pointer-events: none;
+
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+
+/* =========================
    FLECHAS DEL VISOR
+   IGUALES A LAS GALERÍAS
 ========================= */
 
 .lightbox-arrow {
@@ -1088,6 +1160,8 @@ footer small:last-child {
 
   cursor: pointer;
 
+  touch-action: manipulation;
+
   -webkit-tap-highlight-color: transparent;
 
   transition:
@@ -1095,11 +1169,11 @@ footer small:last-child {
     transform 0.2s ease;
 }
 
-.lightbox-arrow.prev {
+.lightbox-prev {
   left: 14px;
 }
 
-.lightbox-arrow.next {
+.lightbox-next {
   right: 14px;
 }
 
@@ -1130,6 +1204,7 @@ footer small:last-child {
   padding: 8px;
 
   border: none;
+  border-radius: 0;
 
   background: transparent;
 
@@ -1143,6 +1218,8 @@ footer small:last-child {
   line-height: 1;
 
   cursor: pointer;
+
+  touch-action: manipulation;
 
   -webkit-tap-highlight-color: transparent;
 
@@ -1161,6 +1238,16 @@ footer small:last-child {
 
 
 /* =========================
+   EVITAR SCROLL DE LA PÁGINA
+   MIENTRAS EL VISOR ESTÁ ABIERTO
+========================= */
+
+body.lightbox-open {
+  overflow: hidden;
+}
+
+
+/* =========================
    VISOR MOBILE
 ========================= */
 
@@ -1172,11 +1259,11 @@ footer small:last-child {
     padding: 10px;
   }
 
-  .lightbox-arrow.prev {
+  .lightbox-prev {
     left: 8px;
   }
 
-  .lightbox-arrow.next {
+  .lightbox-next {
     right: 8px;
   }
 
