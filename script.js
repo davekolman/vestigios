@@ -72,6 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
         `translateX(-${current * slideWidth}px)`;
 
 
+      /* =========================
+         ACTUALIZAR CONTADOR
+      ========================= */
+
       if (currentCounter) {
 
         currentCounter.textContent =
@@ -82,9 +86,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       /* =========================
          CONTROL DE VIDEOS
-         Si algún día se coloca un
-         video dentro del carrusel:
-         solo reproduce el actual.
+         
+         Si en el futuro colocas
+         un video dentro del carrusel,
+         solo se reproducirá cuando
+         ese slide esté visible.
       ========================= */
 
       slides.forEach((slide, index) => {
@@ -111,7 +117,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================
-       ANTERIOR
+       BOTÓN ANTERIOR
+       FUNCIONAMIENTO CIRCULAR
     ========================= */
 
     if (prevButton) {
@@ -134,7 +141,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================
-       SIGUIENTE
+       BOTÓN SIGUIENTE
+       FUNCIONAMIENTO CIRCULAR
     ========================= */
 
     if (nextButton) {
@@ -157,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================
-       INICIALIZAR
+       INICIALIZAR GALERÍA
     ========================= */
 
     updateGallery();
@@ -170,6 +178,79 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", () => {
 
       updateGallery();
+
+    });
+
+  });
+
+
+  /* =====================================================
+     WHATSAPP — PREGUNTAR POR UNA PIEZA
+     
+     Cada botón .order-button puede tener:
+     
+     data-piece="Nombre de la pieza"
+     data-number="01"
+     
+     El mensaje se genera automáticamente.
+  ===================================================== */
+
+  const orderButtons = document.querySelectorAll(".order-button");
+
+  orderButtons.forEach((button) => {
+
+    button.addEventListener("click", (event) => {
+
+      event.preventDefault();
+
+
+      /* =========================
+         DATOS DE LA PIEZA
+      ========================= */
+
+      const pieceName =
+        button.dataset.piece || "esta pieza";
+
+      const pieceNumber =
+        button.dataset.number || "";
+
+
+      /* =========================
+         MENSAJE
+      ========================= */
+
+      let message =
+        `Hola Dave, quisiera hacer una consulta sobre la pieza ${pieceNumber} — ${pieceName}.`;
+
+      message +=
+        `\n\nMe gustaría conocer más información sobre disponibilidad, precio y proceso de pedido.`;
+
+
+      /* =========================
+         NÚMERO DE WHATSAPP
+      ========================= */
+
+      const phone =
+        "573234338305";
+
+
+      /* =========================
+         CREAR ENLACE WHATSAPP
+      ========================= */
+
+      const whatsappURL =
+        `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+
+      /* =========================
+         ABRIR WHATSAPP
+      ========================= */
+
+      window.open(
+        whatsappURL,
+        "_blank",
+        "noopener,noreferrer"
+      );
 
     });
 
