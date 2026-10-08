@@ -347,11 +347,6 @@ nav a:hover {
   user-select: none;
   -webkit-user-select: none;
 
-  /*
-    IMPORTANTE:
-    El track debe permitir que el toque
-    llegue a las imágenes para abrir el visor.
-  */
   pointer-events: auto;
 }
 
@@ -389,11 +384,6 @@ nav a:hover {
 
   -webkit-user-drag: none;
 
-  /*
-    IMPORTANTE:
-    Permite que el clic/tap llegue
-    al listener de la galería.
-  */
   pointer-events: auto;
 }
 
@@ -1004,32 +994,51 @@ footer small:last-child {
 
 /* =========================================================
    VISOR AMPLIADO / LIGHTBOX
-   Compatible con el script actual
 ========================================================= */
 
 .lightbox {
   position: fixed;
-  inset: 0;
 
-  z-index: 1000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+
+  z-index: 99999;
 
   background: #f5f4f0;
 
-  display: none;
-
+  display: flex;
   align-items: center;
   justify-content: center;
 
   overflow: hidden;
 
+  /*
+    Oculto inicialmente.
+    Usamos visibility + opacity + pointer-events
+    para que el elemento siga existiendo en el DOM
+    cuando el JavaScript lo crea.
+  */
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+
   touch-action: pan-y;
+
+  isolation: isolate;
 }
 
 .lightbox.active {
-  display: flex;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 
@@ -1038,7 +1047,10 @@ footer small:last-child {
 ========================= */
 
 .lightbox-window {
-  position: relative;
+  position: absolute;
+
+  top: 0;
+  left: 0;
 
   width: 100%;
   height: 100%;
@@ -1048,6 +1060,10 @@ footer small:last-child {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  z-index: 1;
+
+  touch-action: pan-y;
 }
 
 
@@ -1074,6 +1090,8 @@ footer small:last-child {
   -webkit-user-select: none;
 
   pointer-events: none;
+
+  z-index: 1;
 }
 
 .lightbox-track > * {
@@ -1107,6 +1125,8 @@ footer small:last-child {
   width: 100%;
   height: 100%;
 
+  min-width: 100%;
+
   object-fit: contain;
 
   display: block;
@@ -1127,6 +1147,8 @@ footer small:last-child {
   width: 100%;
   height: 100%;
 
+  min-width: 100%;
+
   object-fit: contain;
 
   display: block;
@@ -1140,24 +1162,26 @@ footer small:last-child {
 
 /* =========================
    FLECHAS DEL VISOR
-   IGUALES A LAS GALERÍAS
 ========================= */
 
 .lightbox-arrow {
   position: absolute;
 
   top: 50%;
+
   transform: translateY(-50%);
 
-  z-index: 20;
+  z-index: 100;
 
   width: auto;
   height: auto;
 
-  padding: 8px;
+  padding: 12px;
 
   border: none;
   border-radius: 0;
+
+  outline: none;
 
   background: transparent;
 
@@ -1175,6 +1199,8 @@ footer small:last-child {
   justify-content: center;
 
   cursor: pointer;
+
+  pointer-events: auto;
 
   touch-action: manipulation;
 
@@ -1212,15 +1238,17 @@ footer small:last-child {
   top: 22px;
   right: 24px;
 
-  z-index: 30;
+  z-index: 110;
 
   width: auto;
   height: auto;
 
-  padding: 8px;
+  padding: 10px;
 
   border: none;
   border-radius: 0;
+
+  outline: none;
 
   background: transparent;
 
@@ -1233,7 +1261,13 @@ footer small:last-child {
 
   line-height: 1;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   cursor: pointer;
+
+  pointer-events: auto;
 
   touch-action: manipulation;
 
@@ -1260,6 +1294,7 @@ footer small:last-child {
 
 body.lightbox-open {
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 
@@ -1268,6 +1303,14 @@ body.lightbox-open {
 ========================= */
 
 @media (max-width: 700px) {
+
+  .lightbox {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+
+    z-index: 99999;
+  }
 
   .lightbox-arrow {
     font-size: 38px;
@@ -1288,6 +1331,8 @@ body.lightbox-open {
     right: 14px;
 
     font-size: 32px;
+
+    padding: 10px;
   }
 
 }
