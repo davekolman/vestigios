@@ -347,7 +347,12 @@ nav a:hover {
   user-select: none;
   -webkit-user-select: none;
 
-  pointer-events: none;
+  /*
+    IMPORTANTE:
+    El track debe permitir que el toque
+    llegue a las imágenes para abrir el visor.
+  */
+  pointer-events: auto;
 }
 
 .gallery-track > * {
@@ -377,14 +382,19 @@ nav a:hover {
 
   object-fit: contain;
 
-  cursor: default;
+  cursor: pointer;
 
   user-select: none;
   -webkit-user-select: none;
 
   -webkit-user-drag: none;
 
-  pointer-events: none;
+  /*
+    IMPORTANTE:
+    Permite que el clic/tap llegue
+    al listener de la galería.
+  */
+  pointer-events: auto;
 }
 
 
@@ -404,7 +414,9 @@ nav a:hover {
 
   object-fit: contain;
 
-  pointer-events: none;
+  cursor: pointer;
+
+  pointer-events: auto;
 
   user-select: none;
   -webkit-user-select: none;
@@ -853,7 +865,7 @@ footer small:last-child {
 
     transform: translate3d(0, 0, 0);
 
-    pointer-events: none;
+    pointer-events: auto;
   }
 
   .gallery-track > * {
@@ -872,7 +884,9 @@ footer small:last-child {
 
     object-fit: contain;
 
-    pointer-events: none;
+    cursor: pointer;
+
+    pointer-events: auto;
   }
 
   .gallery-track video {
@@ -883,7 +897,9 @@ footer small:last-child {
 
     object-fit: contain;
 
-    pointer-events: none;
+    cursor: pointer;
+
+    pointer-events: auto;
   }
 
 
