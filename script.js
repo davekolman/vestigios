@@ -57,6 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
      GALERÍAS / CARRUSELES
+     
+     IMPORTANTE:
+     El carrusel NO se desplaza mediante swipe.
+     Solo cambia de imagen al tocar las flechas.
      ========================================================= */
 
   const galleries = document.querySelectorAll(".gallery");
@@ -76,7 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* =======================================================
        SLIDES
-       Imágenes + videos
+       Imágenes + videos, por si alguno se utiliza
+       posteriormente en una galería.
        ======================================================= */
 
     const slides = Array.from(
@@ -89,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =======================================================
-       POSICIÓN
+       POSICIÓN ACTUAL
        ======================================================= */
 
     let current = 0;
@@ -102,8 +107,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateGallery() {
 
       /*
-        Usamos porcentaje en lugar de calcular píxeles.
-        Esto hace que funcione mejor en desktop y móvil.
+        Usamos porcentaje para que el carrusel
+        funcione correctamente en cualquier tamaño
+        de pantalla.
       */
 
       track.style.transform =
@@ -201,77 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
     }
-
-
-    /* =======================================================
-       SWIPE EN TELÉFONO
-       ======================================================= */
-
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    gallery.addEventListener(
-      "touchstart",
-      (event) => {
-
-        if (!event.touches || !event.touches.length) {
-          return;
-        }
-
-        touchStartX = event.touches[0].clientX;
-
-      },
-      { passive: true }
-    );
-
-
-    gallery.addEventListener(
-      "touchend",
-      (event) => {
-
-        if (!event.changedTouches ||
-            !event.changedTouches.length) {
-          return;
-        }
-
-        touchEndX =
-          event.changedTouches[0].clientX;
-
-        const difference =
-          touchStartX - touchEndX;
-
-        /*
-          Solo cambiamos de imagen si el movimiento
-          horizontal fue suficientemente claro.
-        */
-
-        if (Math.abs(difference) < 50) {
-          return;
-        }
-
-        if (difference > 0) {
-
-          current++;
-
-          if (current >= total) {
-            current = 0;
-          }
-
-        } else {
-
-          current--;
-
-          if (current < 0) {
-            current = total - 1;
-          }
-
-        }
-
-        updateGallery();
-
-      },
-      { passive: true }
-    );
 
 
     /* =======================================================
