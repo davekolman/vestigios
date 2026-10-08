@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
@@ -131,7 +132,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (backToTop) {
 
     const updateBackToTop = () => {
-      const shouldShow = window.scrollY > 350;
+      const scrollPosition =
+        window.scrollY ||
+        document.documentElement.scrollTop ||
+        0;
+
+      const shouldShow = scrollPosition > 120;
 
       backToTop.classList.toggle("visible", shouldShow);
     };
@@ -139,6 +145,12 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("scroll", updateBackToTop, {
       passive: true
     });
+
+    window.addEventListener("resize", updateBackToTop, {
+      passive: true
+    });
+
+    window.addEventListener("pageshow", updateBackToTop);
 
     updateBackToTop();
 
