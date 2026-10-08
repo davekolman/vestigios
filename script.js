@@ -12,52 +12,79 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!track) return;
 
-    // Por ahora contamos únicamente las imágenes.
-    // Los videos se incorporarán al sistema más adelante.
-    const images = Array.from(track.querySelectorAll("img"));
+
+    /* =========================
+       CONTAR IMÁGENES
+    ========================= */
+
+    const images = Array.from(
+      track.querySelectorAll("img")
+    );
 
     const total = images.length;
 
     if (total === 0) return;
 
+
+    /* =========================
+       CREAR CONTADOR TOTAL
+    ========================= */
+
+    let totalCounter = counter
+      ? counter.querySelector(".total")
+      : null;
+
+    if (counter && !totalCounter) {
+
+      totalCounter = document.createElement("span");
+
+      totalCounter.className = "total";
+
+      counter.appendChild(totalCounter);
+
+    }
+
+    if (totalCounter) {
+
+      totalCounter.textContent =
+        ` / ${String(total).padStart(2, "0")}`;
+
+    }
+
+
+    /* =========================
+       POSICIÓN ACTUAL
+    ========================= */
+
     let current = 0;
 
-    // Actualiza la posición de la galería
+
+    /* =========================
+       ACTUALIZAR GALERÍA
+    ========================= */
+
     function updateGallery() {
 
-      const imageWidth = track.parentElement.clientWidth;
+      const imageWidth = gallery.clientWidth;
 
       track.style.transform =
         `translateX(-${current * imageWidth}px)`;
 
-      // Contador actual
+
       if (currentCounter) {
+
         currentCounter.textContent =
           String(current + 1).padStart(2, "0");
-      }
-
-      // Contador total
-      if (counter) {
-
-        const totalText = counter.childNodes;
-
-        totalText.forEach((node) => {
-
-          if (
-            node.nodeType === Node.TEXT_NODE &&
-            node.textContent.includes("/")
-          ) {
-            node.textContent = ` / ${String(total).padStart(2, "0")}`;
-          }
-
-        });
 
       }
 
     }
 
 
-    // Imagen anterior
+    /* =========================
+       ANTERIOR
+    ========================= */
+
     if (prevButton) {
 
       prevButton.addEventListener("click", () => {
@@ -65,7 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
         current--;
 
         if (current < 0) {
+
           current = total - 1;
+
         }
 
         updateGallery();
@@ -75,7 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // Imagen siguiente
+    /* =========================
+       SIGUIENTE
+    ========================= */
+
     if (nextButton) {
 
       nextButton.addEventListener("click", () => {
@@ -83,7 +115,9 @@ document.addEventListener("DOMContentLoaded", () => {
         current++;
 
         if (current >= total) {
+
           current = 0;
+
         }
 
         updateGallery();
@@ -93,14 +127,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // Inicializa la galería
+    /* =========================
+       INICIALIZAR
+    ========================= */
+
     updateGallery();
 
 
-    // Recalcula la posición si cambia el tamaño
-    // de la ventana o cambia la orientación del teléfono.
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
     window.addEventListener("resize", () => {
+
       updateGallery();
+
     });
 
   });
