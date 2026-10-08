@@ -1,3 +1,4 @@
+
 /* =========================
    BASE
 ========================= */
@@ -67,6 +68,7 @@ button {
   display: flex;
   align-items: center;
   gap: 28px;
+  margin-left: auto;
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -81,7 +83,7 @@ button {
   opacity: 1;
 }
 
-/* Botón hamburguesa: oculto en escritorio */
+/* Botón hamburguesa */
 
 .menu-toggle {
   display: none;
@@ -90,7 +92,11 @@ button {
   width: 40px;
   height: 40px;
   padding: 10px 7px;
+  margin: 0;
   border: 0;
+  outline: none;
+  box-shadow: none;
+  border-radius: 0;
   background: transparent;
   color: #151513;
   cursor: pointer;
@@ -118,6 +124,22 @@ button {
 
 .menu-toggle[aria-expanded="true"] span:last-child {
   transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Refuerzo: en escritorio no debe ocupar espacio ni mostrarse */
+
+@media (min-width: 701px) {
+  .site-header .menu-toggle {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
 }
 
 
@@ -708,6 +730,7 @@ footer small:last-child {
 
   .menu-toggle {
     display: block;
+    flex: 0 0 40px;
   }
 
   #main-nav {
@@ -723,6 +746,7 @@ footer small:last-child {
     align-items: flex-start;
     justify-content: flex-start;
     gap: 30px;
+    margin-left: 0;
     background: #f5f4f0;
     box-shadow: -12px 0 35px #1515130d;
     transform: translateX(105%);
