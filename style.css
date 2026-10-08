@@ -96,6 +96,12 @@ nav a:hover {
   place-items: center;
 
   z-index: 0;
+
+  /*
+    Permitimos que el gesto vertical
+    siga siendo interpretado por la página.
+  */
+  touch-action: pan-y;
 }
 
 .hero-media video {
@@ -106,12 +112,14 @@ nav a:hover {
   display: block;
 
   pointer-events: none;
-}
 
-.media-note {
-  font-size: 0.55rem;
-  letter-spacing: 0.2em;
-  opacity: 0.45;
+  /*
+    Evita controles y comportamientos
+    táctiles propios del elemento video.
+  */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 
@@ -131,6 +139,12 @@ nav a:hover {
 
   text-shadow:
     0 2px 12px rgba(0, 0, 0, 0.28);
+
+  pointer-events: none;
+}
+
+.hero-text .button {
+  pointer-events: auto;
 }
 
 .eyebrow {
@@ -316,14 +330,12 @@ nav a:hover {
   background: #e9e9e7;
 
   /*
-    El carrusel no se desplaza
-    con el dedo ni con gestos.
-    Solo responde a las flechas.
+    MUY IMPORTANTE:
+    permitimos el scroll vertical de la página.
+    JavaScript decidirá si el gesto horizontal
+    corresponde al carrusel.
   */
-  touch-action: none;
-
-  user-select: none;
-  -webkit-user-select: none;
+  touch-action: pan-y;
 }
 
 
@@ -351,12 +363,6 @@ nav a:hover {
 
   pointer-events: none;
 }
-
-
-/*
-  Cada elemento ocupa exactamente
-  el ancho completo de la galería.
-*/
 
 .gallery-track > * {
   width: 100%;
@@ -462,29 +468,17 @@ nav a:hover {
     transform 0.2s ease;
 }
 
-
-/* Flecha anterior */
-
 .gallery-arrow.prev {
   left: 14px;
 }
-
-
-/* Flecha siguiente */
 
 .gallery-arrow.next {
   right: 14px;
 }
 
-
-/* Efecto al pasar el mouse */
-
 .gallery-arrow:hover {
   opacity: 0.55;
 }
-
-
-/* Pequeño movimiento al hacer click */
 
 .gallery-arrow:active {
   transform: translateY(-50%) scale(0.92);
@@ -779,6 +773,8 @@ footer small:last-child {
   .hero-media {
     position: absolute;
     inset: 0;
+
+    touch-action: pan-y;
   }
 
   .hero-media video {
@@ -788,6 +784,8 @@ footer small:last-child {
     object-fit: cover;
 
     display: block;
+
+    pointer-events: none;
   }
 
   .hero-text {
@@ -856,14 +854,10 @@ footer small:last-child {
     min-height: 0;
 
     /*
-      Sin desplazamiento táctil.
-      El cambio de imagen se hace
-      exclusivamente con las flechas.
+      El navegador conserva el gesto vertical
+      para hacer scroll de la página.
     */
-    touch-action: none;
-
-    user-select: none;
-    -webkit-user-select: none;
+    touch-action: pan-y;
   }
 
   .gallery-track {
