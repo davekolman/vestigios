@@ -610,12 +610,26 @@ nav a:hover {
 
 .details > div {
   width: 100%;
+  min-width: 0;
 
   aspect-ratio: 16 / 9;
 
   overflow: hidden;
+}
 
-  min-width: 0;
+/* Imágenes y video de los tres recuadros */
+
+.details img,
+.details video {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  margin: 0;
+  padding: 0;
 }
 
 
@@ -636,23 +650,6 @@ nav a:hover {
   letter-spacing: 0.18em;
 
   font-size: 0.55rem;
-}
-
-
-/* =========================
-   VIDEOS DE DETALLES
-========================= */
-
-.details video {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  margin: 0;
-  padding: 0;
 }
 
 
@@ -1014,7 +1011,6 @@ footer small:last-child {
 
   .details > div {
     width: 100%;
-
     min-width: 0;
 
     aspect-ratio: 16 / 9;
@@ -1022,11 +1018,17 @@ footer small:last-child {
     overflow: hidden;
   }
 
+  .details img,
   .details video {
+    display: block;
+
     width: 100%;
     height: 100%;
 
     object-fit: cover;
+
+    margin: 0;
+    padding: 0;
   }
 
 
