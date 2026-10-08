@@ -312,6 +312,13 @@ nav a:hover {
   overflow: hidden;
 
   background: #e9e9e7;
+
+  /*
+    Evita que el navegador interprete
+    el gesto del dedo como desplazamiento
+    horizontal del carrusel.
+  */
+  touch-action: pan-y;
 }
 
 
@@ -332,6 +339,13 @@ nav a:hover {
   will-change: transform;
 
   transition: transform 0.45s ease;
+
+  /*
+    El usuario no arrastra directamente
+    la pista del carrusel.
+  */
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 
@@ -351,7 +365,41 @@ nav a:hover {
 
   object-fit: contain;
 
-  cursor: zoom-in;
+  cursor: default;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  /*
+    Evita que el navegador intente
+    arrastrar la imagen con el dedo
+    o con el mouse.
+  */
+  -webkit-user-drag: none;
+
+  pointer-events: none;
+}
+
+
+/* =========================
+   VIDEOS DENTRO DEL CARRUSEL
+========================= */
+
+.gallery-track video {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 100%;
+
+  flex: 0 0 100%;
+
+  object-fit: contain;
+
+  pointer-events: none;
+
+  user-select: none;
 }
 
 
@@ -367,43 +415,64 @@ nav a:hover {
 
   z-index: 5;
 
-  width: 44px;
-  height: 44px;
+  width: auto;
+  height: auto;
 
-  padding: 0;
+  padding: 8px;
 
   border: none;
-  border-radius: 50%;
+  border-radius: 0;
 
-  background: #151513cc;
-  color: #f5f4f0;
+  background: transparent;
+  color: #151513;
 
   font-family: Arial, sans-serif;
-  font-size: 28px;
+  font-size: 42px;
+  font-weight: 300;
   line-height: 1;
 
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   cursor: pointer;
 
-  backdrop-filter: blur(5px);
+  /*
+    La flecha sí recibe el tap/click.
+  */
+  touch-action: manipulation;
 
   transition:
-    background 0.2s ease,
+    opacity 0.2s ease,
     transform 0.2s ease;
 }
 
-.gallery-arrow:hover {
-  background: #151513ee;
-}
+
+/* Flecha anterior */
 
 .gallery-arrow.prev {
-  left: 18px;
+  left: 14px;
 }
 
+
+/* Flecha siguiente */
+
 .gallery-arrow.next {
-  right: 18px;
+  right: 14px;
+}
+
+
+/* Efecto sutil al pasar el mouse */
+
+.gallery-arrow:hover {
+  opacity: 0.55;
+}
+
+
+/* Pequeño movimiento al hacer click */
+
+.gallery-arrow:active {
+  transform: translateY(-50%) scale(0.92);
 }
 
 
@@ -411,33 +480,16 @@ nav a:hover {
    CONTADOR
 ========================= */
 
+/*
+  El contador ya no se muestra.
+  Se mantiene esta regla por si el
+  HTML todavía conserva los elementos
+  .gallery-counter mientras terminamos
+  de limpiar el index.html.
+*/
+
 .gallery-counter {
-  position: absolute;
-
-  bottom: 18px;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  z-index: 5;
-
-  padding: 7px 11px;
-
-  background: #151513b8;
-  color: #f5f4f0;
-
-  font-size: 0.55rem;
-  letter-spacing: 0.16em;
-
-  backdrop-filter: blur(5px);
-
-  pointer-events: none;
-
-  white-space: nowrap;
-}
-
-.gallery-counter .total {
-  display: inline;
+  display: none;
 }
 
 
@@ -764,6 +816,8 @@ footer small:last-child {
     aspect-ratio: 2 / 3;
 
     min-height: 0;
+
+    touch-action: pan-y;
   }
 
   .gallery-track {
@@ -777,19 +831,48 @@ footer small:last-child {
     min-width: 100%;
 
     object-fit: contain;
+
+    pointer-events: none;
   }
 
+  .gallery-track video {
+    width: 100%;
+    height: 100%;
+
+    min-width: 100%;
+
+    object-fit: contain;
+
+    pointer-events: none;
+  }
+
+
+  /* FLECHAS MOBILE */
+
   .gallery-arrow {
-    width: 40px;
-    height: 40px;
+    width: auto;
+    height: auto;
+
+    padding: 10px;
+
+    font-size: 38px;
+
+    background: transparent;
   }
 
   .gallery-arrow.prev {
-    left: 12px;
+    left: 8px;
   }
 
   .gallery-arrow.next {
-    right: 12px;
+    right: 8px;
+  }
+
+
+  /* CONTADOR */
+
+  .gallery-counter {
+    display: none;
   }
 
 
@@ -845,4 +928,3 @@ footer small:last-child {
   }
 
 }
-
