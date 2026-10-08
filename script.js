@@ -34,9 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         heroVideo.play();
 
       if (playPromise !== undefined) {
-
         playPromise.catch(() => {});
-
       }
 
     };
@@ -57,15 +55,24 @@ document.addEventListener("DOMContentLoaded", () => {
       () => {
 
         if (!document.hidden) {
-
           startHeroVideo();
-
         }
 
       }
     );
 
   }
+
+
+  /* =========================================================
+     VARIABLES DEL LIGHTBOX
+     ========================================================= */
+
+  let lightbox = null;
+  let lightboxTrack = null;
+
+  let lightboxSlides = [];
+  let lightboxCurrent = 0;
 
 
   /* =========================================================
@@ -141,12 +148,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const playPromise =
               slide.play();
 
-            if (
-              playPromise !== undefined
-            ) {
-
+            if (playPromise !== undefined) {
               playPromise.catch(() => {});
-
             }
 
           } else {
@@ -154,9 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
             slide.pause();
 
             try {
-
               slide.currentTime = 0;
-
             } catch (error) {}
 
           }
@@ -223,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =======================================================
-       SWIPE DE LA GALERÍA
+       SWIPE
        ======================================================= */
 
     let touchStartX = 0;
@@ -319,11 +320,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
 
-          /*
-            Si el gesto es vertical,
-            dejamos libre el scroll de la página.
-          */
-
           if (absY > absX) {
 
             gestureDirection =
@@ -333,11 +329,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
           }
 
-
-          /*
-            Si es horizontal,
-            pertenece a la galería.
-          */
 
           gestureDirection =
             "horizontal";
@@ -401,9 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
             current = 0;
           }
 
-        }
-
-        else {
+        } else {
 
           current--;
 
@@ -439,17 +428,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =======================================================
-       VENTANA AMPLIADA
+       ABRIR LIGHTBOX
+       
+       IMPORTANTE:
+       El listener está en .gallery, pero buscamos
+       la imagen/video mediante elementFromPoint para
+       que funcione incluso con pointer-events:none.
        ======================================================= */
 
     gallery.addEventListener(
       "click",
       (event) => {
 
-        /*
-          Si se hizo clic directamente sobre una
-          flecha de la galería, no abrir la ventana.
-        */
+        /* -----------------------------------------------
+           Nunca abrir el visor desde las flechas
+        ------------------------------------------------ */
 
         if (
           event.target.closest(".gallery-arrow")
@@ -458,13 +451,233 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        /* -----------------------------------------------
+           Buscar la imagen/video real
+        ------------------------------------------------ */
+
+        let clickedSlide =
+          event.target.closest("img, video");
+
+
         /*
-          Solo abrir al hacer clic sobre una imagen
-          o video.
+          Si el navegador no entrega la imagen como
+          target debido a pointer-events:none,
+          buscamos qué elemento está debajo del dedo
+          o cursor.
         */
 
-        const clickedSlide =
-          event.target.closest("img, video");
+        if (!clickedSlide) {
+
+          const elementUnderPointer =
+            document.elementFromPoint(
+              event.clientX,
+              event.clientY
+            );
+
+
+          if (elementUnderPointer) {
+
+            clickedSlide =
+              elementUnderPointer.closest(
+                "img, video"
+              );
+
+          }
+
+        }
+
+
+        /*
+          Si sigue sin existir una imagen/video,
+          no hacemos nada.
+        */
+
+        if (!clickedSlide) {
+          return;
+        }
+
+
+        /*
+          Asegurarnos de que pertenece a ESTA galería.
+        */
+
+        if (
+          !gallery.contains(clickedSlide)
+        ) {
+          return;
+        }
+
+
+        const clickedIndex =
+          slides.indexOf(clickedSlide);
+
+
+        if (clickedIndex === -1) {
+          return;
+        }
+
+
+        openLightbox(
+          slides,
+          clickedIndex
+        );
+
+      }
+    );
+
+
+    /* =======================================================
+       TAMBIÉN SOPORTAR TOUCH DIRECTO
+       
+       Esto hace que tocar una foto en móvil abra
+       el visor cuando no hubo un swipe.
+       ======================================================= */
+
+    let tapStartX = 0;
+    let tapStartY = 0;
+    let tapStartTime = 0;
+
+
+    gallery.addEventListener(
+      "touchstart",
+      (event) => {
+
+        if (
+          !event.touches ||
+          !event.touches.length
+        ) {
+          return;
+        }
+
+        const touch =
+          event.touches[0];
+
+        tapStartX =
+          touch.clientX;
+
+        tapStartY =
+          touch.clientY;
+
+        tapStartTime =
+          Date.now();
+
+      },
+      {
+        passive: true
+      }
+    );
+
+
+    gallery.addEventListener(
+      "touchend",
+      (event) => {
+
+        if (
+          !event.changedTouches ||
+          !event.changedTouches.length
+        ) {
+          return;
+        }
+
+
+        /*
+          Si el gesto fue horizontal,
+          ya lo manejó el carrusel.
+        */
+
+        if (
+          gestureDirection ===
+          "horizontal"
+        ) {
+          return;
+        }
+
+
+        const touch =
+          event.changedTouches[0];
+
+
+        const differenceX =
+          touch.clientX -
+          tapStartX;
+
+        const differenceY =
+          touch.clientY -
+          tapStartY;
+
+        const duration =
+          Date.now() -
+          tapStartTime;
+
+
+        const distance =
+          Math.sqrt(
+            differenceX * differenceX +
+            differenceY * differenceY
+          );
+
+
+        /*
+          Solo consideramos tap:
+          poco movimiento + poco tiempo.
+        */
+
+        if (
+          distance > 15 ||
+          duration > 500
+        ) {
+          return;
+        }
+
+
+        /*
+          Encontrar elemento debajo del dedo.
+        */
+
+        const elementUnderPointer =
+          document.elementFromPoint(
+            touch.clientX,
+            touch.clientY
+          );
+
+
+        let clickedSlide = null;
+
+
+        if (elementUnderPointer) {
+
+          clickedSlide =
+            elementUnderPointer.closest(
+              "img, video"
+            );
+
+        }
+
+
+        /*
+          Debido a pointer-events:none,
+          hacemos una búsqueda geométrica
+          dentro de las diapositivas.
+        */
+
+        if (!clickedSlide) {
+
+          clickedSlide =
+            slides.find((slide) => {
+
+              const rect =
+                slide.getBoundingClientRect();
+
+              return (
+                touch.clientX >= rect.left &&
+                touch.clientX <= rect.right &&
+                touch.clientY >= rect.top &&
+                touch.clientY <= rect.bottom
+              );
+
+            });
+
+        }
 
 
         if (!clickedSlide) {
@@ -486,6 +699,9 @@ document.addEventListener("DOMContentLoaded", () => {
           clickedIndex
         );
 
+      },
+      {
+        passive: true
       }
     );
 
@@ -514,14 +730,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     LIGHTBOX / VENTANA DE IMAGEN
+     CREAR LIGHTBOX
      ========================================================= */
-
-  let lightbox = null;
-  let lightboxTrack = null;
-  let lightboxSlides = [];
-  let lightboxCurrent = 0;
-
 
   function createLightbox() {
 
@@ -599,11 +809,26 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
+    /* =======================================================
+       CERRAR
+       ======================================================= */
+
     closeButton.addEventListener(
       "click",
-      closeLightbox
+      (event) => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        closeLightbox();
+
+      }
     );
 
+
+    /* =======================================================
+       ANTERIOR
+       ======================================================= */
 
     prevButton.addEventListener(
       "click",
@@ -612,7 +837,15 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         event.stopPropagation();
 
+        if (
+          !lightboxSlides.length
+        ) {
+          return;
+        }
+
+
         lightboxCurrent--;
+
 
         if (
           lightboxCurrent < 0
@@ -623,11 +856,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
+
         updateLightbox();
 
       }
     );
 
+
+    /* =======================================================
+       SIGUIENTE
+       ======================================================= */
 
     nextButton.addEventListener(
       "click",
@@ -636,7 +874,15 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         event.stopPropagation();
 
+        if (
+          !lightboxSlides.length
+        ) {
+          return;
+        }
+
+
         lightboxCurrent++;
+
 
         if (
           lightboxCurrent >=
@@ -647,16 +893,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
+
         updateLightbox();
 
       }
     );
 
 
-    /*
-      Clic en el fondo blanco:
-      cerrar ventana.
-    */
+    /* =======================================================
+       CLIC EN FONDO
+       ======================================================= */
 
     lightbox.addEventListener(
       "click",
@@ -664,8 +910,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (
           event.target === lightbox ||
-          event.target.classList.contains(
-            "lightbox-window"
+          event.target ===
+          lightbox.querySelector(
+            ".lightbox-window"
           )
         ) {
 
@@ -677,9 +924,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /*
-      Teclado.
-    */
+    /* =======================================================
+       TECLADO
+       ======================================================= */
 
     document.addEventListener(
       "keydown",
@@ -701,6 +948,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
           closeLightbox();
 
+          return;
+
         }
 
 
@@ -710,6 +959,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           lightboxCurrent++;
 
+
           if (
             lightboxCurrent >=
             lightboxSlides.length
@@ -718,6 +968,7 @@ document.addEventListener("DOMContentLoaded", () => {
             lightboxCurrent = 0;
 
           }
+
 
           updateLightbox();
 
@@ -730,6 +981,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           lightboxCurrent--;
 
+
           if (
             lightboxCurrent < 0
           ) {
@@ -738,6 +990,7 @@ document.addEventListener("DOMContentLoaded", () => {
               lightboxSlides.length - 1;
 
           }
+
 
           updateLightbox();
 
@@ -773,8 +1026,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-      Copiamos las imágenes/videos
-      de la galería a la ventana.
+      Crear copias de todas las imágenes/videos.
     */
 
     lightboxSlides.forEach(
@@ -789,11 +1041,29 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
+        /*
+          Importante:
+          las copias reciben la clase
+          lightbox-image si son imágenes.
+        */
+
+        if (
+          clone.tagName === "IMG"
+        ) {
+
+          clone.classList.add(
+            "lightbox-image"
+          );
+
+        }
+
+
         if (
           clone.tagName === "VIDEO"
         ) {
 
           clone.muted = true;
+
           clone.controls = false;
 
           clone.removeAttribute(
@@ -888,16 +1158,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
-          }
-
-          else {
+          } else {
 
             slide.pause();
 
             try {
-
               slide.currentTime = 0;
-
             } catch (error) {}
 
           }
