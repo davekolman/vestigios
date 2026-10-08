@@ -1,49 +1,155 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* =====================================================
+     VIDEO PRINCIPAL / HERO
+     ===================================================== */
+
+  const heroVideo = document.querySelector(".hero-media video");
+
+  if (heroVideo) {
+
+    heroVideo.muted = true;
+    heroVideo.defaultMuted = true;
+    heroVideo.setAttribute("muted", "");
+    heroVideo.setAttribute("playsinline", "");
+    heroVideo.setAttribute("webkit-playsinline", "");
+    heroVideo.setAttribute("autoplay", "");
+
+    const startHeroVideo = () => {
+
+      const playPromise = heroVideo.play();
+
+      if (playPromise !== undefined) {
+
+        playPromise.catch(() => {
+          /*
+            Algunos navegadores móviles pueden bloquear
+            temporalmente el autoplay. No hacemos nada
+            destructivo aquí.
+          */
+        });
+
+      }
+
+    };
+
+    startHeroVideo();
+
+    /*
+      Intentar nuevamente cuando la página esté visible.
+    */
+    document.addEventListener("visibilitychange", () => {
+
+      if (!document.hidden) {
+        startHeroVideo();
+      }
+
+    });
+
+  }
+
+
+  /* =====================================================
+     GALERÍAS
+     ===================================================== */
+
   const galleries = document.querySelectorAll(".gallery");
 
   galleries.forEach((gallery) => {
 
     const track = gallery.querySelector(".gallery-track");
-    const prevButton = gallery.querySelector(".gallery-arrow.prev");
-    const nextButton = gallery.querySelector(".gallery-arrow.next");
-    const currentCounter = gallery.querySelector(".gallery-counter .current");
-    const counter = gallery.querySelector(".gallery-counter");
+
+    const prevButton =
+      gallery.querySelector(".gallery-arrow.prev");
+
+    const nextButton =
+      gallery.querySelector(".gallery-arrow.next");
+
+    const currentCounter =
+      gallery.querySelector(".gallery-counter .current");
+
+    const counter =
+      gallery.querySelector(".gallery-counter");
 
     if (!track) return;
 
 
-    /* =========================
-       ELEMENTOS DE LA GALERÍA
+    /* ===================================================
+       SLIDES
        IMÁGENES + VIDEOS
-    ========================= */
+       =================================================== */
 
     const slides = Array.from(
-      track.querySelectorAll("img, video")
-    );
+      track.children
+    ).filter((element) => {
+
+      return (
+        element.tagName === "IMG" ||
+        element.tagName === "VIDEO"
+      );
+
+    });
 
     const total = slides.length;
 
     if (total === 0) return;
 
 
-    /* =========================
-       CREAR CONTADOR TOTAL
-    ========================= */
+    /* ===================================================
+       PREPARAR SLIDES
+       =================================================== */
+
+    slides.forEach((slide) => {
+
+      slide.style.flex = "0 0 100%";
+      slide.style.width = "100%";
+      slide.style.minWidth = "100%";
+      slide.style.height = "100%";
+
+      if (slide.tagName === "IMG") {
+
+        slide.style.objectFit = "contain";
+        slide.style.display = "block";
+
+      }
+
+      if (slide.tagName === "VIDEO") {
+
+        slide.style.objectFit = "contain";
+        slide.style.display = "block";
+
+        slide.muted = true;
+        slide.defaultMuted = true;
+
+        slide.setAttribute("muted", "");
+        slide.setAttribute("playsinline", "");
+        slide.setAttribute("webkit-playsinline", "");
+
+      }
+
+    });
+
+
+    /* ===================================================
+       CONTADOR
+       =================================================== */
 
     let totalCounter = counter
       ? counter.querySelector(".total")
       : null;
 
+
     if (counter && !totalCounter) {
 
-      totalCounter = document.createElement("span");
+      totalCounter =
+        document.createElement("span");
 
       totalCounter.className = "total";
 
       counter.appendChild(totalCounter);
 
     }
+
 
     if (totalCounter) {
 
@@ -53,28 +159,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================
-       POSICIÓN ACTUAL
-    ========================= */
+    /* ===================================================
+       POSICIÓN
+       =================================================== */
 
     let current = 0;
 
 
-    /* =========================
+    /* ===================================================
        ACTUALIZAR GALERÍA
-    ========================= */
+       =================================================== */
 
     function updateGallery() {
 
-      const slideWidth = gallery.clientWidth;
+      /*
+        Usamos el ancho real del contenedor.
+        Esto funciona tanto en escritorio como
+        en teléfono.
+      */
+
+      const slideWidth =
+        gallery.getBoundingClientRect().width;
+
 
       track.style.transform =
-        `translateX(-${current * slideWidth}px)`;
+        `translate3d(-${current * slideWidth}px, 0, 0)`;
 
 
-      /* =========================
-         ACTUALIZAR CONTADOR
-      ========================= */
+      /* -----------------------------------------------
+         CONTADOR ACTUAL
+      ------------------------------------------------ */
 
       if (currentCounter) {
 
@@ -84,14 +198,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* =========================
+      /* -----------------------------------------------
          CONTROL DE VIDEOS
-         
-         Si en el futuro colocas
-         un video dentro del carrusel,
-         solo se reproducirá cuando
-         ese slide esté visible.
-      ========================= */
+         Solo reproduce el video que esté visible.
+      ------------------------------------------------ */
 
       slides.forEach((slide, index) => {
 
@@ -99,7 +209,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (index === current) {
 
-            slide.play().catch(() => {});
+            slide.muted = true;
+
+            const playPromise =
+              slide.play();
+
+            if (playPromise !== undefined) {
+
+              playPromise.catch(() => {});
+
+            }
 
           } else {
 
@@ -116,14 +235,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================
-       BOTÓN ANTERIOR
-       FUNCIONAMIENTO CIRCULAR
-    ========================= */
+    /* ===================================================
+       ANTERIOR
+       =================================================== */
 
     if (prevButton) {
 
-      prevButton.addEventListener("click", () => {
+      prevButton.addEventListener("click", (event) => {
+
+        event.preventDefault();
 
         current--;
 
@@ -140,14 +260,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================
-       BOTÓN SIGUIENTE
-       FUNCIONAMIENTO CIRCULAR
-    ========================= */
+    /* ===================================================
+       SIGUIENTE
+       =================================================== */
 
     if (nextButton) {
 
-      nextButton.addEventListener("click", () => {
+      nextButton.addEventListener("click", (event) => {
+
+        event.preventDefault();
 
         current++;
 
@@ -164,16 +285,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================
-       INICIALIZAR GALERÍA
-    ========================= */
+    /* ===================================================
+       INICIALIZAR
+       =================================================== */
 
-    updateGallery();
+    /*
+      Esperamos un momento para asegurarnos de que
+      las imágenes ya hayan comenzado a calcular
+      correctamente sus dimensiones.
+    */
+
+    requestAnimationFrame(() => {
+
+      updateGallery();
+
+    });
 
 
-    /* =========================
-       RESPONSIVE
-    ========================= */
+    /* ===================================================
+       RECALCULAR AL CAMBIAR TAMAÑO
+       =================================================== */
 
     window.addEventListener("resize", () => {
 
@@ -181,78 +312,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-  });
 
+    /* ===================================================
+       RECALCULAR CUANDO CAMBIA LA ORIENTACIÓN
+       DEL TELÉFONO
+       =================================================== */
 
-  /* =====================================================
-     WHATSAPP — PREGUNTAR POR UNA PIEZA
-     
-     Cada botón .order-button puede tener:
-     
-     data-piece="Nombre de la pieza"
-     data-number="01"
-     
-     El mensaje se genera automáticamente.
-  ===================================================== */
+    window.addEventListener(
+      "orientationchange",
+      () => {
 
-  const orderButtons = document.querySelectorAll(".order-button");
+        setTimeout(() => {
 
-  orderButtons.forEach((button) => {
+          updateGallery();
 
-    button.addEventListener("click", (event) => {
+        }, 150);
 
-      event.preventDefault();
-
-
-      /* =========================
-         DATOS DE LA PIEZA
-      ========================= */
-
-      const pieceName =
-        button.dataset.piece || "esta pieza";
-
-      const pieceNumber =
-        button.dataset.number || "";
-
-
-      /* =========================
-         MENSAJE
-      ========================= */
-
-      let message =
-        `Hola Dave, quisiera hacer una consulta sobre la pieza ${pieceNumber} — ${pieceName}.`;
-
-      message +=
-        `\n\nMe gustaría conocer más información sobre disponibilidad, precio y proceso de pedido.`;
-
-
-      /* =========================
-         NÚMERO DE WHATSAPP
-      ========================= */
-
-      const phone =
-        "573234338305";
-
-
-      /* =========================
-         CREAR ENLACE WHATSAPP
-      ========================= */
-
-      const whatsappURL =
-        `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-
-
-      /* =========================
-         ABRIR WHATSAPP
-      ========================= */
-
-      window.open(
-        whatsappURL,
-        "_blank",
-        "noopener,noreferrer"
-      );
-
-    });
+      }
+    );
 
   });
 
