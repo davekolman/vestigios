@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =====================================================
-     VIDEO PRINCIPAL / HERO
-     ===================================================== */
+  /* =========================================================
+     VIDEO DE PORTADA
+     ========================================================= */
 
   const heroVideo = document.querySelector(".hero-media video");
 
@@ -12,8 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     heroVideo.defaultMuted = true;
     heroVideo.setAttribute("muted", "");
     heroVideo.setAttribute("playsinline", "");
-    heroVideo.setAttribute("webkit-playsinline", "");
     heroVideo.setAttribute("autoplay", "");
+    heroVideo.setAttribute("loop", "");
 
     const startHeroVideo = () => {
 
@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         playPromise.catch(() => {
           /*
-            Algunos navegadores móviles pueden bloquear
-            temporalmente el autoplay. No hacemos nada
-            destructivo aquí.
+            Algunos navegadores móviles bloquean el autoplay
+            hasta que existe interacción del usuario.
+            No hacemos nada aquí para no romper el video.
           */
         });
 
@@ -35,23 +35,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     startHeroVideo();
 
-    /*
-      Intentar nuevamente cuando la página esté visible.
-    */
-    document.addEventListener("visibilitychange", () => {
+    window.addEventListener(
+      "load",
+      startHeroVideo,
+      { once: true }
+    );
 
-      if (!document.hidden) {
-        startHeroVideo();
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+
+        if (!document.hidden) {
+          startHeroVideo();
+        }
+
       }
-
-    });
+    );
 
   }
 
 
-  /* =====================================================
-     GALERÍAS
-     ===================================================== */
+  /* =========================================================
+     GALERÍAS / CARRUSELES
+     ========================================================= */
 
   const galleries = document.querySelectorAll(".gallery");
 
@@ -65,143 +71,48 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextButton =
       gallery.querySelector(".gallery-arrow.next");
 
-    const currentCounter =
-      gallery.querySelector(".gallery-counter .current");
-
-    const counter =
-      gallery.querySelector(".gallery-counter");
-
     if (!track) return;
 
 
-    /* ===================================================
+    /* =======================================================
        SLIDES
-       IMÁGENES + VIDEOS
-       =================================================== */
+       Imágenes + videos
+       ======================================================= */
 
     const slides = Array.from(
-      track.children
-    ).filter((element) => {
-
-      return (
-        element.tagName === "IMG" ||
-        element.tagName === "VIDEO"
-      );
-
-    });
+      track.querySelectorAll("img, video")
+    );
 
     const total = slides.length;
 
     if (total === 0) return;
 
 
-    /* ===================================================
-       PREPARAR SLIDES
-       =================================================== */
-
-    slides.forEach((slide) => {
-
-      slide.style.flex = "0 0 100%";
-      slide.style.width = "100%";
-      slide.style.minWidth = "100%";
-      slide.style.height = "100%";
-
-      if (slide.tagName === "IMG") {
-
-        slide.style.objectFit = "contain";
-        slide.style.display = "block";
-
-      }
-
-      if (slide.tagName === "VIDEO") {
-
-        slide.style.objectFit = "contain";
-        slide.style.display = "block";
-
-        slide.muted = true;
-        slide.defaultMuted = true;
-
-        slide.setAttribute("muted", "");
-        slide.setAttribute("playsinline", "");
-        slide.setAttribute("webkit-playsinline", "");
-
-      }
-
-    });
-
-
-    /* ===================================================
-       CONTADOR
-       =================================================== */
-
-    let totalCounter = counter
-      ? counter.querySelector(".total")
-      : null;
-
-
-    if (counter && !totalCounter) {
-
-      totalCounter =
-        document.createElement("span");
-
-      totalCounter.className = "total";
-
-      counter.appendChild(totalCounter);
-
-    }
-
-
-    if (totalCounter) {
-
-      totalCounter.textContent =
-        ` / ${String(total).padStart(2, "0")}`;
-
-    }
-
-
-    /* ===================================================
+    /* =======================================================
        POSICIÓN
-       =================================================== */
+       ======================================================= */
 
     let current = 0;
 
 
-    /* ===================================================
-       ACTUALIZAR GALERÍA
-       =================================================== */
+    /* =======================================================
+       ACTUALIZAR CARRUSEL
+       ======================================================= */
 
     function updateGallery() {
 
       /*
-        Usamos el ancho real del contenedor.
-        Esto funciona tanto en escritorio como
-        en teléfono.
+        Usamos porcentaje en lugar de calcular píxeles.
+        Esto hace que funcione mejor en desktop y móvil.
       */
 
-      const slideWidth =
-        gallery.getBoundingClientRect().width;
-
-
       track.style.transform =
-        `translate3d(-${current * slideWidth}px, 0, 0)`;
+        `translate3d(-${current * 100}%, 0, 0)`;
 
 
-      /* -----------------------------------------------
-         CONTADOR ACTUAL
-      ------------------------------------------------ */
-
-      if (currentCounter) {
-
-        currentCounter.textContent =
-          String(current + 1).padStart(2, "0");
-
-      }
-
-
-      /* -----------------------------------------------
-         CONTROL DE VIDEOS
-         Solo reproduce el video que esté visible.
-      ------------------------------------------------ */
+      /* -----------------------------------------------------
+         VIDEOS DEL CARRUSEL
+         ----------------------------------------------------- */
 
       slides.forEach((slide, index) => {
 
@@ -210,9 +121,10 @@ document.addEventListener("DOMContentLoaded", () => {
           if (index === current) {
 
             slide.muted = true;
+            slide.setAttribute("muted", "");
+            slide.setAttribute("playsinline", "");
 
-            const playPromise =
-              slide.play();
+            const playPromise = slide.play();
 
             if (playPromise !== undefined) {
 
@@ -224,7 +136,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             slide.pause();
 
-            slide.currentTime = 0;
+            try {
+              slide.currentTime = 0;
+            } catch (error) {}
 
           }
 
@@ -235,99 +149,146 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* ===================================================
-       ANTERIOR
-       =================================================== */
-
-    if (prevButton) {
-
-      prevButton.addEventListener("click", (event) => {
-
-        event.preventDefault();
-
-        current--;
-
-        if (current < 0) {
-
-          current = total - 1;
-
-        }
-
-        updateGallery();
-
-      });
-
-    }
-
-
-    /* ===================================================
+    /* =======================================================
        SIGUIENTE
-       =================================================== */
+       ======================================================= */
 
     if (nextButton) {
 
-      nextButton.addEventListener("click", (event) => {
+      nextButton.addEventListener(
+        "click",
+        (event) => {
 
-        event.preventDefault();
+          event.preventDefault();
+          event.stopPropagation();
 
-        current++;
+          current++;
 
-        if (current >= total) {
+          if (current >= total) {
+            current = 0;
+          }
 
-          current = 0;
+          updateGallery();
+
+        }
+      );
+
+    }
+
+
+    /* =======================================================
+       ANTERIOR
+       ======================================================= */
+
+    if (prevButton) {
+
+      prevButton.addEventListener(
+        "click",
+        (event) => {
+
+          event.preventDefault();
+          event.stopPropagation();
+
+          current--;
+
+          if (current < 0) {
+            current = total - 1;
+          }
+
+          updateGallery();
+
+        }
+      );
+
+    }
+
+
+    /* =======================================================
+       SWIPE EN TELÉFONO
+       ======================================================= */
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    gallery.addEventListener(
+      "touchstart",
+      (event) => {
+
+        if (!event.touches || !event.touches.length) {
+          return;
+        }
+
+        touchStartX = event.touches[0].clientX;
+
+      },
+      { passive: true }
+    );
+
+
+    gallery.addEventListener(
+      "touchend",
+      (event) => {
+
+        if (!event.changedTouches ||
+            !event.changedTouches.length) {
+          return;
+        }
+
+        touchEndX =
+          event.changedTouches[0].clientX;
+
+        const difference =
+          touchStartX - touchEndX;
+
+        /*
+          Solo cambiamos de imagen si el movimiento
+          horizontal fue suficientemente claro.
+        */
+
+        if (Math.abs(difference) < 50) {
+          return;
+        }
+
+        if (difference > 0) {
+
+          current++;
+
+          if (current >= total) {
+            current = 0;
+          }
+
+        } else {
+
+          current--;
+
+          if (current < 0) {
+            current = total - 1;
+          }
 
         }
 
         updateGallery();
 
-      });
+      },
+      { passive: true }
+    );
 
-    }
 
-
-    /* ===================================================
+    /* =======================================================
        INICIALIZAR
-       =================================================== */
+       ======================================================= */
 
-    /*
-      Esperamos un momento para asegurarnos de que
-      las imágenes ya hayan comenzado a calcular
-      correctamente sus dimensiones.
-    */
-
-    requestAnimationFrame(() => {
-
-      updateGallery();
-
-    });
+    updateGallery();
 
 
-    /* ===================================================
-       RECALCULAR AL CAMBIAR TAMAÑO
-       =================================================== */
-
-    window.addEventListener("resize", () => {
-
-      updateGallery();
-
-    });
-
-
-    /* ===================================================
-       RECALCULAR CUANDO CAMBIA LA ORIENTACIÓN
-       DEL TELÉFONO
-       =================================================== */
+    /* =======================================================
+       REDIMENSIONAR
+       ======================================================= */
 
     window.addEventListener(
-      "orientationchange",
+      "resize",
       () => {
-
-        setTimeout(() => {
-
-          updateGallery();
-
-        }, 150);
-
+        updateGallery();
       }
     );
 
