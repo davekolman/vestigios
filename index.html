@@ -1,9 +1,7 @@
 <!doctype html>
-
 <html lang="es">
 
 <head>
-
   <meta charset="utf-8">
 
   <meta
@@ -31,10 +29,7 @@
     rel="stylesheet"
   >
 
-  <!-- =========================
-       FAVICON
-  ========================= -->
-
+  <!-- FAVICON -->
   <link
     rel="icon"
     type="image/png"
@@ -55,36 +50,32 @@
     href="favicon.png?v=4"
   >
 
-  <!-- =========================
-       ESTILOS
-  ========================= -->
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
+  <!-- ESTILOS -->
+  <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
+<!-- HEADER -->
+<header class="site-header">
 
-<!-- =========================
-     HEADER
-========================= -->
-
-<header>
-
-  <a
-    class="brand"
-    href="#top"
-  >
+  <a class="brand" href="#top">
     DAVE KOLMAN
   </a>
 
+  <button
+    class="menu-toggle"
+    type="button"
+    aria-label="Abrir menú"
+    aria-expanded="false"
+    aria-controls="main-nav"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 
-  <nav>
+  <nav id="main-nav">
 
     <a href="#coleccion">
       Colección
@@ -102,14 +93,9 @@
 
 </header>
 
-
 <main id="top">
 
-
-<!-- =========================
-     HERO
-========================= -->
-
+<!-- HERO -->
 <section class="hero">
 
   <div class="hero-media">
@@ -129,7 +115,6 @@
 
   </div>
 
-
   <div class="hero-text">
 
     <p class="eyebrow">
@@ -144,10 +129,7 @@
       Una colección de materia, estructura y memoria artesanal.
     </p>
 
-    <a
-      class="button"
-      href="#coleccion"
-    >
+    <a class="button" href="#coleccion">
       Explorar ↓
     </a>
 
@@ -155,15 +137,8 @@
 
 </section>
 
-
-<!-- =========================
-     HISTORIA
-========================= -->
-
-<section
-  class="intro"
-  id="historia"
->
+<!-- HISTORIA -->
+<section class="intro" id="historia">
 
   <p class="eyebrow">
     DAVE KOLMAN
@@ -180,15 +155,8 @@
 
 </section>
 
-
-<!-- =========================
-     COLECCIÓN
-========================= -->
-
-<section
-  class="collection"
-  id="coleccion"
->
+<!-- COLECCIÓN -->
+<section class="collection" id="coleccion">
 
   <div class="heading">
 
@@ -202,11 +170,7 @@
 
   </div>
 
-
-  <!-- =========================
-       MUJER
-  ========================= -->
-
+  <!-- MUJER -->
   <div class="collection-section-title">
 
     <p class="eyebrow">
@@ -219,42 +183,22 @@
 
   </div>
 
-
-  <!-- =========================
-       PIEZA 01
-  ========================= -->
-
+  <!-- PIEZA 01 -->
   <article class="look">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza01"
-    >
+    <div class="photo gallery" data-gallery="pieza01">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
-        <img
-          src="pieza-01-1.png"
-          alt="Pieza 01 — vista frontal"
-        >
-
-        <img
-          src="pieza-01-2.png"
-          alt="Pieza 01 — vista posterior"
-        >
-
-        <img
-          src="pieza-01-3.png"
-          alt="Pieza 01 — vista lateral"
-        >
+        <img src="pieza-01-1.png" alt="Pieza 01 — vista frontal">
+        <img src="pieza-01-2.png" alt="Pieza 01 — vista posterior">
+        <img src="pieza-01-3.png" alt="Pieza 01 — vista lateral">
 
       </div>
 
@@ -262,67 +206,43 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
 
-
     <div class="copy">
 
-      <span>
-        01
-      </span>
+      <span>01</span>
 
-      <h3>
-        NOMBRE DE LA PIEZA
-      </h3>
+      <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        DESCRIPCIÓN DE LA PIEZA.
-      </p>
+      <p>DESCRIPCIÓN DE LA PIEZA.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2001%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 02
-  ========================= -->
-
+  <!-- PIEZA 02 -->
   <article class="look reverse">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza02"
-    >
+    <div class="photo gallery" data-gallery="pieza02">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -337,12 +257,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -350,50 +267,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Lino · deshilado de Cartago · bordado.
-      </p>
+      <p>Lino · deshilado de Cartago · bordado.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2002%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 03
-  ========================= -->
-
+  <!-- PIEZA 03 -->
   <article class="look">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza03"
-    >
+    <div class="photo gallery" data-gallery="pieza03">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -409,12 +309,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -422,50 +319,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Textil natural · volumen · proporción.
-      </p>
+      <p>Textil natural · volumen · proporción.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2003%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 04
-  ========================= -->
-
+  <!-- PIEZA 04 -->
   <article class="look reverse">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza04"
-    >
+    <div class="photo gallery" data-gallery="pieza04">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -483,12 +363,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -496,50 +373,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Lino · construcción · trabajo artesanal.
-      </p>
+      <p>Lino · construcción · trabajo artesanal.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2004%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 05
-  ========================= -->
-
+  <!-- PIEZA 05 -->
   <article class="look">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza05"
-    >
+    <div class="photo gallery" data-gallery="pieza05">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -555,12 +415,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -568,50 +425,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Textil natural · estructura · proporción.
-      </p>
+      <p>Textil natural · estructura · proporción.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2005%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 06
-  ========================= -->
-
+  <!-- PIEZA 06 -->
   <article class="look reverse">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza06"
-    >
+    <div class="photo gallery" data-gallery="pieza06">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -628,12 +468,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -641,50 +478,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Lino · bordado · construcción contemporánea.
-      </p>
+      <p>Lino · bordado · construcción contemporánea.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2006%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 07
-  ========================= -->
-
+  <!-- PIEZA 07 -->
   <article class="look">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza07"
-    >
+    <div class="photo gallery" data-gallery="pieza07">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -702,12 +522,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -715,50 +532,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Textil natural · volumen · construcción.
-      </p>
+      <p>Textil natural · volumen · construcción.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2007%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 08
-  ========================= -->
-
+  <!-- PIEZA 08 -->
   <article class="look reverse">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza08"
-    >
+    <div class="photo gallery" data-gallery="pieza08">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -776,12 +576,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -789,50 +586,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Lino · sastrería · trabajo artesanal.
-      </p>
+      <p>Lino · sastrería · trabajo artesanal.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2008%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 09
-  ========================= -->
-
+  <!-- PIEZA 09 -->
   <article class="look">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza09"
-    >
+    <div class="photo gallery" data-gallery="pieza09">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -849,12 +629,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -862,36 +639,24 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Lino · construcción masculina · detalle artesanal.
-      </p>
+      <p>Lino · construcción masculina · detalle artesanal.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2009%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       HOMBRE
-  ========================= -->
-
+  <!-- HOMBRE -->
   <div class="collection-section-title collection-section-men">
 
     <p class="eyebrow">
@@ -904,25 +669,16 @@
 
   </div>
 
-
-  <!-- =========================
-       PIEZA 10
-  ========================= -->
-
+  <!-- PIEZA 10 -->
   <article class="look reverse">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza10"
-    >
+    <div class="photo gallery" data-gallery="pieza10">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -937,12 +693,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -950,50 +703,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Textil natural · estructura · acabado artesanal.
-      </p>
+      <p>Textil natural · estructura · acabado artesanal.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2010%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 11
-  ========================= -->
-
+  <!-- PIEZA 11 -->
   <article class="look">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza11"
-    >
+    <div class="photo gallery" data-gallery="pieza11">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -1011,12 +747,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -1024,50 +757,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Lino · construcción · lenguaje artesanal.
-      </p>
+      <p>Lino · construcción · lenguaje artesanal.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2011%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 12
-  ========================= -->
-
+  <!-- PIEZA 12 -->
   <article class="look reverse">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza12"
-    >
+    <div class="photo gallery" data-gallery="pieza12">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -1082,12 +798,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -1095,50 +808,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Lino · sastrería · construcción contemporánea.
-      </p>
+      <p>Lino · sastrería · construcción contemporánea.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2012%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 13
-  ========================= -->
-
+  <!-- PIEZA 13 -->
   <article class="look">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza13"
-    >
+    <div class="photo gallery" data-gallery="pieza13">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -1152,12 +848,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -1165,50 +858,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Textil natural · volumen · construcción.
-      </p>
+      <p>Textil natural · volumen · construcción.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2013%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 14
-  ========================= -->
-
+  <!-- PIEZA 14 -->
   <article class="look reverse">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza14"
-    >
+    <div class="photo gallery" data-gallery="pieza14">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -1222,12 +898,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -1235,50 +908,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Lino · estructura · trabajo artesanal.
-      </p>
+      <p>Lino · estructura · trabajo artesanal.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2014%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 15
-  ========================= -->
-
+  <!-- PIEZA 15 -->
   <article class="look">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza15"
-    >
+    <div class="photo gallery" data-gallery="pieza15">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -1293,12 +949,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -1306,50 +959,33 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Lino · construcción masculina · detalle artesanal.
-      </p>
+      <p>Lino · construcción masculina · detalle artesanal.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2015%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       PIEZA 16
-  ========================= -->
-
+  <!-- PIEZA 16 -->
   <article class="look reverse">
 
-    <div
-      class="photo gallery"
-      data-gallery="pieza16"
-    >
+    <div class="photo gallery" data-gallery="pieza16">
 
       <button
         class="gallery-arrow prev"
         aria-label="Imagen anterior"
         type="button"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <div class="gallery-track">
 
@@ -1363,12 +999,9 @@
         class="gallery-arrow next"
         aria-label="Siguiente imagen"
         type="button"
-      >
-        ›
-      </button>
+      >›</button>
 
     </div>
-
 
     <div class="copy">
 
@@ -1376,60 +1009,41 @@
 
       <h3>NOMBRE DE LA PIEZA</h3>
 
-      <p>
-        Lino · construcción · detalle artesanal.
-      </p>
+      <p>Lino · construcción · detalle artesanal.</p>
 
-      <small>
-        Disponible solo por encargo.
-      </small>
+      <small>Disponible solo por encargo.</small>
 
-      <strong class="price">
-        $ XXX.XXX COP
-      </strong>
+      <strong class="price">$ XXX.XXX COP</strong>
 
       <a
         class="request"
         href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2016%20de%20Vestigios."
         target="_blank"
         rel="noopener"
-      >
-        Solicitar pieza
-      </a>
+      >Solicitar pieza</a>
 
     </div>
 
   </article>
 
-
-  <!-- =========================
-       DETALLES
-  ========================= -->
-
+  <!-- DETALLES -->
   <div class="details">
 
     <div class="detail-media">
-
       <img
         src="detalle-01.png"
         alt="Detalle 01 — Vestigios"
       >
-
     </div>
 
-
     <div class="detail-media">
-
       <img
         src="detalle-02.png"
         alt="Detalle 02 — Vestigios"
       >
-
     </div>
 
-
     <div class="detail-media">
-
       <video
         autoplay
         muted
@@ -1438,18 +1052,13 @@
         preload="metadata"
         src="detalle-3.mp4"
       ></video>
-
     </div>
 
   </div>
 
 </section>
 
-
-<!-- =========================
-     PROCESO
-========================= -->
-
+<!-- PROCESO -->
 <section class="process">
 
   <div class="process-photo placeholder">
@@ -1475,11 +1084,7 @@
 
 </section>
 
-
-<!-- =========================
-     AI VIDEO
-========================= -->
-
+<!-- AI VIDEO -->
 <section class="aivideo">
 
   <p class="eyebrow">
@@ -1496,14 +1101,9 @@
 
 </section>
 
-
 </main>
 
-
-<!-- =========================
-     FOOTER
-========================= -->
-
+<!-- FOOTER -->
 <footer id="contacto">
 
   <div>
@@ -1518,7 +1118,6 @@
 
   </div>
 
-
   <div>
 
     <a href="#">
@@ -1531,27 +1130,27 @@
 
   </div>
 
-
   <small>
     © 2026 Dave Kolman
   </small>
 
 </footer>
 
+<!-- BOTÓN VOLVER ARRIBA -->
+<button
+  id="back-to-top"
+  type="button"
+  aria-label="Volver al inicio"
+  title="Volver al inicio"
+>
+  ↑
+</button>
 
-<!-- =========================
-     JAVASCRIPT
-========================= -->
-
+<!-- JAVASCRIPT EXISTENTE -->
 <script src="script.js"></script>
 
-
-<!-- =========================
-     HERO VIDEO — iPHONE / SAFARI
-========================= -->
-
+<!-- HERO VIDEO — iPHONE / SAFARI -->
 <script>
-
   document.addEventListener("DOMContentLoaded", function () {
 
     const video = document.getElementById("hero-video");
@@ -1574,7 +1173,6 @@
       const promesa = video.play();
 
       if (promesa !== undefined) {
-
         promesa.catch(() => {
           /*
             Safari puede retrasar el autoplay.
@@ -1583,7 +1181,6 @@
             permita iniciar el vídeo.
           */
         });
-
       }
 
     };
@@ -1599,10 +1196,8 @@
     });
 
   });
-
 </script>
 
-
 </body>
-
 </html>
+
