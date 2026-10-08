@@ -1,6 +1,8 @@
 <!doctype html>
 
-<html lang="es"><head>  <meta charset="utf-8"><meta
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta
 name="viewport"
 content="width=device-width, initial-scale=1"
 
@@ -74,11 +76,15 @@ content="Dave Kolman — Vestigios, cápsula 2026."
   <div class="hero-media">
 
     <video
+      id="heroVideo"
       autoplay
       muted
       loop
       playsinline
-      preload="metadata"
+      webkit-playsinline
+      preload="auto"
+      controlslist="nodownload noplaybackrate nofullscreen"
+      disablepictureinpicture
       src="vestigios-nuevo.mp4"
     ></video>
 
@@ -1522,4 +1528,46 @@ content="Dave Kolman — Vestigios, cápsula 2026."
 
   </footer>  <!-- =========================
        JAVASCRIPT
-  ========================= -->  <script src="script.js"></script></body></html>
+  ========================= -->  <script src="script.js"></script>  <script>
+    /*
+      HERO VIDEO
+      Autoplay + loop + muted en móviles.
+    */
+
+    const heroVideo = document.getElementById("heroVideo");
+
+    if (heroVideo) {
+
+      heroVideo.muted = true;
+      heroVideo.defaultMuted = true;
+
+      const playHeroVideo = () => {
+        const playPromise = heroVideo.play();
+
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            /*
+              Algunos navegadores móviles pueden retrasar
+              el autoplay hasta que la página tenga interacción.
+            */
+          });
+        }
+      };
+
+      heroVideo.addEventListener("loadeddata", playHeroVideo);
+      heroVideo.addEventListener("canplay", playHeroVideo);
+
+      window.addEventListener("load", playHeroVideo);
+
+      document.addEventListener(
+        "visibilitychange",
+        () => {
+          if (!document.hidden) {
+            playHeroVideo();
+          }
+        }
+      );
+
+    }
+  </script></body>
+</html>
