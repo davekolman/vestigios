@@ -64,11 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     LIGHTBOX
+     VARIABLES DEL LIGHTBOX
   ========================================================= */
 
   let lightbox = null;
   let lightboxTrack = null;
+
   let lightboxSlides = [];
   let lightboxCurrent = 0;
 
@@ -87,8 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lightbox =
       document.createElement("div");
 
-    lightbox.className =
-      "lightbox";
+    lightbox.className = "lightbox";
 
 
     lightbox.innerHTML = `
@@ -101,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ×
       </button>
 
-
       <button
         class="lightbox-arrow lightbox-prev"
         type="button"
@@ -110,13 +109,11 @@ document.addEventListener("DOMContentLoaded", () => {
         ‹
       </button>
 
-
       <div class="lightbox-window">
 
         <div class="lightbox-track"></div>
 
       </div>
-
 
       <button
         class="lightbox-arrow lightbox-next"
@@ -188,12 +185,17 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
+
         lightboxCurrent--;
 
+
         if (lightboxCurrent < 0) {
+
           lightboxCurrent =
             lightboxSlides.length - 1;
+
         }
+
 
         updateLightbox();
 
@@ -216,14 +218,19 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
+
         lightboxCurrent++;
+
 
         if (
           lightboxCurrent >=
           lightboxSlides.length
         ) {
+
           lightboxCurrent = 0;
+
         }
+
 
         updateLightbox();
 
@@ -269,7 +276,9 @@ document.addEventListener("DOMContentLoaded", () => {
             "active"
           )
         ) {
+
           return;
+
         }
 
 
@@ -284,14 +293,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (event.key === "ArrowRight") {
 
+          if (!lightboxSlides.length) {
+            return;
+          }
+
+
           lightboxCurrent++;
+
 
           if (
             lightboxCurrent >=
             lightboxSlides.length
           ) {
+
             lightboxCurrent = 0;
+
           }
+
 
           updateLightbox();
 
@@ -300,7 +318,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (event.key === "ArrowLeft") {
 
+          if (!lightboxSlides.length) {
+            return;
+          }
+
+
           lightboxCurrent--;
+
 
           if (lightboxCurrent < 0) {
 
@@ -308,6 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
               lightboxSlides.length - 1;
 
           }
+
 
           updateLightbox();
 
@@ -331,16 +356,29 @@ document.addEventListener("DOMContentLoaded", () => {
     createLightbox();
 
 
+    /*
+      Convertimos a array nuevo para evitar
+      problemas con NodeList/DOM original.
+    */
+
     lightboxSlides =
-      slides;
+      Array.from(slides);
 
 
     lightboxCurrent =
-      startIndex;
+      Number(startIndex) || 0;
 
+
+    /*
+      Limpiar visor anterior.
+    */
 
     lightboxTrack.innerHTML = "";
 
+
+    /*
+      Crear copias de las imágenes/videos.
+    */
 
     lightboxSlides.forEach(
       (slide) => {
@@ -349,18 +387,30 @@ document.addEventListener("DOMContentLoaded", () => {
           slide.cloneNode(true);
 
 
+        /*
+          Eliminar cualquier transformación
+          heredada del carrusel.
+        */
+
+        clone.style.transform = "";
+
+
         clone.removeAttribute("style");
 
+
+        /*
+          Configuración especial para videos.
+        */
 
         if (
           clone.tagName === "VIDEO"
         ) {
 
           clone.muted = true;
+          clone.defaultMuted = true;
+
           clone.controls = false;
           clone.loop = true;
-
-          clone.removeAttribute("controls");
 
           clone.setAttribute(
             "muted",
@@ -372,7 +422,29 @@ document.addEventListener("DOMContentLoaded", () => {
             ""
           );
 
+          clone.setAttribute(
+            "webkit-playsinline",
+            ""
+          );
+
+          clone.removeAttribute(
+            "controls"
+          );
+
         }
+
+
+        /*
+          Evitar que una imagen clonada
+          vuelva a intentar abrir otro lightbox.
+        */
+
+        clone.onclick = (event) => {
+
+          event.preventDefault();
+          event.stopPropagation();
+
+        };
 
 
         lightboxTrack.appendChild(
@@ -383,6 +455,10 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    /*
+      Mostrar visor.
+    */
+
     lightbox.classList.add(
       "active"
     );
@@ -392,6 +468,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "lightbox-open"
     );
 
+
+    /*
+      Actualizar posición.
+    */
 
     updateLightbox();
 
@@ -408,13 +488,47 @@ document.addEventListener("DOMContentLoaded", () => {
       !lightboxTrack ||
       !lightboxSlides.length
     ) {
+
       return;
+
     }
 
+
+    /*
+      Mantener índice válido.
+    */
+
+    if (
+      lightboxCurrent < 0
+    ) {
+
+      lightboxCurrent =
+        lightboxSlides.length - 1;
+
+    }
+
+
+    if (
+      lightboxCurrent >=
+      lightboxSlides.length
+    ) {
+
+      lightboxCurrent = 0;
+
+    }
+
+
+    /*
+      Mover carrusel.
+    */
 
     lightboxTrack.style.transform =
       `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
 
+
+    /*
+      Controlar videos.
+    */
 
     const slides =
       Array.from(
@@ -426,40 +540,47 @@ document.addEventListener("DOMContentLoaded", () => {
       (slide, index) => {
 
         if (
-          slide.tagName === "VIDEO"
+          slide.tagName !== "VIDEO"
         ) {
 
+          return;
+
+        }
+
+
+        if (
+          index === lightboxCurrent
+        ) {
+
+          slide.muted = true;
+
+          const playPromise =
+            slide.play();
+
+
           if (
-            index === lightboxCurrent
+            playPromise !== undefined
           ) {
 
-            slide.muted = true;
-
-            const playPromise =
-              slide.play();
-
-            if (
-              playPromise !== undefined
-            ) {
-
-              playPromise.catch(
-                () => {}
-              );
-
-            }
+            playPromise.catch(
+              () => {}
+            );
 
           }
 
-          else {
+        }
 
-            slide.pause();
+        else {
 
-            try {
-              slide.currentTime = 0;
-            }
-            catch (error) {}
+          slide.pause();
+
+
+          try {
+
+            slide.currentTime = 0;
 
           }
+          catch (error) {}
 
         }
 
@@ -490,6 +611,10 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    /*
+      Detener videos.
+    */
+
     const videos =
       lightbox.querySelectorAll(
         "video"
@@ -500,6 +625,13 @@ document.addEventListener("DOMContentLoaded", () => {
       (video) => {
 
         video.pause();
+
+        try {
+
+          video.currentTime = 0;
+
+        }
+        catch (error) {}
 
       }
     );
@@ -543,6 +675,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
+      /*
+        Obtener imágenes y videos.
+      */
+
       const slides =
         Array.from(
           track.querySelectorAll(
@@ -577,52 +713,58 @@ document.addEventListener("DOMContentLoaded", () => {
           (slide, index) => {
 
             if (
-              slide.tagName === "VIDEO"
+              slide.tagName !== "VIDEO"
             ) {
 
+              return;
+
+            }
+
+
+            if (
+              index === current
+            ) {
+
+              slide.muted = true;
+
+              slide.setAttribute(
+                "muted",
+                ""
+              );
+
+              slide.setAttribute(
+                "playsinline",
+                ""
+              );
+
+
+              const playPromise =
+                slide.play();
+
+
               if (
-                index === current
+                playPromise !== undefined
               ) {
 
-                slide.muted = true;
-
-                slide.setAttribute(
-                  "muted",
-                  ""
+                playPromise.catch(
+                  () => {}
                 );
-
-                slide.setAttribute(
-                  "playsinline",
-                  ""
-                );
-
-
-                const playPromise =
-                  slide.play();
-
-
-                if (
-                  playPromise !== undefined
-                ) {
-
-                  playPromise.catch(
-                    () => {}
-                  );
-
-                }
 
               }
 
-              else {
+            }
 
-                slide.pause();
+            else {
 
-                try {
-                  slide.currentTime = 0;
-                }
-                catch (error) {}
+              slide.pause();
+
+
+              try {
+
+                slide.currentTime = 0;
 
               }
+              catch (error) {}
 
             }
 
@@ -645,11 +787,18 @@ document.addEventListener("DOMContentLoaded", () => {
             event.preventDefault();
             event.stopPropagation();
 
+
             current++;
 
-            if (current >= total) {
+
+            if (
+              current >= total
+            ) {
+
               current = 0;
+
             }
+
 
             updateGallery();
 
@@ -672,11 +821,18 @@ document.addEventListener("DOMContentLoaded", () => {
             event.preventDefault();
             event.stopPropagation();
 
+
             current--;
 
-            if (current < 0) {
+
+            if (
+              current < 0
+            ) {
+
               current = total - 1;
+
             }
+
 
             updateGallery();
 
@@ -707,7 +863,9 @@ document.addEventListener("DOMContentLoaded", () => {
             !event.touches ||
             !event.touches.length
           ) {
+
             return;
+
           }
 
 
@@ -745,7 +903,9 @@ document.addEventListener("DOMContentLoaded", () => {
             !event.touches ||
             !event.touches.length
           ) {
+
             return;
+
           }
 
 
@@ -786,11 +946,15 @@ document.addEventListener("DOMContentLoaded", () => {
               absX < 8 &&
               absY < 8
             ) {
+
               return;
+
             }
 
 
-            if (absY > absX) {
+            if (
+              absY > absX
+            ) {
 
               gestureDirection =
                 "vertical";
@@ -854,28 +1018,41 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
 
-          if (difference > 0) {
+          if (
+            difference > 0
+          ) {
 
             current++;
 
-            if (current >= total) {
+
+            if (
+              current >= total
+            ) {
+
               current = 0;
+
             }
 
           }
-
           else {
 
             current--;
 
-            if (current < 0) {
-              current = total - 1;
+
+            if (
+              current < 0
+            ) {
+
+              current =
+                total - 1;
+
             }
 
           }
 
 
           updateGallery();
+
 
           gestureDirection = null;
 
@@ -900,11 +1077,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       /* =====================================================
-         ABRIR FOTO AL HACER CLIC
+         ABRIR LIGHTBOX
+         
+         IMPORTANTE:
+         El clic se registra directamente sobre cada
+         imagen/video. No dependemos del bubbling.
       ===================================================== */
 
       slides.forEach(
         (slide, index) => {
+
+          slide.style.cursor =
+            "pointer";
+
 
           slide.addEventListener(
             "click",
@@ -913,12 +1098,14 @@ document.addEventListener("DOMContentLoaded", () => {
               event.preventDefault();
               event.stopPropagation();
 
+
               openLightbox(
                 slides,
                 index
               );
 
-            }
+            },
+            false
           );
 
         }
@@ -949,3 +1136,4 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 });
+
