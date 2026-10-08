@@ -8,14 +8,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (heroVideo) {
 
+    /*
+      Configuración necesaria para autoplay
+      en navegadores móviles.
+    */
+
     heroVideo.muted = true;
     heroVideo.defaultMuted = true;
+
+    heroVideo.autoplay = true;
+    heroVideo.loop = true;
+    heroVideo.playsInline = true;
+
+    heroVideo.controls = false;
+
     heroVideo.setAttribute("muted", "");
-    heroVideo.setAttribute("playsinline", "");
     heroVideo.setAttribute("autoplay", "");
     heroVideo.setAttribute("loop", "");
+    heroVideo.setAttribute("playsinline", "");
+
+    heroVideo.removeAttribute("controls");
+
+
+    /* ---------------------------------------------------------
+       INICIAR VIDEO
+       --------------------------------------------------------- */
 
     const startHeroVideo = () => {
+
+      if (document.hidden) {
+        return;
+      }
+
+      heroVideo.muted = true;
 
       const playPromise = heroVideo.play();
 
@@ -23,9 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         playPromise.catch(() => {
           /*
-            Algunos navegadores móviles bloquean el autoplay
-            hasta que existe interacción del usuario.
-            No hacemos nada aquí para no romper el video.
+            Algunos navegadores pueden bloquear
+            el autoplay hasta que exista interacción.
           */
         });
 
@@ -33,7 +57,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     };
 
+
+    /* ---------------------------------------------------------
+       PRIMER INTENTO
+       --------------------------------------------------------- */
+
     startHeroVideo();
+
+
+    /* ---------------------------------------------------------
+       CUANDO EL VIDEO ESTÁ LISTO
+       --------------------------------------------------------- */
+
+    heroVideo.addEventListener(
+      "loadeddata",
+      startHeroVideo,
+      { once: true }
+    );
+
+    heroVideo.addEventListener(
+      "canplay",
+      startHeroVideo,
+      { once: true }
+    );
+
+
+    /* ---------------------------------------------------------
+       CUANDO TERMINA DE CARGAR LA PÁGINA
+       --------------------------------------------------------- */
 
     window.addEventListener(
       "load",
@@ -41,8 +92,29 @@ document.addEventListener("DOMContentLoaded", () => {
       { once: true }
     );
 
+
+    /* ---------------------------------------------------------
+       CUANDO EL USUARIO VUELVE A LA PÁGINA
+       --------------------------------------------------------- */
+
     document.addEventListener(
       "visibilitychange",
+      () => {
+
+        if (!document.hidden) {
+          startHeroVideo();
+        }
+
+      }
+    );
+
+
+    /* ---------------------------------------------------------
+       SI EL NAVEGADOR PAUSA EL VIDEO
+       --------------------------------------------------------- */
+
+    heroVideo.addEventListener(
+      "pause",
       () => {
 
         if (!document.hidden) {
@@ -57,17 +129,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
      GALERÍAS / CARRUSELES
-     
-     IMPORTANTE:
-     El carrusel NO se desplaza mediante swipe.
-     Solo cambia de imagen al tocar las flechas.
      ========================================================= */
 
-  const galleries = document.querySelectorAll(".gallery");
+  const galleries =
+    document.querySelectorAll(".gallery");
 
   galleries.forEach((gallery) => {
 
-    const track = gallery.querySelector(".gallery-track");
+    const track =
+      gallery.querySelector(".gallery-track");
 
     const prevButton =
       gallery.querySelector(".gallery-arrow.prev");
@@ -75,13 +145,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextButton =
       gallery.querySelector(".gallery-arrow.next");
 
-    if (!track) return;
+    if (!track) {
+      return;
+    }
 
 
     /* =======================================================
        SLIDES
-       Imágenes + videos, por si alguno se utiliza
-       posteriormente en una galería.
+       Imágenes + videos
        ======================================================= */
 
     const slides = Array.from(
@@ -90,11 +161,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const total = slides.length;
 
-    if (total === 0) return;
+    if (total === 0) {
+      return;
+    }
 
 
     /* =======================================================
-       POSICIÓN ACTUAL
+       POSICIÓN
        ======================================================= */
 
     let current = 0;
@@ -105,12 +178,6 @@ document.addEventListener("DOMContentLoaded", () => {
        ======================================================= */
 
     function updateGallery() {
-
-      /*
-        Usamos porcentaje para que el carrusel
-        funcione correctamente en cualquier tamaño
-        de pantalla.
-      */
 
       track.style.transform =
         `translate3d(-${current * 100}%, 0, 0)`;
@@ -127,10 +194,12 @@ document.addEventListener("DOMContentLoaded", () => {
           if (index === current) {
 
             slide.muted = true;
+
             slide.setAttribute("muted", "");
             slide.setAttribute("playsinline", "");
 
-            const playPromise = slide.play();
+            const playPromise =
+              slide.play();
 
             if (playPromise !== undefined) {
 
@@ -143,7 +212,9 @@ document.addEventListener("DOMContentLoaded", () => {
             slide.pause();
 
             try {
+
               slide.currentTime = 0;
+
             } catch (error) {}
 
           }
@@ -210,6 +281,179 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =======================================================
+       SWIPE
+       ======================================================= */
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    let trackingTouch = false;
+
+
+    /* =======================================================
+       TOUCH START
+       ======================================================= */
+
+    gallery.addEventListener(
+      "touchstart",
+      (event) => {
+
+        if (
+          !event.touches ||
+          !event.touches.length
+        ) {
+          return;
+        }
+
+        const touch =
+          event.touches[0];
+
+        touchStartX =
+          touch.clientX;
+
+        touchStartY =
+          touch.clientY;
+
+        touchEndX =
+          touchStartX;
+
+        touchEndY =
+          touchStartY;
+
+        trackingTouch = true;
+
+      },
+      {
+        passive: true
+      }
+    );
+
+
+    /* =======================================================
+       TOUCH MOVE
+       ======================================================= */
+
+    gallery.addEventListener(
+      "touchmove",
+      (event) => {
+
+        if (
+          !trackingTouch ||
+          !event.touches ||
+          !event.touches.length
+        ) {
+          return;
+        }
+
+        const touch =
+          event.touches[0];
+
+        touchEndX =
+          touch.clientX;
+
+        touchEndY =
+          touch.clientY;
+
+      },
+      {
+        passive: true
+      }
+    );
+
+
+    /* =======================================================
+       TOUCH END
+       ======================================================= */
+
+    gallery.addEventListener(
+      "touchend",
+      () => {
+
+        if (!trackingTouch) {
+          return;
+        }
+
+        trackingTouch = false;
+
+
+        const differenceX =
+          touchStartX - touchEndX;
+
+        const differenceY =
+          touchStartY - touchEndY;
+
+
+        const horizontalDistance =
+          Math.abs(differenceX);
+
+        const verticalDistance =
+          Math.abs(differenceY);
+
+
+        /*
+          El gesto solo se considera swipe
+          si es claramente horizontal.
+
+          Esto es lo importante:
+
+          Si el usuario desliza hacia arriba
+          o hacia abajo, la galería NO hace nada.
+
+          Por tanto el navegador puede continuar
+          desplazando la página normalmente.
+        */
+
+        if (
+          horizontalDistance < 50 ||
+          horizontalDistance <= verticalDistance
+        ) {
+          return;
+        }
+
+
+        /* ---------------------------------------------------
+           SWIPE HACIA LA IZQUIERDA
+           --------------------------------------------------- */
+
+        if (differenceX > 0) {
+
+          current++;
+
+          if (current >= total) {
+            current = 0;
+          }
+
+        }
+
+
+        /* ---------------------------------------------------
+           SWIPE HACIA LA DERECHA
+           --------------------------------------------------- */
+
+        else {
+
+          current--;
+
+          if (current < 0) {
+            current = total - 1;
+          }
+
+        }
+
+
+        updateGallery();
+
+      },
+      {
+        passive: true
+      }
+    );
+
+
+    /* =======================================================
        INICIALIZAR
        ======================================================= */
 
@@ -223,7 +467,9 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener(
       "resize",
       () => {
+
         updateGallery();
+
       }
     );
 
