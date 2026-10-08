@@ -35,17 +35,13 @@ header {
   top: 0;
   left: 0;
   right: 0;
-
   padding: 22px 4vw;
-
   display: flex;
   justify-content: space-between;
-
   background: linear-gradient(
     #f5f4f0ee,
     #f5f4f000
   );
-
   backdrop-filter: blur(6px);
 }
 
@@ -57,7 +53,6 @@ header {
 nav {
   display: flex;
   gap: 28px;
-
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -78,10 +73,8 @@ nav a:hover {
 
 .hero {
   min-height: 100vh;
-
   display: grid;
   place-items: center;
-
   position: relative;
   overflow: hidden;
 }
@@ -89,26 +82,19 @@ nav a:hover {
 .hero-media {
   position: absolute;
   inset: 0;
-
   background: #dedcd6;
-
   display: grid;
   place-items: center;
-
   z-index: 0;
-
   touch-action: pan-y;
 }
 
 .hero-media video {
   width: 100%;
   height: 100%;
-
   object-fit: cover;
   display: block;
-
   pointer-events: none;
-
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -122,16 +108,10 @@ nav a:hover {
 .hero-text {
   position: relative;
   z-index: 2;
-
   text-align: center;
-
   padding: 120px 20px 70px;
-
   color: #ffffff;
-
-  text-shadow:
-    0 2px 12px rgba(0, 0, 0, 0.28);
-
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
   pointer-events: none;
 }
 
@@ -143,9 +123,7 @@ nav a:hover {
   font-size: 0.6rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-
   opacity: 0.62;
-
   margin: 0 0 22px;
 }
 
@@ -157,21 +135,16 @@ nav a:hover {
 .hero h1 {
   font: 400 clamp(6rem, 15vw, 13rem) / 0.8
     "Cormorant Garamond", serif;
-
   letter-spacing: -0.04em;
   margin: 0;
-
   color: #ffffff;
 }
 
 .hero-text > p:not(.eyebrow) {
   font-size: 0.9rem;
   opacity: 0.9;
-
   margin: 34px auto;
-
   max-width: 430px;
-
   color: #ffffff;
 }
 
@@ -179,11 +152,8 @@ nav a:hover {
   font-size: 0.62rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-
   border-bottom: 1px solid rgba(255, 255, 255, 0.75);
-
   padding-bottom: 7px;
-
   color: #ffffff;
 }
 
@@ -195,7 +165,6 @@ nav a:hover {
 .intro {
   padding: 18vw 12vw;
   max-width: 1100px;
-
   background: #f5f4f0;
 }
 
@@ -203,7 +172,6 @@ nav a:hover {
 .aivideo h2 {
   font: 400 clamp(3.5rem, 7vw, 7rem) / 0.9
     "Cormorant Garamond", serif;
-
   margin: 0;
   letter-spacing: -0.025em;
 }
@@ -215,9 +183,7 @@ nav a:hover {
 
 .intro > p:last-child {
   max-width: 550px;
-
   margin: 50px 0 0 auto;
-
   font-size: 0.9rem;
   opacity: 0.62;
 }
@@ -229,7 +195,6 @@ nav a:hover {
 
 .collection {
   padding: 8vw 6vw 15vw;
-
   background: #f5f4f0;
 }
 
@@ -240,7 +205,6 @@ nav a:hover {
 .heading h2 {
   font: 400 clamp(4rem, 9vw, 9rem) / 0.8
     "Cormorant Garamond", serif;
-
   margin: 0;
 }
 
@@ -251,9 +215,7 @@ nav a:hover {
 
 .collection-section-title {
   margin: 4vw 0 10vw;
-
   padding-top: 3vw;
-
   border-top: 1px solid #15151318;
 }
 
@@ -264,7 +226,6 @@ nav a:hover {
 .collection-section-title h2 {
   font: 400 clamp(2.8rem, 6vw, 6rem) / 0.9
     "Cormorant Garamond", serif;
-
   margin: 0;
 }
 
@@ -279,13 +240,9 @@ nav a:hover {
 
 .look {
   display: grid;
-
   grid-template-columns: 1.55fr 0.7fr;
-
   gap: 7vw;
-
   align-items: end;
-
   margin-bottom: 16vw;
 }
 
@@ -312,15 +269,10 @@ nav a:hover {
 
 .gallery {
   position: relative;
-
   width: 100%;
-
   aspect-ratio: 2 / 3;
-
   overflow: hidden;
-
   background: #e9e9e7;
-
   touch-action: pan-y;
 }
 
@@ -332,21 +284,14 @@ nav a:hover {
 .gallery-track {
   width: 100%;
   height: 100%;
-
   display: flex;
   flex-wrap: nowrap;
-
   overflow: visible;
-
   transform: translate3d(0, 0, 0);
-
   will-change: transform;
-
   transition: transform 0.45s ease;
-
   user-select: none;
   -webkit-user-select: none;
-
   pointer-events: auto;
 }
 
@@ -354,9 +299,7 @@ nav a:hover {
   width: 100%;
   min-width: 100%;
   max-width: 100%;
-
   flex: 0 0 100%;
-
   margin: 0;
 }
 
@@ -367,23 +310,15 @@ nav a:hover {
 
 .gallery-track img {
   display: block;
-
   width: 100%;
   height: 100%;
-
   min-width: 100%;
-
   flex: 0 0 100%;
-
   object-fit: contain;
-
   cursor: pointer;
-
   user-select: none;
   -webkit-user-select: none;
-
   -webkit-user-drag: none;
-
   pointer-events: auto;
 }
 
@@ -394,20 +329,13 @@ nav a:hover {
 
 .gallery-track video {
   display: block;
-
   width: 100%;
   height: 100%;
-
   min-width: 100%;
-
   flex: 0 0 100%;
-
   object-fit: contain;
-
   cursor: pointer;
-
   pointer-events: auto;
-
   user-select: none;
   -webkit-user-select: none;
 }
@@ -419,38 +347,26 @@ nav a:hover {
 
 .gallery-arrow {
   position: absolute;
-
   top: 50%;
   transform: translateY(-50%);
-
   z-index: 20;
-
   width: auto;
   height: auto;
-
   padding: 8px;
-
   border: none;
   border-radius: 0;
-
   background: transparent;
   color: #151513;
-
   font-family: Arial, sans-serif;
   font-size: 42px;
   font-weight: 300;
   line-height: 1;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
-
   touch-action: manipulation;
-
   -webkit-tap-highlight-color: transparent;
-
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
@@ -492,40 +408,29 @@ nav a:hover {
 
 .copy span {
   font: 400 1rem "Cormorant Garamond", serif;
-
   color: #151513;
-
   opacity: 0.5;
 }
 
 .copy h3 {
   font: 400 clamp(2.8rem, 5vw, 5.5rem) / 0.9
     "Cormorant Garamond", serif;
-
   margin: 16px 0 25px;
-
   color: #151513;
 }
 
 .copy p {
   max-width: 350px;
-
   font-size: 0.8rem;
-
   color: #151513;
-
   opacity: 0.65;
 }
 
 .copy small {
   display: block;
-
   margin-top: 32px;
-
   font-size: 0.63rem;
-
   color: #151513;
-
   opacity: 0.42;
 }
 
@@ -536,55 +441,37 @@ nav a:hover {
 
 .copy .price {
   display: block;
-
   margin-top: 26px;
-
   font-size: 0.8rem;
-
   letter-spacing: 0.08em;
-
   color: #151513;
 }
 
 .copy .availability {
   display: block;
-
   margin-top: 8px;
-
   font-size: 0.62rem;
-
   letter-spacing: 0.08em;
-
   color: #151513;
-
   opacity: 0.48;
 }
 
 .copy .request {
   display: inline-block;
-
   margin-top: 20px;
-
   padding-bottom: 7px;
-
   border-bottom: 1px solid #15151355;
-
   font-size: 0.6rem;
-
   letter-spacing: 0.16em;
-
   text-transform: uppercase;
-
   transition:
     opacity 0.2s ease,
     border-color 0.2s ease;
-
   touch-action: manipulation;
 }
 
 .copy .request:hover {
   opacity: 0.55;
-
   border-color: #15151388;
 }
 
@@ -596,40 +483,35 @@ nav a:hover {
 
 .details {
   display: grid;
-
   grid-template-columns: repeat(3, minmax(0, 1fr));
-
   gap: 8px;
-
   width: 100%;
-
   margin-top: 4vw;
-
   padding: 0;
 }
 
 .details > div {
+  position: relative;
   width: 100%;
   min-width: 0;
-
   aspect-ratio: 16 / 9;
-
   overflow: hidden;
+  background: #e9e9e7;
 }
 
-/* Imágenes y video de los tres recuadros */
+/* Mostrar las imágenes y el video completos.
+   No recortar los bordes. */
 
 .details img,
 .details video {
   display: block;
-
   width: 100%;
   height: 100%;
-
-  object-fit: cover;
-
+  max-width: 100%;
   margin: 0;
   padding: 0;
+  object-fit: contain;
+  object-position: center;
 }
 
 
@@ -639,16 +521,11 @@ nav a:hover {
 
 .placeholder {
   background: #e9e9e7;
-
   display: grid;
   place-items: center;
-
   text-align: center;
-
   color: #15151366;
-
   letter-spacing: 0.18em;
-
   font-size: 0.55rem;
 }
 
@@ -659,55 +536,42 @@ nav a:hover {
 
 .process {
   display: grid;
-
   grid-template-columns: 1.1fr 0.9fr;
-
   min-height: 90vh;
-
   background: #ebeae6;
-
   color: #151513;
 }
 
 .process-photo {
   min-height: 80vh;
-
   overflow: hidden;
 }
 
 .process-photo video {
   display: block;
-
   width: 100%;
   height: 100%;
-
   object-fit: cover;
-
   margin: 0;
   padding: 0;
 }
 
 .process > div:last-child {
   align-self: center;
-
   padding: 12vw 8vw;
 }
 
 .process h2 {
   font: 400 clamp(3.5rem, 6vw, 6.5rem) / 0.88
     "Cormorant Garamond", serif;
-
   margin: 0;
 }
 
 .process p:last-child,
 .aivideo > p:last-child {
   max-width: 550px;
-
   font-size: 0.9rem;
-
   opacity: 0.65;
-
   margin-top: 45px;
 }
 
@@ -719,9 +583,7 @@ nav a:hover {
 .aivideo {
   padding: 16vw 12vw;
   max-width: 1150px;
-
   background: #f5f4f0;
-
   color: #151513;
 }
 
@@ -736,17 +598,11 @@ nav a:hover {
 
 footer {
   border-top: 1px solid #15151318;
-
   padding: 65px 6vw 35px;
-
   display: grid;
-
   grid-template-columns: 1fr auto;
-
   gap: 30px;
-
   background: #f5f4f0;
-
   color: #151513;
 }
 
@@ -756,23 +612,16 @@ footer strong {
 
 footer > div:nth-child(2) {
   display: flex;
-
   gap: 25px;
-
   font-size: 0.65rem;
-
   text-transform: uppercase;
-
   letter-spacing: 0.12em;
 }
 
 footer small:last-child {
   grid-column: 1 / -1;
-
   opacity: 0.35;
-
   font-size: 0.55rem;
-
   margin-top: 40px;
 }
 
@@ -800,18 +649,14 @@ footer small:last-child {
   .hero-media {
     position: absolute;
     inset: 0;
-
     touch-action: pan-y;
   }
 
   .hero-media video {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
     display: block;
-
     pointer-events: none;
   }
 
@@ -844,7 +689,6 @@ footer small:last-child {
 
   .collection-section-title {
     margin: 12vw 0 16vw;
-
     padding-top: 7vw;
   }
 
@@ -875,25 +719,18 @@ footer small:last-child {
 
   .gallery {
     width: 100%;
-
     aspect-ratio: 2 / 3;
-
     min-height: 0;
-
     touch-action: pan-y;
   }
 
   .gallery-track {
     width: 100%;
     height: 100%;
-
     display: flex;
     flex-wrap: nowrap;
-
     overflow: visible;
-
     transform: translate3d(0, 0, 0);
-
     pointer-events: auto;
   }
 
@@ -901,33 +738,24 @@ footer small:last-child {
     width: 100%;
     min-width: 100%;
     max-width: 100%;
-
     flex: 0 0 100%;
   }
 
   .gallery-track img {
     width: 100%;
     height: 100%;
-
     min-width: 100%;
-
     object-fit: contain;
-
     cursor: pointer;
-
     pointer-events: auto;
   }
 
   .gallery-track video {
     width: 100%;
     height: 100%;
-
     min-width: 100%;
-
     object-fit: contain;
-
     cursor: pointer;
-
     pointer-events: auto;
   }
 
@@ -939,15 +767,10 @@ footer small:last-child {
   .gallery-arrow {
     width: auto;
     height: auto;
-
     padding: 10px;
-
     font-size: 38px;
-
     background: transparent;
-
     z-index: 20;
-
     touch-action: manipulation;
   }
 
@@ -992,43 +815,37 @@ footer small:last-child {
 
   /* =========================
      DETAILS MOBILE
-     SIEMPRE LOS 3 EN HORIZONTAL
+     LOS 3 EN HORIZONTAL
   ========================= */
 
   .details {
     display: grid;
-
     grid-template-columns: repeat(3, minmax(0, 1fr));
-
     gap: 5px;
-
     width: 100%;
-
     margin-top: 10vw;
-
     overflow: hidden;
   }
 
   .details > div {
+    position: relative;
     width: 100%;
     min-width: 0;
-
     aspect-ratio: 16 / 9;
-
     overflow: hidden;
+    background: #e9e9e7;
   }
 
   .details img,
   .details video {
     display: block;
-
     width: 100%;
     height: 100%;
-
-    object-fit: cover;
-
+    max-width: 100%;
     margin: 0;
     padding: 0;
+    object-fit: contain;
+    object-position: center;
   }
 
 
@@ -1038,14 +855,12 @@ footer small:last-child {
 
   .process-photo {
     min-height: 65vh;
-
     overflow: hidden;
   }
 
   .process-photo video {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
   }
 
@@ -1075,34 +890,24 @@ footer small:last-child {
 
 .lightbox {
   position: fixed;
-
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-
   width: 100vw;
   height: 100vh;
   height: 100dvh;
-
   z-index: 99999;
-
   background: #f5f4f0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   overflow: hidden;
-
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
-
   transition: opacity 0.25s ease, visibility 0.25s ease;
-
   touch-action: pan-y;
-
   isolation: isolate;
 }
 
@@ -1119,21 +924,15 @@ footer small:last-child {
 
 .lightbox-window {
   position: absolute;
-
   top: 0;
   left: 0;
-
   width: 100%;
   height: 100%;
-
   overflow: hidden;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   z-index: 1;
-
   touch-action: pan-y;
 }
 
@@ -1145,23 +944,15 @@ footer small:last-child {
 .lightbox-track {
   width: 100%;
   height: 100%;
-
   display: flex;
   flex-wrap: nowrap;
-
   overflow: visible;
-
   transform: translate3d(0, 0, 0);
-
   transition: transform 0.45s ease;
-
   will-change: transform;
-
   user-select: none;
   -webkit-user-select: none;
-
   pointer-events: none;
-
   z-index: 1;
 }
 
@@ -1169,21 +960,14 @@ footer small:last-child {
   width: 100%;
   min-width: 100%;
   max-width: 100%;
-
   height: 100%;
-
   flex: 0 0 100%;
-
   margin: 0;
-
   object-fit: contain;
-
   display: block;
-
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
-
   pointer-events: none;
 }
 
@@ -1195,15 +979,10 @@ footer small:last-child {
 .lightbox-track img {
   width: 100%;
   height: 100%;
-
   min-width: 100%;
-
   object-fit: contain;
-
   display: block;
-
   pointer-events: none;
-
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
@@ -1217,13 +996,9 @@ footer small:last-child {
 .lightbox-track video {
   width: 100%;
   height: 100%;
-
   object-fit: contain;
-
   display: block;
-
   pointer-events: none;
-
   user-select: none;
 }
 
@@ -1234,46 +1009,28 @@ footer small:last-child {
 
 .lightbox-arrow {
   position: absolute;
-
   top: 50%;
-
   transform: translateY(-50%);
-
   z-index: 100;
-
   width: auto;
   height: auto;
-
   padding: 12px;
-
   border: none;
   border-radius: 0;
-
   outline: none;
-
   background: transparent;
-
   color: #151513;
-
   font-family: Arial, sans-serif;
-
   font-size: 42px;
   font-weight: 300;
-
   line-height: 1;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
-
   pointer-events: auto;
-
   touch-action: manipulation;
-
   -webkit-tap-highlight-color: transparent;
-
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
@@ -1302,45 +1059,28 @@ footer small:last-child {
 
 .lightbox-close {
   position: absolute;
-
   top: 22px;
   right: 24px;
-
   z-index: 110;
-
   width: auto;
   height: auto;
-
   padding: 10px;
-
   border: none;
   border-radius: 0;
-
   outline: none;
-
   background: transparent;
-
   color: #151513;
-
   font-family: Arial, sans-serif;
-
   font-size: 34px;
   font-weight: 300;
-
   line-height: 1;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
-
   pointer-events: auto;
-
   touch-action: manipulation;
-
   -webkit-tap-highlight-color: transparent;
-
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
@@ -1376,13 +1116,11 @@ body.lightbox-open {
     width: 100vw;
     height: 100vh;
     height: 100dvh;
-
     z-index: 99999;
   }
 
   .lightbox-arrow {
     font-size: 38px;
-
     padding: 10px;
   }
 
@@ -1397,9 +1135,7 @@ body.lightbox-open {
   .lightbox-close {
     top: 18px;
     right: 14px;
-
     font-size: 32px;
-
     padding: 10px;
   }
 
