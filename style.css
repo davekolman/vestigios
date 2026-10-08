@@ -1002,3 +1002,190 @@ footer small:last-child {
   }
 
 }
+
+
+/* =========================
+   VISOR AMPLIADO / LIGHTBOX
+========================= */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  background: #f5f4f0;
+
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  touch-action: pan-y;
+}
+
+.lightbox.active {
+  display: flex;
+}
+
+
+/* =========================
+   IMAGEN AMPLIADA
+========================= */
+
+.lightbox-image {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  display: block;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+
+  pointer-events: none;
+}
+
+
+/* =========================
+   FLECHAS DEL VISOR
+========================= */
+
+.lightbox-arrow {
+  position: absolute;
+
+  top: 50%;
+  transform: translateY(-50%);
+
+  z-index: 20;
+
+  width: auto;
+  height: auto;
+
+  padding: 8px;
+
+  border: none;
+  border-radius: 0;
+
+  background: transparent;
+
+  color: #151513;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 42px;
+  font-weight: 300;
+
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.lightbox-arrow.prev {
+  left: 14px;
+}
+
+.lightbox-arrow.next {
+  right: 14px;
+}
+
+.lightbox-arrow:hover {
+  opacity: 0.55;
+}
+
+.lightbox-arrow:active {
+  transform: translateY(-50%) scale(0.92);
+}
+
+
+/* =========================
+   X / CERRAR
+========================= */
+
+.lightbox-close {
+  position: absolute;
+
+  top: 22px;
+  right: 24px;
+
+  z-index: 30;
+
+  width: auto;
+  height: auto;
+
+  padding: 8px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #151513;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 34px;
+  font-weight: 300;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.lightbox-close:hover {
+  opacity: 0.55;
+}
+
+.lightbox-close:active {
+  transform: scale(0.92);
+}
+
+
+/* =========================
+   VISOR MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+  .lightbox-arrow {
+    font-size: 38px;
+
+    padding: 10px;
+  }
+
+  .lightbox-arrow.prev {
+    left: 8px;
+  }
+
+  .lightbox-arrow.next {
+    right: 8px;
+  }
+
+  .lightbox-close {
+    top: 18px;
+    right: 14px;
+
+    font-size: 32px;
+  }
+
+}
+
