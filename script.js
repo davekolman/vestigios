@@ -14,14 +14,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================
-       CONTAR IMÁGENES
+       ELEMENTOS DE LA GALERÍA
+       IMÁGENES + VIDEOS
     ========================= */
 
-    const images = Array.from(
-      track.querySelectorAll("img")
+    const slides = Array.from(
+      track.querySelectorAll("img, video")
     );
 
-    const total = images.length;
+    const total = slides.length;
 
     if (total === 0) return;
 
@@ -65,10 +66,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateGallery() {
 
-      const imageWidth = gallery.clientWidth;
+      const slideWidth = gallery.clientWidth;
 
       track.style.transform =
-        `translateX(-${current * imageWidth}px)`;
+        `translateX(-${current * slideWidth}px)`;
 
 
       if (currentCounter) {
@@ -77,6 +78,34 @@ document.addEventListener("DOMContentLoaded", () => {
           String(current + 1).padStart(2, "0");
 
       }
+
+
+      /* =========================
+         CONTROL DE VIDEOS
+         Si algún día se coloca un
+         video dentro del carrusel:
+         solo reproduce el actual.
+      ========================= */
+
+      slides.forEach((slide, index) => {
+
+        if (slide.tagName === "VIDEO") {
+
+          if (index === current) {
+
+            slide.play().catch(() => {});
+
+          } else {
+
+            slide.pause();
+
+            slide.currentTime = 0;
+
+          }
+
+        }
+
+      });
 
     }
 
