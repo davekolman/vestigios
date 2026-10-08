@@ -125,8 +125,11 @@ nav a:hover {
 
   padding: 120px 20px 70px;
 
+  /* TEXTO BLANCO SOBRE EL VIDEO */
   color: #ffffff;
 
+  /* Sombra muy sutil para mantener
+     legibilidad sin crear un efecto pesado */
   text-shadow:
     0 2px 12px rgba(0, 0, 0, 0.28);
 }
@@ -281,6 +284,12 @@ nav a:hover {
   margin-bottom: 16vw;
 }
 
+
+/*
+   Las piezas con .reverse
+   invierten imagen y texto.
+*/
+
 .look.reverse {
   grid-template-columns: 0.7fr 1.55fr;
 }
@@ -312,8 +321,6 @@ nav a:hover {
   overflow: hidden;
 
   background: #e9e9e7;
-
-  border-radius: 0;
 }
 
 
@@ -363,8 +370,6 @@ nav a:hover {
   scroll-snap-align: start;
 
   cursor: zoom-in;
-
-  border-radius: 0;
 }
 
 
@@ -497,7 +502,7 @@ nav a:hover {
 
 
 /* =========================
-   PRECIO / ENCARGO
+   PRECIO / ENCARGO / WHATSAPP
 ========================= */
 
 .copy .price {
@@ -526,13 +531,7 @@ nav a:hover {
   opacity: 0.48;
 }
 
-
-/* =========================
-   BOTÓN SOLICITAR PIEZA
-========================= */
-
-.copy .request,
-.copy .order-button {
+.copy .request {
   display: inline-block;
 
   margin-top: 20px;
@@ -552,8 +551,7 @@ nav a:hover {
     border-color 0.2s ease;
 }
 
-.copy .request:hover,
-.copy .order-button:hover {
+.copy .request:hover {
   opacity: 0.55;
 
   border-color: #15151388;
@@ -778,12 +776,9 @@ footer small:last-child {
     aspect-ratio: 2 / 3;
 
     min-height: 0;
-
-    border-radius: 0;
   }
 
   .gallery-track {
-    width: 100%;
     height: 100%;
   }
 
@@ -794,11 +789,7 @@ footer small:last-child {
 
     min-width: 100%;
 
-    flex: 0 0 100%;
-
     object-fit: contain;
-
-    border-radius: 0;
   }
 
   .gallery-arrow {
@@ -829,8 +820,7 @@ footer small:last-child {
     margin-top: 7px;
   }
 
-  .copy .request,
-  .copy .order-button {
+  .copy .request {
     margin-top: 18px;
   }
 
