@@ -104,6 +104,12 @@ nav a:hover {
 
   object-fit: cover;
   display: block;
+
+  /*
+    Ayuda a los navegadores móviles
+    a tratar el video como fondo.
+  */
+  pointer-events: none;
 }
 
 .media-note {
@@ -313,11 +319,6 @@ nav a:hover {
 
   background: #e9e9e7;
 
-  /*
-    Evita que el navegador interprete
-    el gesto del dedo como desplazamiento
-    horizontal del carrusel.
-  */
   touch-action: pan-y;
 }
 
@@ -331,21 +332,34 @@ nav a:hover {
   height: 100%;
 
   display: flex;
+  flex-wrap: nowrap;
 
-  overflow: hidden;
+  overflow: visible;
 
-  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
 
   will-change: transform;
 
   transition: transform 0.45s ease;
 
-  /*
-    El usuario no arrastra directamente
-    la pista del carrusel.
-  */
   user-select: none;
   -webkit-user-select: none;
+
+  /*
+    Importante:
+    cada slide ocupa exactamente
+    el ancho completo de la galería.
+  */
+}
+
+.gallery-track > * {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+
+  flex: 0 0 100%;
+
+  margin: 0;
 }
 
 
@@ -370,11 +384,6 @@ nav a:hover {
   user-select: none;
   -webkit-user-select: none;
 
-  /*
-    Evita que el navegador intente
-    arrastrar la imagen con el dedo
-    o con el mouse.
-  */
   -webkit-user-drag: none;
 
   pointer-events: none;
@@ -400,6 +409,7 @@ nav a:hover {
   pointer-events: none;
 
   user-select: none;
+  -webkit-user-select: none;
 }
 
 
@@ -413,7 +423,7 @@ nav a:hover {
   top: 50%;
   transform: translateY(-50%);
 
-  z-index: 5;
+  z-index: 20;
 
   width: auto;
   height: auto;
@@ -437,10 +447,9 @@ nav a:hover {
 
   cursor: pointer;
 
-  /*
-    La flecha sí recibe el tap/click.
-  */
   touch-action: manipulation;
+
+  -webkit-tap-highlight-color: transparent;
 
   transition:
     opacity 0.2s ease,
@@ -462,7 +471,7 @@ nav a:hover {
 }
 
 
-/* Efecto sutil al pasar el mouse */
+/* Efecto al pasar el mouse */
 
 .gallery-arrow:hover {
   opacity: 0.55;
@@ -479,14 +488,6 @@ nav a:hover {
 /* =========================
    CONTADOR
 ========================= */
-
-/*
-  El contador ya no se muestra.
-  Se mantiene esta regla por si el
-  HTML todavía conserva los elementos
-  .gallery-counter mientras terminamos
-  de limpiar el index.html.
-*/
 
 .gallery-counter {
   display: none;
@@ -589,6 +590,8 @@ nav a:hover {
   transition:
     opacity 0.2s ease,
     border-color 0.2s ease;
+
+  touch-action: manipulation;
 }
 
 .copy .request:hover {
@@ -758,7 +761,28 @@ footer small:last-child {
   }
 
 
-  /* HERO */
+  /* =========================
+     HERO MOBILE
+  ========================= */
+
+  .hero {
+    min-height: 100svh;
+    height: 100svh;
+  }
+
+  .hero-media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-media video {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+  }
 
   .hero-text {
     padding-top: 90px;
@@ -769,7 +793,9 @@ footer small:last-child {
   }
 
 
-  /* INTRO */
+  /* =========================
+     INTRO
+  ========================= */
 
   .intro,
   .aivideo {
@@ -777,7 +803,9 @@ footer small:last-child {
   }
 
 
-  /* COLLECTION */
+  /* =========================
+     COLLECTION
+  ========================= */
 
   .collection {
     padding: 18vw 5vw 28vw;
@@ -794,7 +822,9 @@ footer small:last-child {
   }
 
 
-  /* LOOKS */
+  /* =========================
+     LOOKS
+  ========================= */
 
   .look,
   .look.reverse,
@@ -808,7 +838,9 @@ footer small:last-child {
   }
 
 
-  /* GALLERY */
+  /* =========================
+     GALLERY MOBILE
+  ========================= */
 
   .gallery {
     width: 100%;
@@ -821,7 +853,23 @@ footer small:last-child {
   }
 
   .gallery-track {
+    width: 100%;
     height: 100%;
+
+    display: flex;
+    flex-wrap: nowrap;
+
+    overflow: visible;
+
+    transform: translate3d(0, 0, 0);
+  }
+
+  .gallery-track > * {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    flex: 0 0 100%;
   }
 
   .gallery-track img {
@@ -847,7 +895,9 @@ footer small:last-child {
   }
 
 
-  /* FLECHAS MOBILE */
+  /* =========================
+     FLECHAS MOBILE
+  ========================= */
 
   .gallery-arrow {
     width: auto;
@@ -858,6 +908,10 @@ footer small:last-child {
     font-size: 38px;
 
     background: transparent;
+
+    z-index: 20;
+
+    touch-action: manipulation;
   }
 
   .gallery-arrow.prev {
@@ -869,14 +923,18 @@ footer small:last-child {
   }
 
 
-  /* CONTADOR */
+  /* =========================
+     CONTADOR
+  ========================= */
 
   .gallery-counter {
     display: none;
   }
 
 
-  /* COPY */
+  /* =========================
+     COPY
+  ========================= */
 
   .copy {
     padding: 0 4vw;
@@ -895,7 +953,9 @@ footer small:last-child {
   }
 
 
-  /* DETAILS */
+  /* =========================
+     DETAILS
+  ========================= */
 
   .details {
     grid-template-columns: 1fr;
@@ -906,7 +966,9 @@ footer small:last-child {
   }
 
 
-  /* PROCESS */
+  /* =========================
+     PROCESS
+  ========================= */
 
   .process-photo {
     min-height: 65vh;
@@ -917,7 +979,9 @@ footer small:last-child {
   }
 
 
-  /* FOOTER */
+  /* =========================
+     FOOTER
+  ========================= */
 
   footer {
     grid-template-columns: 1fr;
