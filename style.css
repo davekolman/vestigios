@@ -1,3 +1,4 @@
+
 /* =========================
    BASE
 ========================= */
@@ -128,9 +129,6 @@ button {
   transform: translateY(-6px) rotate(-45deg);
 }
 
-
-/* En escritorio no mostrar la hamburguesa */
-
 @media (min-width: 701px) {
   .site-header .menu-toggle {
     display: none !important;
@@ -257,7 +255,8 @@ button {
 }
 
 .intro h2 i,
-.aivideo h2 i {
+.aivideo h2 i,
+.education h2 i {
   font-weight: 300;
 }
 
@@ -625,7 +624,7 @@ button {
 
 
 /* =========================
-   VIDEO IA
+   INTERPRETACIÓN AUDIOVISUAL
 ========================= */
 
 .aivideo {
@@ -637,6 +636,113 @@ button {
 
 .aivideo h2 {
   max-width: 950px;
+}
+
+.aivideo-description {
+  max-width: 550px;
+  margin: 45px 0 0 auto;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  opacity: 0.65;
+}
+
+
+/* =========================
+   FORMACIÓN
+========================= */
+
+.education {
+  padding: 4vw 12vw 16vw;
+  max-width: 1440px;
+  margin: 0 auto;
+  background: #f5f4f0;
+  color: #151513;
+}
+
+.education-heading {
+  max-width: 900px;
+  margin-bottom: 8vw;
+}
+
+.education-heading h2 {
+  font: 400 clamp(3.5rem, 7vw, 7rem) / 0.9
+    "Cormorant Garamond", serif;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.education-intro {
+  max-width: 540px;
+  margin: 35px 0 0 auto;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  opacity: 0.65;
+}
+
+.education-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7vw;
+  border-top: 1px solid #15151325;
+}
+
+.education-option {
+  position: relative;
+  min-width: 0;
+  padding: 32px 0 0;
+}
+
+.education-number {
+  display: block;
+  margin-bottom: 38px;
+  font: 400 1.2rem "Cormorant Garamond", serif;
+  opacity: 0.5;
+}
+
+.education-option .eyebrow {
+  margin-bottom: 16px;
+  font-size: 0.57rem;
+}
+
+.education-option h3 {
+  margin: 0 0 24px;
+  font: 400 clamp(2.4rem, 4vw, 4.5rem) / 0.95
+    "Cormorant Garamond", serif;
+  letter-spacing: -0.02em;
+}
+
+.education-option > p:not(.eyebrow) {
+  max-width: 450px;
+  min-height: 100px;
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.85;
+  opacity: 0.68;
+}
+
+.education-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 30px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #15151355;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.education-link span {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.education-link:hover {
+  opacity: 0.55;
+  border-color: #15151388;
 }
 
 
@@ -746,8 +852,6 @@ footer small:last-child {
     display: block;
     flex: 0 0 40px;
   }
-
-  /* MENÚ DESPLEGABLE: HUESO SÓLIDO */
 
   #main-nav {
     position: fixed;
@@ -948,8 +1052,6 @@ footer small:last-child {
     object-position: center;
   }
 
-  /* PROCESO: VIDEO VERTICAL A 80VH */
-
   .process-photo {
     width: 100%;
     height: 80vh;
@@ -974,6 +1076,51 @@ footer small:last-child {
 
   .process > div:last-child {
     padding: 22vw 8vw 28vw;
+  }
+
+  /* FORMACIÓN EN MÓVIL */
+
+  .education {
+    padding: 12vw 7vw 25vw;
+  }
+
+  .education-heading {
+    margin-bottom: 15vw;
+  }
+
+  .education-heading h2 {
+    font-size: clamp(3.2rem, 13vw, 5.5rem);
+  }
+
+  .education-intro {
+    margin-top: 30px;
+    font-size: 0.85rem;
+  }
+
+  .education-options {
+    grid-template-columns: 1fr;
+    gap: 13vw;
+  }
+
+  .education-option {
+    padding-top: 25px;
+  }
+
+  .education-number {
+    margin-bottom: 28px;
+  }
+
+  .education-option h3 {
+    font-size: clamp(2.7rem, 10vw, 4rem);
+  }
+
+  .education-option > p:not(.eyebrow) {
+    min-height: 0;
+    font-size: 0.83rem;
+  }
+
+  .education-link {
+    margin-top: 25px;
   }
 
   footer {
@@ -1225,4 +1372,3 @@ body.lightbox-open #back-to-top {
     transition-duration: 0.01ms !important;
   }
 }
-
