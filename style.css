@@ -570,27 +570,35 @@ button {
 
 
 /* =========================
-   PROCESO
+   PROCESO — VIDEO VERTICAL
 ========================= */
 
 .process {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
-  min-height: 90vh;
+  min-height: 0;
   background: #ebeae6;
   color: #151513;
 }
 
 .process-photo {
-  min-height: 80vh;
+  width: 100%;
+  height: 60vh;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
+  background: #e9e7e1;
 }
 
 .process-photo video {
   display: block;
-  width: 100%;
+  width: auto;
   height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center;
   margin: 0;
   padding: 0;
 }
@@ -941,15 +949,24 @@ footer small:last-child {
     object-position: center;
   }
 
+  /* PROCESO: VIDEO VERTICAL MÁS PEQUEÑO */
+
   .process-photo {
-    min-height: 65vh;
+    width: 100%;
+    height: 55vh;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
   }
 
   .process-photo video {
-    width: 100%;
+    width: auto;
     height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: center;
   }
 
   .process > div:last-child {
