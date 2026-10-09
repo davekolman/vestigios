@@ -50,10 +50,7 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-
-  /* Más transparente */
   background: rgba(245, 244, 240, 0.30);
-
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -86,7 +83,9 @@ button {
 }
 
 
-/* Botón hamburguesa */
+/* =========================
+   BOTÓN HAMBURGUESA
+========================= */
 
 .menu-toggle {
   display: none;
@@ -729,10 +728,7 @@ footer small:last-child {
   .site-header {
     min-height: 66px;
     padding: 13px 5vw;
-
-    /* Misma transparencia en móvil */
     background: rgba(245, 244, 240, 0.30);
-
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
@@ -741,6 +737,8 @@ footer small:last-child {
     display: block;
     flex: 0 0 40px;
   }
+
+  /* MENÚ DESPLEGABLE: HUESO SÓLIDO */
 
   #main-nav {
     position: fixed;
@@ -757,9 +755,9 @@ footer small:last-child {
     gap: 30px;
     margin-left: 0;
 
-    background: rgba(245, 244, 240, 0.86);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: #f5f4f0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 
     box-shadow: -12px 0 35px rgba(21, 21, 19, 0.08);
     transform: translateX(105%);
@@ -968,10 +966,7 @@ footer small:last-child {
 
   #back-to-top {
     right: 15px;
-
-    /* Sube el botón en móvil */
     bottom: 65px;
-
     width: 42px;
     height: 42px;
   }
@@ -1210,3 +1205,4 @@ body.lightbox-open #back-to-top {
     transition-duration: 0.01ms !important;
   }
 }
+
