@@ -50,7 +50,10 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  background: rgba(245, 244, 240, 0.78);
+
+  /* Más transparente */
+  background: rgba(245, 244, 240, 0.30);
+
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -726,7 +729,10 @@ footer small:last-child {
   .site-header {
     min-height: 66px;
     padding: 13px 5vw;
-    background: rgba(245, 244, 240, 0.78);
+
+    /* Misma transparencia en móvil */
+    background: rgba(245, 244, 240, 0.30);
+
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
@@ -962,7 +968,10 @@ footer small:last-child {
 
   #back-to-top {
     right: 15px;
-    bottom: 15px;
+
+    /* Sube el botón en móvil */
+    bottom: 65px;
+
     width: 42px;
     height: 42px;
   }
@@ -1201,4 +1210,3 @@ body.lightbox-open #back-to-top {
     transition-duration: 0.01ms !important;
   }
 }
-
