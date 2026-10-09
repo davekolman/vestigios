@@ -1,5 +1,61 @@
-
 document.addEventListener("DOMContentLoaded", () => {
+
+  /* =========================================================
+     CONFIGURACIÓN GENERAL DE LOS VÍDEOS
+  ========================================================= */
+
+  function prepareVideo(video) {
+    if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.volume = 0;
+    video.controls = false;
+    video.playsInline = true;
+
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("disablepictureinpicture", "");
+    video.setAttribute("controlslist", "nodownload noplaybackrate");
+    video.removeAttribute("controls");
+  }
+
+  function playVideo(video) {
+    if (!video) return;
+
+    prepareVideo(video);
+
+    const promise = video.play();
+
+    if (promise && typeof promise.catch === "function") {
+      promise.catch(() => {
+        // El navegador puede bloquear el autoplay.
+        // No mostramos controles como alternativa.
+      });
+    }
+  }
+
+  function pauseVideo(video, reset = false) {
+    if (!video) return;
+
+    video.pause();
+
+    if (reset) {
+      try {
+        video.currentTime = 0;
+      } catch (error) {
+        // El vídeo puede no haber terminado de cargar.
+      }
+    }
+  }
+
+  /* Evitar controles nativos en todos los vídeos de la página. */
+
+  document.querySelectorAll("video").forEach((video) => {
+    prepareVideo(video);
+  });
+
 
   /* =========================================================
      VIDEO DE PORTADA
@@ -8,44 +64,72 @@ document.addEventListener("DOMContentLoaded", () => {
   const heroVideo = document.getElementById("hero-video");
 
   if (heroVideo) {
-    heroVideo.muted = true;
-    heroVideo.defaultMuted = true;
+    prepareVideo(heroVideo);
 
-    heroVideo.setAttribute("muted", "");
+    heroVideo.loop = true;
+    heroVideo.autoplay = true;
+
     heroVideo.setAttribute("autoplay", "");
     heroVideo.setAttribute("loop", "");
-    heroVideo.setAttribute("playsinline", "");
-    heroVideo.setAttribute("webkit-playsinline", "");
-
-    heroVideo.controls = false;
-    heroVideo.removeAttribute("controls");
 
     const startHeroVideo = () => {
-      heroVideo.muted = true;
-      heroVideo.controls = false;
-      heroVideo.removeAttribute("controls");
-      heroVideo.loop = true;
-
-      const playPromise = heroVideo.play();
-
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {});
-      }
+      if (document.hidden) return;
+      playVideo(heroVideo);
     };
 
-    startHeroVideo();
+    if (heroVideo.readyState >= 2) {
+      startHeroVideo();
+    } else {
+      heroVideo.addEventListener("canplay", startHeroVideo, {
+        once: true
+      });
+    }
 
-    window.addEventListener("load", startHeroVideo, {
-      once: true
-    });
-
-    heroVideo.addEventListener("canplay", startHeroVideo, {
-      once: true
-    });
+    window.addEventListener("pageshow", startHeroVideo);
 
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
         startHeroVideo();
+      } else {
+        pauseVideo(heroVideo);
+      }
+    });
+  }
+
+
+  /* =========================================================
+     VIDEO DE PROCESO
+  ========================================================= */
+
+  const processVideo = document.getElementById("process-video");
+
+  if (processVideo) {
+    prepareVideo(processVideo);
+
+    processVideo.loop = true;
+    processVideo.autoplay = true;
+
+    processVideo.setAttribute("autoplay", "");
+    processVideo.setAttribute("loop", "");
+
+    const startProcessVideo = () => {
+      if (document.hidden) return;
+      playVideo(processVideo);
+    };
+
+    if (processVideo.readyState >= 2) {
+      startProcessVideo();
+    } else {
+      processVideo.addEventListener("canplay", startProcessVideo, {
+        once: true
+      });
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        startProcessVideo();
+      } else {
+        pauseVideo(processVideo);
       }
     });
   }
@@ -64,6 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     menuToggle.setAttribute("aria-expanded", "false");
     menuToggle.setAttribute("aria-label", "Abrir menú");
+
     mainNav.classList.remove("open");
     document.body.classList.remove("menu-open");
   }
@@ -73,6 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     menuToggle.setAttribute("aria-expanded", "true");
     menuToggle.setAttribute("aria-label", "Cerrar menú");
+
     mainNav.classList.add("open");
     document.body.classList.add("menu-open");
   }
@@ -154,11 +240,13 @@ document.addEventListener("DOMContentLoaded", () => {
     updateBackToTop();
 
     backToTop.addEventListener("click", () => {
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
       window.scrollTo({
         top: 0,
-        behavior: window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches ? "auto" : "smooth"
+        behavior: reduceMotion ? "auto" : "smooth"
       });
     });
   }
@@ -211,29 +299,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.body.appendChild(lightbox);
 
-    lightboxTrack =
-      lightbox.querySelector(".lightbox-track");
+    lightboxTrack = lightbox.querySelector(".lightbox-track");
 
-    const closeButton =
-      lightbox.querySelector(".lightbox-close");
-
-    const prevButton =
-      lightbox.querySelector(".lightbox-prev");
-
-    const nextButton =
-      lightbox.querySelector(".lightbox-next");
-
-
-    /* Cerrar */
+    const closeButton = lightbox.querySelector(".lightbox-close");
+    const prevButton = lightbox.querySelector(".lightbox-prev");
+    const nextButton = lightbox.querySelector(".lightbox-next");
+    const lightboxWindow = lightbox.querySelector(".lightbox-window");
 
     closeButton.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
       closeLightbox();
     });
-
-
-    /* Anterior */
 
     prevButton.addEventListener("click", (event) => {
       event.preventDefault();
@@ -250,9 +327,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updateLightbox();
     });
 
-
-    /* Siguiente */
-
     nextButton.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -268,24 +342,16 @@ document.addEventListener("DOMContentLoaded", () => {
       updateLightbox();
     });
 
-
-    /* Clic en el fondo */
-
     lightbox.addEventListener("click", (event) => {
       if (
         event.target === lightbox ||
-        event.target ===
-          lightbox.querySelector(".lightbox-window")
+        event.target === lightboxWindow
       ) {
         closeLightbox();
       }
     });
 
-
-    /* Teclado */
-
     document.addEventListener("keydown", (event) => {
-
       if (!lightbox.classList.contains("active")) return;
 
       if (event.key === "Escape") {
@@ -326,8 +392,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     createLightbox();
 
-    lightboxSlides = Array.from(slides);
+    // Detener los vídeos de las galerías al abrir el visor.
+    document.querySelectorAll(".gallery video").forEach((video) => {
+      pauseVideo(video);
+    });
 
+    lightboxSlides = Array.from(slides);
     lightboxCurrent = Number(startIndex) || 0;
 
     lightboxTrack.innerHTML = "";
@@ -339,15 +409,14 @@ document.addEventListener("DOMContentLoaded", () => {
       clone.removeAttribute("style");
 
       if (clone.tagName === "VIDEO") {
-        clone.muted = true;
-        clone.defaultMuted = true;
+        prepareVideo(clone);
+
         clone.controls = false;
         clone.loop = true;
+        clone.autoplay = false;
 
-        clone.setAttribute("muted", "");
-        clone.setAttribute("playsinline", "");
-        clone.setAttribute("webkit-playsinline", "");
         clone.removeAttribute("controls");
+        clone.removeAttribute("autoplay");
       }
 
       clone.addEventListener("click", (event) => {
@@ -381,12 +450,6 @@ document.addEventListener("DOMContentLoaded", () => {
       lightboxCurrent = 0;
     }
 
-    /*
-      El lightbox conserva su desplazamiento porcentual.
-      Su funcionamiento depende del ancho definido en
-      las reglas CSS de .lightbox-track y sus elementos.
-    */
-
     lightboxTrack.style.transform =
       `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
 
@@ -396,23 +459,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (slide.tagName !== "VIDEO") return;
 
+      prepareVideo(slide);
+
       if (index === lightboxCurrent) {
-
-        slide.muted = true;
-
-        const playPromise = slide.play();
-
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {});
-        }
-
+        playVideo(slide);
       } else {
-
-        slide.pause();
-
-        try {
-          slide.currentTime = 0;
-        } catch (error) {}
+        pauseVideo(slide, true);
       }
     });
   }
@@ -430,11 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.remove("lightbox-open");
 
     lightbox.querySelectorAll("video").forEach((video) => {
-      video.pause();
-
-      try {
-        video.currentTime = 0;
-      } catch (error) {}
+      pauseVideo(video, true);
     });
   }
 
@@ -466,6 +514,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!total) return;
 
     let current = 0;
+    let suppressClickUntil = 0;
 
 
     /* =====================================================
@@ -475,40 +524,27 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateGallery() {
 
       /*
-        CORRECCIÓN:
-        El desplazamiento se calcula en píxeles usando
-        el ancho visible de la galería, no el porcentaje
-        del ancho total de la pista.
+        Usar la posición real de cada diapositiva evita
+        depender del ancho total de la pista.
       */
 
-      const slideWidth = gallery.clientWidth;
+      const activeSlide = slides[current];
 
-      track.style.transform =
-        `translate3d(-${current * slideWidth}px, 0, 0)`;
+      if (activeSlide) {
+        track.style.transform =
+          `translate3d(-${activeSlide.offsetLeft}px, 0, 0)`;
+      }
 
       slides.forEach((slide, index) => {
 
         if (slide.tagName !== "VIDEO") return;
 
+        prepareVideo(slide);
+
         if (index === current) {
-
-          slide.muted = true;
-          slide.setAttribute("muted", "");
-          slide.setAttribute("playsinline", "");
-
-          const playPromise = slide.play();
-
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {});
-          }
-
+          playVideo(slide);
         } else {
-
-          slide.pause();
-
-          try {
-            slide.currentTime = 0;
-          } catch (error) {}
+          pauseVideo(slide, true);
         }
       });
     }
@@ -632,21 +668,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (difference > 0) {
-
         current++;
 
         if (current >= total) {
           current = 0;
         }
-
       } else {
-
         current--;
 
         if (current < 0) {
           current = total - 1;
         }
       }
+
+      suppressClickUntil = Date.now() + 500;
 
       updateGallery();
 
@@ -661,7 +696,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       ABRIR VISOR AL TOCAR UNA IMAGEN O VIDEO
+       ABRIR VISOR AL TOCAR UNA IMAGEN O VÍDEO
     ===================================================== */
 
     slides.forEach((slide, index) => {
@@ -669,6 +704,12 @@ document.addEventListener("DOMContentLoaded", () => {
       slide.style.cursor = "pointer";
 
       slide.addEventListener("click", (event) => {
+
+        if (Date.now() < suppressClickUntil) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
 
         event.preventDefault();
         event.stopPropagation();
@@ -679,12 +720,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       INICIALIZAR Y REAJUSTAR AL CAMBIAR EL ANCHO
+       INICIALIZAR Y REAJUSTAR
     ===================================================== */
 
     updateGallery();
 
     window.addEventListener("resize", updateGallery);
+
+    window.addEventListener("orientationchange", () => {
+      requestAnimationFrame(updateGallery);
+    });
+
+  });
+
+
+  /* =========================================================
+     REVISAR VÍDEOS AL VOLVER A LA PÁGINA
+  ========================================================= */
+
+  window.addEventListener("pageshow", () => {
+
+    if (!document.hidden && heroVideo) {
+      playVideo(heroVideo);
+    }
+
+    if (!document.hidden && processVideo) {
+      playVideo(processVideo);
+    }
+
+    document.querySelectorAll(".gallery").forEach((gallery) => {
+      const track = gallery.querySelector(".gallery-track");
+      if (!track) return;
+
+      const activeVideo = track.querySelector("video");
+
+      if (activeVideo && !lightbox?.classList.contains("active")) {
+        // La galería gestiona el vídeo activo al navegar.
+        // No iniciar vídeos ocultos indiscriminadamente.
+        prepareVideo(activeVideo);
+      }
+    });
   });
 
 });
+
