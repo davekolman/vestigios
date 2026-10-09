@@ -94,9 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     mainNav.querySelectorAll('a[href^="#"]').forEach((link) => {
-      link.addEventListener("click", () => {
-        closeMenu();
-      });
+      link.addEventListener("click", closeMenu);
     });
 
     document.addEventListener("click", (event) => {
@@ -137,9 +135,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.documentElement.scrollTop ||
         0;
 
-      const shouldShow = scrollPosition > 120;
-
-      backToTop.classList.toggle("visible", shouldShow);
+      backToTop.classList.toggle(
+        "visible",
+        scrollPosition > 120
+      );
     };
 
     window.addEventListener("scroll", updateBackToTop, {
@@ -212,7 +211,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.body.appendChild(lightbox);
 
-    lightboxTrack = lightbox.querySelector(".lightbox-track");
+    lightboxTrack =
+      lightbox.querySelector(".lightbox-track");
 
     const closeButton =
       lightbox.querySelector(".lightbox-close");
@@ -223,6 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextButton =
       lightbox.querySelector(".lightbox-next");
 
+
     /* Cerrar */
 
     closeButton.addEventListener("click", (event) => {
@@ -230,6 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
       event.stopPropagation();
       closeLightbox();
     });
+
 
     /* Anterior */
 
@@ -248,6 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
       updateLightbox();
     });
 
+
     /* Siguiente */
 
     nextButton.addEventListener("click", (event) => {
@@ -265,27 +268,25 @@ document.addEventListener("DOMContentLoaded", () => {
       updateLightbox();
     });
 
+
     /* Clic en el fondo */
 
     lightbox.addEventListener("click", (event) => {
       if (
         event.target === lightbox ||
-        event.target === lightbox.querySelector(".lightbox-window")
+        event.target ===
+          lightbox.querySelector(".lightbox-window")
       ) {
         closeLightbox();
       }
     });
 
+
     /* Teclado */
 
     document.addEventListener("keydown", (event) => {
 
-      if (
-        !lightbox ||
-        !lightbox.classList.contains("active")
-      ) {
-        return;
-      }
+      if (!lightbox.classList.contains("active")) return;
 
       if (event.key === "Escape") {
         closeLightbox();
@@ -326,6 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
     createLightbox();
 
     lightboxSlides = Array.from(slides);
+
     lightboxCurrent = Number(startIndex) || 0;
 
     lightboxTrack.innerHTML = "";
@@ -337,7 +339,6 @@ document.addEventListener("DOMContentLoaded", () => {
       clone.removeAttribute("style");
 
       if (clone.tagName === "VIDEO") {
-
         clone.muted = true;
         clone.defaultMuted = true;
         clone.controls = false;
@@ -379,6 +380,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (lightboxCurrent >= lightboxSlides.length) {
       lightboxCurrent = 0;
     }
+
+    /*
+      El lightbox conserva su desplazamiento porcentual.
+      Su funcionamiento depende del ancho definido en
+      las reglas CSS de .lightbox-track y sus elementos.
+    */
 
     lightboxTrack.style.transform =
       `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
@@ -441,8 +448,12 @@ document.addEventListener("DOMContentLoaded", () => {
   galleries.forEach((gallery) => {
 
     const track = gallery.querySelector(".gallery-track");
-    const prevButton = gallery.querySelector(".gallery-arrow.prev");
-    const nextButton = gallery.querySelector(".gallery-arrow.next");
+
+    const prevButton =
+      gallery.querySelector(".gallery-arrow.prev");
+
+    const nextButton =
+      gallery.querySelector(".gallery-arrow.next");
 
     if (!track) return;
 
@@ -457,12 +468,23 @@ document.addEventListener("DOMContentLoaded", () => {
     let current = 0;
 
 
-    /* Actualizar carrusel */
+    /* =====================================================
+       ACTUALIZAR CARRUSEL
+    ===================================================== */
 
     function updateGallery() {
 
+      /*
+        CORRECCIÓN:
+        El desplazamiento se calcula en píxeles usando
+        el ancho visible de la galería, no el porcentaje
+        del ancho total de la pista.
+      */
+
+      const slideWidth = gallery.clientWidth;
+
       track.style.transform =
-        `translate3d(-${current * 100}%, 0, 0)`;
+        `translate3d(-${current * slideWidth}px, 0, 0)`;
 
       slides.forEach((slide, index) => {
 
@@ -492,7 +514,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* Siguiente */
+    /* =====================================================
+       SIGUIENTE
+    ===================================================== */
 
     if (nextButton) {
       nextButton.addEventListener("click", (event) => {
@@ -511,7 +535,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* Anterior */
+    /* =====================================================
+       ANTERIOR
+    ===================================================== */
 
     if (prevButton) {
       prevButton.addEventListener("click", (event) => {
@@ -548,8 +574,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       touchStartX = touch.clientX;
       touchStartY = touch.clientY;
+
       touchCurrentX = touchStartX;
       touchCurrentY = touchStartY;
+
       gestureDirection = null;
 
     }, { passive: true });
@@ -621,6 +649,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       updateGallery();
+
       gestureDirection = null;
 
     }, { passive: true });
@@ -649,7 +678,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* Inicializar */
+    /* =====================================================
+       INICIALIZAR Y REAJUSTAR AL CAMBIAR EL ANCHO
+    ===================================================== */
 
     updateGallery();
 
