@@ -343,6 +343,7 @@ button {
 .gallery {
   position: relative;
   width: 100%;
+  height: min(85vh, 960px);
   aspect-ratio: 2 / 3;
   overflow: hidden;
   background: #e9e9e7;
@@ -964,6 +965,7 @@ footer small:last-child {
 
   .gallery {
     width: 100%;
+    height: min(80vh, 760px);
     aspect-ratio: 2 / 3;
     min-height: 0;
     touch-action: pan-y;
