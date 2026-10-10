@@ -18,7 +18,188 @@
   <link rel="icon" type="image/png" sizes="192x192" href="favicon.png?v=4">
   <link rel="shortcut icon" type="image/png" href="favicon.png?v=4">
 
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
+
+  <!-- Estilos de la guía de tallas -->
+  <style>
+    .size-guide-link {
+      display: inline-block;
+      margin: 10px 0 16px;
+      padding: 0;
+      border: 0;
+      border-bottom: 1px solid currentColor;
+      background: none;
+      color: inherit;
+      font: inherit;
+      font-size: 0.82rem;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .size-guide-link:hover {
+      opacity: 0.65;
+    }
+
+    .size-guide-link:focus-visible,
+    .size-guide-close:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 4px;
+    }
+
+    .size-guide-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(20, 19, 17, 0.65);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+    }
+
+    .size-guide-overlay.is-open {
+      display: flex;
+    }
+
+    .size-guide-dialog {
+      position: relative;
+      width: min(100%, 680px);
+      max-height: 85vh;
+      max-height: 85dvh;
+      overflow-y: auto;
+      padding: clamp(24px, 5vw, 44px);
+      background: #f5f4f0;
+      color: #292722;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2);
+      animation: sizeGuideAppear 0.2s ease-out;
+    }
+
+    .size-guide-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(41, 39, 34, 0.25);
+      border-radius: 50%;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-size: 23px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .size-guide-eyebrow {
+      margin: 0 45px 10px 0;
+      font-family: "Inter", sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .size-guide-title {
+      margin: 0 35px 12px 0;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 400;
+      line-height: 1.05;
+    }
+
+    .size-guide-intro {
+      margin: 0 0 24px;
+      font-family: "Inter", sans-serif;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: #5e5a53;
+    }
+
+    .size-guide-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 0 0 18px;
+    }
+
+    .size-guide-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "Inter", sans-serif;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+
+    .size-guide-table th,
+    .size-guide-table td {
+      padding: 13px 10px;
+      border-bottom: 1px solid #d8d4cc;
+      white-space: nowrap;
+    }
+
+    .size-guide-table th {
+      font-weight: 500;
+      border-top: 1px solid #bcb6ab;
+    }
+
+    .size-guide-table td:first-child,
+    .size-guide-table th:first-child {
+      padding-left: 0;
+    }
+
+    .size-guide-note {
+      margin: 18px 0 0;
+      font-family: "Inter", sans-serif;
+      font-size: 0.76rem;
+      line-height: 1.7;
+      color: #5e5a53;
+    }
+
+    body.size-guide-open {
+      overflow: hidden;
+    }
+
+    @keyframes sizeGuideAppear {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .size-guide-overlay {
+        padding: 12px;
+      }
+
+      .size-guide-dialog {
+        max-height: 90vh;
+        max-height: 90dvh;
+        padding: 26px 20px;
+      }
+
+      .size-guide-table {
+        font-size: 0.75rem;
+      }
+
+      .size-guide-table th,
+      .size-guide-table td {
+        padding: 12px 8px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .size-guide-dialog {
+        animation: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -82,26 +263,24 @@
       <i>después de la forma.</i>
     </h2>
 
-    
-<p>
-  Vestigios nace de una investigación sobre estructura,
-  proporción y memoria artesanal. La nobleza del lino,
-  la estructura de una sarga y la construcción
-  contemporánea se encuentran con el bordado y el
-  deshilado, a través de técnicas como el calado
-  Cartago, el siciliano y el bordado Luneville.
-</p>
+    <p>
+      Vestigios nace de una investigación sobre estructura,
+      proporción y memoria artesanal. La nobleza del lino,
+      la estructura de una sarga y la construcción
+      contemporánea se encuentran con el bordado y el
+      deshilado, a través de técnicas como el calado
+      Cartago, el siciliano y el bordado Luneville.
+    </p>
 
-<p>
-  En esta cápsula, el universo simbólico de la cultura
-  quimbaya, arraigada en el territorio del Quindío
-  colombiano, orienta la exploración del bordado.
-  Sus referentes se reinterpretan desde una mirada
-  contemporánea, donde materia, gesto y estructura
-  dialogan para dar forma a piezas que conectan la
-  herencia artesanal con una expresión propia.
-</p>
-
+    <p>
+      En esta cápsula, el universo simbólico de la cultura
+      quimbaya, arraigada en el territorio del Quindío
+      colombiano, orienta la exploración del bordado.
+      Sus referentes se reinterpretan desde una mirada
+      contemporánea, donde materia, gesto y estructura
+      dialogan para dar forma a piezas que conectan la
+      herencia artesanal con una expresión propia.
+    </p>
   </section>
 
   <!-- COLECCIÓN -->
@@ -137,6 +316,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>DESCRIPCIÓN DE LA PIEZA.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2001%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -163,6 +347,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Lino · deshilado de Cartago · bordado.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2002%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -190,6 +379,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Textil natural · volumen · proporción.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2003%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -219,6 +413,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Lino · construcción · trabajo artesanal.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2004%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -246,6 +445,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Textil natural · estructura · proporción.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2005%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -274,6 +478,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Lino · bordado · construcción contemporánea.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2006%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -303,6 +512,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Textil natural · volumen · construcción.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2007%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -332,6 +546,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Lino · sastrería · trabajo artesanal.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2008%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -360,6 +579,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Lino · construcción masculina · detalle artesanal.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2009%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -392,6 +616,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Textil natural · estructura · acabado artesanal.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2010%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -421,6 +650,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Lino · construcción · lenguaje artesanal.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2011%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -447,6 +681,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Lino · sastrería · construcción contemporánea.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2012%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -472,6 +711,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Textil natural · volumen · construcción.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2013%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -497,6 +741,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Lino · estructura · trabajo artesanal.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2014%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -523,6 +772,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Lino · construcción masculina · detalle artesanal.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2015%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -548,6 +802,11 @@
         <h3>NOMBRE DE LA PIEZA</h3>
         <p>Lino · construcción · detalle artesanal.</p>
         <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide>
+          Consultar guía de tallas ↗
+        </button>
+
         <strong class="price">$ XXX.XXX COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2016%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
@@ -678,6 +937,76 @@
 
 </main>
 
+<!-- GUÍA DE TALLAS: UNA SOLA VENTANA PARA TODA LA COLECCIÓN -->
+<div
+  class="size-guide-overlay"
+  id="size-guide"
+  aria-hidden="true"
+>
+  <section
+    class="size-guide-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="size-guide-title"
+    aria-describedby="size-guide-description"
+    tabindex="-1"
+  >
+    <button
+      class="size-guide-close"
+      type="button"
+      aria-label="Cerrar guía de tallas"
+      data-size-guide-close
+    >×</button>
+
+    <p class="size-guide-eyebrow">DAVE KOLMAN · VESTIGIOS</p>
+
+    <h2 class="size-guide-title" id="size-guide-title">
+      Guía de tallas
+    </h2>
+
+    <p class="size-guide-intro" id="size-guide-description">
+      Consulta las medidas corporales de referencia para elegir
+      tu talla. Las medidas definitivas se incorporarán a esta tabla.
+    </p>
+
+    <div class="size-guide-table-wrap">
+      <table class="size-guide-table">
+        <thead>
+          <tr>
+            <th scope="col">Talla</th>
+            <th scope="col">Busto</th>
+            <th scope="col">Cintura</th>
+            <th scope="col">Cadera</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <th scope="row">12</th>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+
+          <tr>
+            <th scope="row">14</th>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="size-guide-note">
+      Las medidas corresponden al cuerpo, no a la prenda terminada.
+      El ajuste puede variar según el diseño y la construcción.
+      Si necesitas orientación sobre una pieza, puedes consultarme
+      antes de realizar tu pedido.
+    </p>
+  </section>
+</div>
+
 <!-- FOOTER -->
 <footer id="contacto">
   <div>
@@ -706,9 +1035,82 @@
   ↑
 </button>
 
-<!-- JavaScript principal: los videos se gestionan desde script.js -->
+<!-- JavaScript principal existente -->
 <script src="script.js?v=4"></script>
+
+<!-- Funcionamiento de la guía de tallas -->
+<script>
+  (() => {
+    const overlay = document.getElementById("size-guide");
+
+    if (!overlay) return;
+
+    const dialog = overlay.querySelector(".size-guide-dialog");
+    const closeButton = overlay.querySelector("[data-size-guide-close]");
+    const openButtons = document.querySelectorAll("[data-size-guide]");
+
+    let lastFocusedElement = null;
+
+    function openSizeGuide() {
+      lastFocusedElement = document.activeElement;
+
+      overlay.classList.add("is-open");
+      overlay.setAttribute("aria-hidden", "false");
+      document.body.classList.add("size-guide-open");
+
+      closeButton.focus();
+    }
+
+    function closeSizeGuide() {
+      if (!overlay.classList.contains("is-open")) return;
+
+      overlay.classList.remove("is-open");
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("size-guide-open");
+
+      if (lastFocusedElement) {
+        lastFocusedElement.focus();
+      }
+    }
+
+    openButtons.forEach((button) => {
+      button.addEventListener("click", openSizeGuide);
+    });
+
+    closeButton.addEventListener("click", closeSizeGuide);
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) {
+        closeSizeGuide();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (!overlay.classList.contains("is-open")) return;
+
+      if (event.key === "Escape") {
+        closeSizeGuide();
+      }
+
+      if (event.key === "Tab") {
+        const focusableElements = dialog.querySelectorAll(
+          'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey && document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement.focus();
+        }
+      }
+    });
+  })();
+</script>
 
 </body>
 </html>
-
