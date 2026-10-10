@@ -1,6 +1,19 @@
 /* =========================
-   BASE
+   VARIABLES Y BASE
 ========================= */
+
+:root {
+  --color-bg: #f5f4f0;
+  --color-text: #151513;
+  --color-muted-bg: #e9e9e7;
+  --font-editorial: "Cormorant Garamond", serif;
+  --font-body: Inter, sans-serif;
+
+  --text-body: 0.9rem;
+  --text-small: 0.8rem;
+  --line-body: 1.8;
+  --text-opacity: 0.65;
+}
 
 *,
 *::before,
@@ -17,9 +30,10 @@ body {
   margin: 0;
   width: 100%;
   max-width: 100%;
-  background: #f5f4f0;
-  color: #151513;
-  font-family: Inter, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
   font-weight: 300;
   line-height: 1.6;
   overflow-wrap: break-word;
@@ -30,6 +44,33 @@ body.lightbox-open {
   overflow: hidden;
 }
 
+/* Estilo general para textos nuevos */
+
+p {
+  margin: 0 0 1.25em;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 300;
+  line-height: var(--line-body);
+  color: inherit;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: inherit;
+  font-family: var(--font-editorial);
+  font-weight: 400;
+  text-wrap: balance;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -38,7 +79,6 @@ a {
 button {
   font: inherit;
 }
-
 
 /* =========================
    HEADER
@@ -64,6 +104,7 @@ button {
 .brand {
   position: relative;
   z-index: 1002;
+  font-family: var(--font-body);
   font-size: 0.7rem;
   letter-spacing: 0.23em;
   white-space: nowrap;
@@ -88,7 +129,6 @@ button {
   opacity: 1;
 }
 
-
 /* =========================
    BOTÓN HAMBURGUESA
 ========================= */
@@ -106,7 +146,7 @@ button {
   box-shadow: none;
   border-radius: 0;
   background: transparent;
-  color: #151513;
+  color: var(--color-text);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -146,7 +186,6 @@ button {
   }
 }
 
-
 /* =========================
    HERO
 ========================= */
@@ -181,7 +220,6 @@ button {
   -webkit-touch-callout: none;
 }
 
-
 /* =========================
    HERO TEXT
 ========================= */
@@ -201,7 +239,9 @@ button {
 }
 
 .eyebrow {
+  font-family: var(--font-body);
   font-size: 0.6rem;
+  line-height: 1.5;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   opacity: 0.62;
@@ -215,7 +255,7 @@ button {
 
 .hero h1 {
   font: 400 clamp(6rem, 15vw, 13rem) / 0.8
-    "Cormorant Garamond", serif;
+    var(--font-editorial);
   letter-spacing: -0.04em;
   margin: 0;
   color: #fff;
@@ -223,6 +263,7 @@ button {
 
 .hero-text > p:not(.eyebrow) {
   font-size: 0.9rem;
+  line-height: 1.7;
   opacity: 0.9;
   margin: 34px auto;
   max-width: 430px;
@@ -230,6 +271,7 @@ button {
 }
 
 .button {
+  font-family: var(--font-body);
   font-size: 0.62rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -238,7 +280,6 @@ button {
   color: #fff;
 }
 
-
 /* =========================
    INTRO / HISTORIA
 ========================= */
@@ -246,13 +287,13 @@ button {
 .intro {
   padding: 18vw 12vw;
   max-width: 1100px;
-  background: #f5f4f0;
+  background: var(--color-bg);
 }
 
 .intro h2,
 .aivideo h2 {
   font: 400 clamp(3.5rem, 7vw, 7rem) / 0.9
-    "Cormorant Garamond", serif;
+    var(--font-editorial);
   margin: 0;
   letter-spacing: -0.025em;
 }
@@ -263,13 +304,20 @@ button {
   font-weight: 300;
 }
 
-.intro > p:last-child {
+/* Todos los párrafos de historia comparten estilo.
+   El primero mantiene la separación respecto al título. */
+
+.intro > p {
   max-width: 550px;
-  margin: 50px 0 0 auto;
+  margin: 1.25em 0 0 auto;
   font-size: 0.9rem;
+  line-height: 1.8;
   opacity: 0.62;
 }
 
+.intro > h2 + p {
+  margin-top: 50px;
+}
 
 /* =========================
    COLECCIÓN
@@ -277,7 +325,7 @@ button {
 
 .collection {
   padding: 8vw 6vw 15vw;
-  background: #f5f4f0;
+  background: var(--color-bg);
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -289,7 +337,7 @@ button {
 
 .heading h2 {
   font: 400 clamp(4rem, 9vw, 9rem) / 0.8
-    "Cormorant Garamond", serif;
+    var(--font-editorial);
   margin: 0;
 }
 
@@ -305,14 +353,13 @@ button {
 
 .collection-section-title h2 {
   font: 400 clamp(2.8rem, 6vw, 6rem) / 0.9
-    "Cormorant Garamond", serif;
+    var(--font-editorial);
   margin: 0;
 }
 
 .collection-section-men {
   margin-top: 18vw;
 }
-
 
 /* =========================
    LOOK / PIEZA
@@ -347,7 +394,6 @@ button {
   order: 1;
 }
 
-
 /* =========================
    GALERÍAS — ANCHO CONTROLADO
 ========================= */
@@ -377,12 +423,7 @@ button {
   border: 0;
   aspect-ratio: auto;
   overflow: hidden;
-
-  /* El fondo coincide con el de la página:
-     evita que se vea un rectángulo gris
-     alrededor de fotografías más estrechas. */
-  background: #f5f4f0;
-
+  background: var(--color-bg);
   isolation: isolate;
   box-sizing: border-box;
   touch-action: pan-y;
@@ -446,7 +487,6 @@ button {
   pointer-events: auto;
 }
 
-
 /* =========================
    FLECHAS DE GALERÍA
 ========================= */
@@ -462,7 +502,7 @@ button {
   border: none;
   border-radius: 0;
   background: transparent;
-  color: #151513;
+  color: var(--color-text);
   font-family: Arial, sans-serif;
   font-size: 42px;
   font-weight: 300;
@@ -496,7 +536,6 @@ button {
   display: none;
 }
 
-
 /* =========================
    TEXTO DE LAS PIEZAS
 ========================= */
@@ -504,51 +543,63 @@ button {
 .copy {
   min-width: 0;
   max-width: 100%;
-  color: #151513;
+  color: var(--color-text);
 }
 
 .copy span {
-  font: 400 1rem "Cormorant Garamond", serif;
-  color: #151513;
+  font: 400 1rem var(--font-editorial);
+  color: var(--color-text);
   opacity: 0.5;
 }
 
 .copy h3 {
   font: 400 clamp(2.8rem, 5vw, 5.5rem) / 0.9
-    "Cormorant Garamond", serif;
+    var(--font-editorial);
   margin: 16px 0 25px;
-  color: #151513;
+  color: var(--color-text);
 }
 
 .copy p {
   max-width: 350px;
+  margin: 0 0 1.25em;
   font-size: 0.8rem;
-  color: #151513;
+  line-height: 1.8;
+  color: var(--color-text);
   opacity: 0.65;
+}
+
+.copy p:last-child {
+  margin-bottom: 0;
 }
 
 .copy small {
   display: block;
   margin-top: 32px;
+  font-family: var(--font-body);
   font-size: 0.63rem;
-  color: #151513;
+  line-height: 1.7;
+  color: var(--color-text);
   opacity: 0.42;
 }
 
 .copy .price {
   display: block;
   margin-top: 26px;
+  font-family: var(--font-body);
   font-size: 0.8rem;
+  line-height: 1.6;
   letter-spacing: 0.08em;
-  color: #151513;
+  color: var(--color-text);
 }
 
 .copy .availability {
   display: block;
   margin-top: 8px;
+  font-family: var(--font-body);
   font-size: 0.62rem;
+  line-height: 1.6;
   letter-spacing: 0.08em;
-  color: #151513;
+  color: var(--color-text);
   opacity: 0.48;
 }
 
@@ -557,6 +608,7 @@ button {
   margin-top: 20px;
   padding-bottom: 7px;
   border-bottom: 1px solid #15151355;
+  font-family: var(--font-body);
   font-size: 0.6rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -568,7 +620,6 @@ button {
   opacity: 0.55;
   border-color: #15151388;
 }
-
 
 /* =========================
    DETALLES
@@ -590,7 +641,7 @@ button {
   min-width: 0;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: #e9e9e7;
+  background: var(--color-muted-bg);
 }
 
 .details img,
@@ -605,21 +656,20 @@ button {
   object-position: center;
 }
 
-
 /* =========================
    PLACEHOLDERS
 ========================= */
 
 .placeholder {
-  background: #e9e9e7;
+  background: var(--color-muted-bg);
   display: grid;
   place-items: center;
   text-align: center;
   color: #15151366;
   letter-spacing: 0.18em;
+  font-family: var(--font-body);
   font-size: 0.55rem;
 }
-
 
 /* =========================
    PROCESO — VIDEO VERTICAL
@@ -630,7 +680,7 @@ button {
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   min-height: 0;
   background: #ebeae6;
-  color: #151513;
+  color: var(--color-text);
 }
 
 .process-photo {
@@ -664,18 +714,20 @@ button {
 
 .process h2 {
   font: 400 clamp(3.5rem, 6vw, 6.5rem) / 0.88
-    "Cormorant Garamond", serif;
+    var(--font-editorial);
   margin: 0;
 }
 
-.process p:last-child,
-.aivideo > p:last-child {
+/* Todos los párrafos del proceso reciben el mismo estilo.
+   El espacio entre ellos se mantiene controlado. */
+
+.process > div:last-child p {
   max-width: 550px;
   font-size: 0.9rem;
+  line-height: 1.8;
   opacity: 0.65;
-  margin-top: 45px;
+  margin: 1.25em 0 0;
 }
-
 
 /* =========================
    INTERPRETACIÓN AUDIOVISUAL
@@ -684,22 +736,25 @@ button {
 .aivideo {
   padding: 16vw 12vw;
   max-width: 1150px;
-  background: #f5f4f0;
-  color: #151513;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .aivideo h2 {
   max-width: 950px;
 }
 
-.aivideo-description {
+.aivideo > p {
   max-width: 550px;
-  margin: 45px 0 0 auto;
+  margin: 1.25em 0 0 auto;
   font-size: 0.9rem;
   line-height: 1.8;
   opacity: 0.65;
 }
 
+.aivideo > h2 + p {
+  margin-top: 45px;
+}
 
 /* =========================
    FORMACIÓN
@@ -709,8 +764,8 @@ button {
   padding: 4vw 12vw 16vw;
   max-width: 1440px;
   margin: 0 auto;
-  background: #f5f4f0;
-  color: #151513;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .education-heading {
@@ -720,7 +775,7 @@ button {
 
 .education-heading h2 {
   font: 400 clamp(3.5rem, 7vw, 7rem) / 0.9
-    "Cormorant Garamond", serif;
+    var(--font-editorial);
   letter-spacing: -0.025em;
   margin: 0;
 }
@@ -749,7 +804,7 @@ button {
 .education-number {
   display: block;
   margin-bottom: 38px;
-  font: 400 1.2rem "Cormorant Garamond", serif;
+  font: 400 1.2rem var(--font-editorial);
   opacity: 0.5;
 }
 
@@ -761,7 +816,7 @@ button {
 .education-option h3 {
   margin: 0 0 24px;
   font: 400 clamp(2.4rem, 4vw, 4.5rem) / 0.95
-    "Cormorant Garamond", serif;
+    var(--font-editorial);
   letter-spacing: -0.02em;
 }
 
@@ -781,6 +836,7 @@ button {
   margin-top: 30px;
   padding-bottom: 8px;
   border-bottom: 1px solid #15151355;
+  font-family: var(--font-body);
   font-size: 0.62rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -797,7 +853,6 @@ button {
   border-color: #15151388;
 }
 
-
 /* =========================
    FOOTER
 ========================= */
@@ -809,12 +864,12 @@ footer {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 30px 8vw;
   align-items: start;
-  background: #f5f4f0;
-  color: #151513;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 footer strong {
-  font: 400 1.6rem "Cormorant Garamond", serif;
+  font: 400 1.6rem var(--font-editorial);
 }
 
 footer > div:nth-child(2) {
@@ -822,7 +877,9 @@ footer > div:nth-child(2) {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px 28px;
   justify-self: end;
+  font-family: var(--font-body);
   font-size: 0.65rem;
+  line-height: 1.7;
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
@@ -842,9 +899,9 @@ footer small:last-child {
   border-top: 1px solid #15151318;
   opacity: 0.45;
   font-size: 0.55rem;
+  line-height: 1.7;
   margin-top: 10px;
 }
-
 
 /* =========================
    VOLVER ARRIBA
@@ -862,7 +919,7 @@ footer small:last-child {
   border: 1px solid #15151335;
   border-radius: 50%;
   background: #f5f4f0ee;
-  color: #151513;
+  color: var(--color-text);
   font-family: Arial, sans-serif;
   font-size: 25px;
   font-weight: 300;
@@ -895,7 +952,6 @@ footer small:last-child {
   transform: scale(0.94);
 }
 
-
 /* =========================
    MÓVIL
 ========================= */
@@ -904,6 +960,10 @@ footer small:last-child {
 
   html {
     scroll-padding-top: 76px;
+  }
+
+  body {
+    font-size: 15px;
   }
 
   .site-header {
@@ -934,7 +994,7 @@ footer small:last-child {
     justify-content: flex-start;
     gap: 30px;
     margin-left: 0;
-    background: #f5f4f0;
+    background: var(--color-bg);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: -12px 0 35px rgba(21, 21, 19, 0.08);
@@ -990,6 +1050,17 @@ footer small:last-child {
     padding: 28vw 7vw;
   }
 
+  .intro > p,
+  .aivideo > p {
+    font-size: 0.85rem;
+    line-height: 1.8;
+  }
+
+  .intro > h2 + p,
+  .aivideo > h2 + p {
+    margin-top: 30px;
+  }
+
   .collection {
     width: 100%;
     max-width: 100%;
@@ -1025,9 +1096,7 @@ footer small:last-child {
     order: initial;
   }
 
-  /* =========================
-     GALERÍAS EN MÓVIL
-  ========================= */
+  /* GALERÍAS EN MÓVIL */
 
   .look > .photo,
   .look.reverse > .photo {
@@ -1057,7 +1126,7 @@ footer small:last-child {
     border: 0;
     aspect-ratio: auto;
     overflow: hidden;
-    background: #f5f4f0;
+    background: var(--color-bg);
     isolation: isolate;
     box-sizing: border-box;
     touch-action: pan-y;
@@ -1145,6 +1214,11 @@ footer small:last-child {
     max-width: 100%;
   }
 
+  .copy p {
+    font-size: 0.8rem;
+    line-height: 1.8;
+  }
+
   .copy .price {
     margin-top: 22px;
   }
@@ -1173,7 +1247,7 @@ footer small:last-child {
     min-width: 0;
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    background: #e9e9e7;
+    background: var(--color-muted-bg);
   }
 
   .details img,
@@ -1212,6 +1286,10 @@ footer small:last-child {
 
   .process > div:last-child {
     padding: 22vw 8vw 28vw;
+  }
+
+  .process > div:last-child p {
+    font-size: 0.85rem;
   }
 
   /* FORMACIÓN EN MÓVIL */
@@ -1253,6 +1331,7 @@ footer small:last-child {
   .education-option > p:not(.eyebrow) {
     min-height: 0;
     font-size: 0.83rem;
+    line-height: 1.85;
   }
 
   .education-link {
@@ -1285,10 +1364,9 @@ footer small:last-child {
   }
 }
 
-
-/* =========================================================
+/* =========================
    VISOR AMPLIADO / LIGHTBOX
-========================================================= */
+========================= */
 
 .lightbox {
   position: fixed;
@@ -1298,7 +1376,7 @@ footer small:last-child {
   height: 100vh;
   height: 100dvh;
   z-index: 99999;
-  background: #f5f4f0;
+  background: var(--color-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1403,7 +1481,7 @@ footer small:last-child {
   border-radius: 0;
   outline: none;
   background: transparent;
-  color: #151513;
+  color: var(--color-text);
   font-family: Arial, sans-serif;
   font-size: 42px;
   font-weight: 300;
@@ -1446,7 +1524,7 @@ footer small:last-child {
   border-radius: 0;
   outline: none;
   background: transparent;
-  color: #151513;
+  color: var(--color-text);
   font-family: Arial, sans-serif;
   font-size: 34px;
   font-weight: 300;
@@ -1526,7 +1604,6 @@ body.lightbox-open #back-to-top {
     padding: 10px;
   }
 }
-
 
 /* =========================
    ACCESIBILIDAD
