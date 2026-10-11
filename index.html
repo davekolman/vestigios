@@ -41,7 +41,8 @@
     }
 
     .size-guide-link:focus-visible,
-    .size-guide-close:focus-visible {
+    .size-guide-close:focus-visible,
+    .size-guide-tab:focus-visible {
       outline: 2px solid currentColor;
       outline-offset: 4px;
     }
@@ -65,7 +66,7 @@
 
     .size-guide-dialog {
       position: relative;
-      width: min(100%, 680px);
+      width: min(100%, 720px);
       max-height: 85vh;
       max-height: 85dvh;
       overflow-y: auto;
@@ -115,6 +116,58 @@
       font-family: "Inter", sans-serif;
       font-size: 0.85rem;
       line-height: 1.7;
+      color: #5e5a53;
+    }
+
+    .size-guide-tabs {
+      display: flex;
+      gap: 24px;
+      margin: 0 0 24px;
+      border-bottom: 1px solid #d8d4cc;
+    }
+
+    .size-guide-tab {
+      position: relative;
+      padding: 0 0 12px;
+      border: 0;
+      background: transparent;
+      color: #777168;
+      font-family: "Inter", sans-serif;
+      font-size: 0.76rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+    }
+
+    .size-guide-tab[aria-selected="true"] {
+      color: #292722;
+    }
+
+    .size-guide-tab[aria-selected="true"]::after {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 2px;
+      background: #292722;
+      content: "";
+    }
+
+    .size-guide-panel[hidden] {
+      display: none;
+    }
+
+    .size-guide-panel h3 {
+      margin: 0 0 8px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.65rem;
+      font-weight: 400;
+    }
+
+    .size-guide-panel > p {
+      margin: 0 0 18px;
+      font-family: "Inter", sans-serif;
+      font-size: 0.8rem;
+      line-height: 1.65;
       color: #5e5a53;
     }
 
@@ -182,6 +235,10 @@
         max-height: 90vh;
         max-height: 90dvh;
         padding: 26px 20px;
+      }
+
+      .size-guide-tabs {
+        gap: 20px;
       }
 
       .size-guide-table {
@@ -315,26 +372,22 @@
         <span>01</span>
         <h3>CAMISA CAYENA</h3>
         <p>
-  Confeccionada en popelina de algodón,
-  la Camisa Cayena destaca por un entalle preciso con pinzas
-  que moldean sutilmente la silueta.
+          Confeccionada en popelina de algodón,
+          la Camisa Cayena destaca por un entalle preciso con pinzas
+          que moldean sutilmente la silueta.
 
-  Suma un clásico cuello camisero,
-  botones de borde plateado y mangas rematadas en volantes de corte caracol
-  que aportan fluidez y movimiento orgánico.
+          Suma un clásico cuello camisero,
+          botones de borde plateado y mangas rematadas en volantes de corte caracol
+          que aportan fluidez y movimiento orgánico.
 
-  Cuenta con acabados limpios e impecables en costura francesa.
-</p>
-        
-         <p>
-        Talla de la pieza: 12
+          Cuenta con acabados limpios e impecables en costura francesa.
         </p>
-        <p>
-        Largo total: 62 cm
-        </p>
+
+        <p>Talla de la pieza: 12</p>
+        <p>Largo total: 62 cm</p>
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
           Consultar guía de tallas ↗
         </button>
 
@@ -363,27 +416,23 @@
         <span>02</span>
         <h3>BLUSA ELISA</h3>
         <p>
-  La Blusa Elisa combina la soltura de la manga Dolman
-  y la delicadeza del escote ojal
-  sobre un tejido de algodón de minicorazones.
+          La Blusa Elisa combina la soltura de la manga Dolman
+          y la delicadeza del escote ojal
+          sobre un tejido de algodón de minicorazones.
 
-  Destaca por el fruncido sutil de sus puños elásticos
-  y el detalle artesanal de dos corazones
-  bordados a mano en hilo de madeja sobre el delantero inferior.
+          Destaca por el fruncido sutil de sus puños elásticos
+          y el detalle artesanal de dos corazones
+          bordados a mano en hilo de madeja sobre el delantero inferior.
 
-  Una pieza versátil confeccionada con terminaciones en costura francesa.
-</p>
-        
-         <p>
-        Talla de la pieza: 14
+          Una pieza versátil confeccionada con terminaciones en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm
-        </p>
-        
+
+        <p>Talla de la pieza: 14</p>
+        <p>Largo total: 60 cm</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
           Consultar guía de tallas ↗
         </button>
 
@@ -413,28 +462,25 @@
         <span>03</span>
         <h3>VESTIDO ROSETA</h3>
         <p>
-  Confeccionado en lino negro,
-  el Vestido Roseta combina un corpiño estructurado en corte princesa,
-  entretelado y forrado,
-  con una falda de volumen fluido fruncida a la cintura.
+          Confeccionado en lino negro,
+          el Vestido Roseta combina un corpiño estructurado en corte princesa,
+          entretelado y forrado,
+          con una falda de volumen fluido fruncida a la cintura.
 
-  Su atractivo reside en el ritmo de sus franjas de deshilado escalonado
-  y en el minucioso bordado de rosetas
-  elaborado a mano en técnica de calado Cartago.
+          Su atractivo reside en el ritmo de sus franjas de deshilado escalonado
+          y en el minucioso bordado de rosetas
+          elaborado a mano en técnica de calado Cartago.
 
-  Cuenta con cremallera posterior invisible
-  y acabados impecables en costura francesa.
-</p>
-        <p>
-        Talla de la pieza: 10
+          Cuenta con cremallera posterior invisible
+          y acabados impecables en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
-        
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
           Consultar guía de tallas ↗
         </button>
 
@@ -466,32 +512,28 @@
         <span>04</span>
         <h3>VESTIDO ALMA</h3>
         <p>
-  Confeccionado en lino negro,
-  el Vestido Alma cuenta con un corpiño de talle natural
-  y escote recto estructurado con entretela y ballenas,
-  complementado con tirantes en contraste tono hueso.
+          Confeccionado en lino negro,
+          el Vestido Alma cuenta con un corpiño de talle natural
+          y escote recto estructurado con entretela y ballenas,
+          complementado con tirantes en contraste tono hueso.
 
-  Su falda de tablones amplios de silueta fluida
-  integra bolsillos invisibles en las costuras laterales.
+          Su falda de tablones amplios de silueta fluida
+          integra bolsillos invisibles en las costuras laterales.
 
-  Como sello artesanal, exhibe un bordado botánico a mano
-  que combina la técnica japonesa sashiko
-  con relleno en hilo color hueso.
+          Como sello artesanal, exhibe un bordado botánico a mano
+          que combina la técnica japonesa sashiko
+          con relleno en hilo color hueso.
 
-  Incluye forro interior completo,
-  cremallera posterior invisible y acabados en costura francesa.
-</p>
-
-        <p>
-        Talla de la pieza: 10
+          Incluye forro interior completo,
+          cremallera posterior invisible y acabados en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
-        
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
           Consultar guía de tallas ↗
         </button>
 
@@ -519,32 +561,30 @@
 
       <div class="copy">
         <span>05</span>
-        <h3>vestido Nayra</h3>
+        <h3>VESTIDO NAYRA</h3>
         <p>
-  Confeccionado en shantung de seda negra,
-  el Vestido Nayra cuenta con un corpiño de escote corazón
-  entretelado y estructurado con ballenas,
-  complementado con tirantes en seda para anudar.
+          Confeccionado en shantung de seda negra,
+          el Vestido Nayra cuenta con un corpiño de escote corazón
+          entretelado y estructurado con ballenas,
+          complementado con tirantes en seda para anudar.
 
-  Su falda campana de tablones amplios
-  integra bolsillos invisibles en las costuras laterales.
+          Su falda campana de tablones amplios
+          integra bolsillos invisibles en las costuras laterales.
 
-  En el ruedo, exhibe una cenefa bordada a mano
-  en hilo blanco con técnica sashiko de inspiración Quimbaya,
-  donde triángulos y espirales simbolizan la fuerza femenina y la eternidad.
+          En el ruedo, exhibe una cenefa bordada a mano
+          en hilo blanco con técnica sashiko de inspiración Quimbaya,
+          donde triángulos y espirales simbolizan la fuerza femenina y la eternidad.
 
-  Incluye forro interior completo,
-  cremallera posterior invisible y acabados en costura francesa.
-</p>
-        <p>
-        Talla de la pieza: 10
+          Incluye forro interior completo,
+          cremallera posterior invisible y acabados en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
           Consultar guía de tallas ↗
         </button>
 
@@ -575,24 +615,22 @@
         <span>06</span>
         <h3>VESTIDO CHIARA</h3>
         <p>
-         Confeccionado en lino tono hueso, el Vestido Chiara de cuello redondo y 
-          sin mangas destaca por su franja central en calado Cartago con deshilado 
-          e incrustación sutil de lentejuela y mostacilla transparente. 
-          En la cintura, el diseño se divide en dos columnas en bordado siciliano de inspiración 
-          Quimbaya con motivos de una figura humana y un ave autóctono. 
-          La falda de tablones amplios integra bolsillos laterales ocultos 
-          y un forro parcial estratégico que conserva la transparencia artesanal del tejido. 
+          Confeccionado en lino tono hueso, el Vestido Chiara de cuello redondo y
+          sin mangas destaca por su franja central en calado Cartago con deshilado
+          e incrustación sutil de lentejuela y mostacilla transparente.
+          En la cintura, el diseño se divide en dos columnas en bordado siciliano
+          de inspiración Quimbaya con motivos de una figura humana y un ave autóctona.
+          La falda de tablones amplios integra bolsillos laterales ocultos
+          y un forro parcial estratégico que conserva la transparencia artesanal del tejido.
           Presenta cierre posterior con cremallera invisible y acabados en costura francesa.
-          </p>
-        <p>
-        Talla de la pieza: 10
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
           Consultar guía de tallas ↗
         </button>
 
@@ -624,28 +662,25 @@
         <span>07</span>
         <h3>VESTIDO AMALIA</h3>
         <p>
-  Confeccionado en lino tono café,
-  el Vestido Amalia combina un pechero con alforzas y pinzas de entalle
-  con un cuello camisero entretelado en una silueta sin mangas.
+          Confeccionado en lino tono café,
+          el Vestido Amalia combina un pechero con alforzas y pinzas de entalle
+          con un cuello camisero entretelado en una silueta sin mangas.
 
-  Exhibe una cartera de botones en madera artesanal
-  y una falda de tablones amplios que enmarcan dos columnas de bordado:
-  una en bordado siciliano con la simbología mítica del Yuruparí,
-  y otra en deshilado y calado Cartago inspirada en las constelaciones.
+          Exhibe una cartera de botones en madera artesanal
+          y una falda de tablones amplios que enmarcan dos columnas de bordado:
+          una en bordado siciliano con la simbología mítica del Yuruparí,
+          y otra en deshilado y calado Cartago inspirada en las constelaciones.
 
-  Cuenta con bolsillos invisibles en las costuras laterales,
-  forro interior y acabados impecables en costura francesa.
-</p>
-        <p>
-        Talla de la pieza: 10
+          Cuenta con bolsillos invisibles en las costuras laterales,
+          forro interior y acabados impecables en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
-        
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
           Consultar guía de tallas ↗
         </button>
 
@@ -677,27 +712,24 @@
         <span>08</span>
         <h3>CAMISA HELENA</h3>
         <p>
-  Confeccionada en tul negro de alta costura,
-  la Camisa Helena equilibra la transparencia
-  con la estructura en lino negro en su cuello camisero, perilla y puños.
+          Confeccionada en tul negro de alta costura,
+          la Camisa Helena equilibra la transparencia
+          con la estructura en lino negro en su cuello camisero, perilla y puños.
 
-  Destaca por un minucioso bordado a mano en técnica Lunéville,
-  donde símbolos Quimbaya se entrelazan como una red cósmica
-  en hilo, mostacilla, lentejuelas y cinta de seda deshilada.
+          Destaca por un minucioso bordado a mano en técnica Lunéville,
+          donde símbolos Quimbaya se entrelazan como una red cósmica
+          en hilo, mostacilla, lentejuelas y cinta de seda deshilada.
 
-  Exhibe detalles bordados en el canesú, frente, mangas y posterior,
-  e incluye botones frontales y acabados interiores en costura francesa.
-</p>
-        <p>
-        Talla de la pieza: 10
+          Exhibe detalles bordados en el canesú, frente, mangas y posterior,
+          e incluye botones frontales y acabados interiores en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
-        
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
           Consultar guía de tallas ↗
         </button>
 
@@ -728,29 +760,26 @@
         <span>09</span>
         <h3>PANTALÓN ALANA</h3>
         <p>
-  Confeccionado en sarga de peso y caída impecable,
-  el Pantalón Alana se inspira en la silueta Hakama
-  con una pretina Gurkha que abraza y enmarca la cintura.
+          Confeccionado en sarga de peso y caída impecable,
+          el Pantalón Alana se inspira en la silueta Hakama
+          con una pretina Gurkha que abraza y enmarca la cintura.
 
-  Sus pinzas y tablones profundos aportan volumen fluido a la pierna,
-  integrando bolsillos ocultos sobre la costura lateral.
+          Sus pinzas y tablones profundos aportan volumen fluido a la pierna,
+          integrando bolsillos ocultos sobre la costura lateral.
 
-  Exhibe en la bota derecha una cenefa asimétrica bordada a mano:
-  una franja horizontal en deshilado motivo conchas
-  y una columna vertical en malla siciliana con iconografía Quimbaya.
+          Exhibe en la bota derecha una cenefa asimétrica bordada a mano:
+          una franja horizontal en deshilado motivo conchas
+          y una columna vertical en malla siciliana con iconografía Quimbaya.
 
-  Cuenta con acabados de alta sastrería y terminaciones en costura francesa.
-</p>
-        <p>
-        Talla de la pieza: 10
+          Cuenta con acabados de alta sastrería y terminaciones en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
-        
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
           Consultar guía de tallas ↗
         </button>
 
@@ -785,29 +814,26 @@
         <span>10</span>
         <h3>CAMISA DAMIÁN</h3>
         <p>
-  Confeccionada en sarga negra de manga larga,
-  la Camisa Damián combina la estructura de la sastrería masculina
-  con el detalle artesanal del bordado en tono borgoña.
+          Confeccionada en sarga negra de manga larga,
+          la Camisa Damián combina la estructura de la sastrería masculina
+          con el detalle artesanal del bordado en tono borgoña.
 
-  Su frente exhibe alforzas finas y dos columnas bordadas:
-  una en malla siciliana alusiva al mito del Yuruparí
-  y otra en deshilado inspirada en la cosmología.
+          Su frente exhibe alforzas finas y dos columnas bordadas:
+          una en malla siciliana alusiva al mito del Yuruparí
+          y otra en deshilado inspirada en la cosmología.
 
-  En la espalda, incorpora cuatro franjas de deshilado vertical
-  y un bordado central en espina de pescado.
+          En la espalda, incorpora cuatro franjas de deshilado vertical
+          y un bordado central en espina de pescado.
 
-  Incluye botones frontales y acabados impecables en costura francesa.
-</p>
-        <p>
-        Talla de la pieza: 10
+          Incluye botones frontales y acabados impecables en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
-        
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
           Consultar guía de tallas ↗
         </button>
 
@@ -839,32 +865,29 @@
         <span>11</span>
         <h3>CAMISA LUCA</h3>
         <p>
-  Confeccionada en lino negro de manga larga,
-  la Camisa Luca fusiona la sastrería clásica
-  con destellos textiles inspirados en la orfebrería ancestral.
+          Confeccionada en lino negro de manga larga,
+          la Camisa Luca fusiona la sastrería clásica
+          con destellos textiles inspirados en la orfebrería ancestral.
 
-  Su pechero destaca por una cuidada combinación de alforzas,
-  líneas deshiladas y dos franjas bordadas a mano en hilo color cobre:
-  una con motivo ondulado de conchas y otra en bordado siciliano
-  con iconografía antropomórfica Quimbaya.
+          Su pechero destaca por una cuidada combinación de alforzas,
+          líneas deshiladas y dos franjas bordadas a mano en hilo color cobre:
+          una con motivo ondulado de conchas y otra en bordado siciliano
+          con iconografía antropomórfica Quimbaya.
 
-  Cuenta con cuello camisero, cartera con botones al tono
-  y acabados impecables en costura francesa.
-</p>
-        <p>
-        Talla de la pieza: 10
+          Cuenta con cuello camisero, cartera con botones al tono
+          y acabados impecables en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
-        
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
           Consultar guía de tallas ↗
         </button>
 
-        <strong class="price">$ 580.000 COP</strong>
+        <strong class="price">$ 680.000 COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2011%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
       </div>
@@ -888,35 +911,32 @@
       <div class="copy">
         <span>12</span>
         <h3>CAMISA ADRIANO</h3>
-       <p>
-  Confeccionada en lino negro de manga larga,
-  la Camisa Adriano destaca por su sastrería de autor
-  y el brillo metálico de su trabajo artesanal.
-
-  Su pechero combina alforzas verticales con una columna
-  en bordado siciliano de hilo plateado,
-  inspirada en el mito Quimbaya del hombre murciélago.
-
-  Sus mangas exhiben brazaletes horizontales que combinan malla siciliana,
-  deshilado de hilos encontrados y delicadas rosetas en hilo negro.
-
-  Incluye cuello camisero, botones al tono
-  y acabados impecables en costura francesa.
-</p>
         <p>
-        Talla de la pieza: 10
+          Confeccionada en lino negro de manga larga,
+          la Camisa Adriano destaca por su sastrería de autor
+          y el brillo metálico de su trabajo artesanal.
+
+          Su pechero combina alforzas verticales con una columna
+          en bordado siciliano de hilo plateado,
+          inspirada en el mito Quimbaya del hombre murciélago.
+
+          Sus mangas exhiben brazaletes horizontales que combinan malla siciliana,
+          deshilado de hilos encontrados y delicadas rosetas en hilo negro.
+
+          Incluye cuello camisero, botones al tono
+          y acabados impecables en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
-        
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
           Consultar guía de tallas ↗
         </button>
 
-        <strong class="price">$ 720.000 COP</strong>
+        <strong class="price">$ 680.000 COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2012%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
       </div>
@@ -940,30 +960,28 @@
         <span>13</span>
         <h3>CAMISA JULIÁN</h3>
         <p>
-  Confeccionada en lino tono aguamarina de manga larga,
-  la Camisa Julián reinterpreta la camisa tradicional
-  a través de una paleta fresca y un detallado trabajo manual.
+          Confeccionada en lino tono aguamarina de manga larga,
+          la Camisa Julián reinterpreta la camisa tradicional
+          a través de una paleta fresca y un detallado trabajo manual.
 
-  Su pechero destaca por alforzas verticales que enmarcan
-  dos franjas en deshilado Cartago y calado en espina de pescado,
-  elaboradas a mano en un sutil hilo marrón verdoso.
+          Su pechero destaca por alforzas verticales que enmarcan
+          dos franjas en deshilado Cartago y calado en espina de pescado,
+          elaboradas a mano en un sutil hilo marrón verdoso.
 
-  Incluye cuello camisero, botones al tono aguamarina
-  y acabados impecables en costura francesa.
-</p>
-        <p>
-        Talla de la pieza: 10
+          Incluye cuello camisero, botones al tono aguamarina
+          y acabados impecables en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
           Consultar guía de tallas ↗
         </button>
 
-        <strong class="price">$ 580.000 COP</strong>
+        <strong class="price">$ 480.000 COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2013%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
       </div>
@@ -987,27 +1005,24 @@
         <span>14</span>
         <h3>CAMISA SANTIAGO</h3>
         <p>
-  Confeccionada en lino verde oliva de manga corta,
-  la Camisa Santiago destaca por un pechero enmarcado en alforzas
-  con dos guías de bordado artesanal en hilo verde botella.
+          Confeccionada en lino verde oliva de manga corta,
+          la Camisa Santiago destaca por un pechero enmarcado en alforzas
+          con dos guías de bordado artesanal en hilo verde botella.
 
-  Su lado derecho exhibe un calado en deshilado y espina de pescado,
-  mientras que el lado izquierdo despliega en malla siciliana
-  una figura antropomórfica inspirada en la leyenda del Yuruparí.
+          Su lado derecho exhibe un calado en deshilado y espina de pescado,
+          mientras que el lado izquierdo despliega en malla siciliana
+          una figura antropomórfica inspirada en la leyenda del Yuruparí.
 
-  Sus mangas cortas integran una franja de deshilado al tono,
-  complementada con botones en acento verde oliva y acabados en costura francesa.
-</p>
-        <p>
-        Talla de la pieza: 10
+          Sus mangas cortas integran una franja de deshilado al tono,
+          complementada con botones en acento verde oliva y acabados en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
-        
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
           Consultar guía de tallas ↗
         </button>
 
@@ -1036,31 +1051,28 @@
         <span>15</span>
         <h3>CAMISA LUCIANO</h3>
         <p>
-  Confeccionada en lino tono menta de manga larga,
-  la Camisa Luciano destaca por un pechero enmarcado en alforzas
-  con guías de bordado en un menta de sutil contraste.
+          Confeccionada en lino tono menta de manga larga,
+          la Camisa Luciano destaca por un pechero enmarcado en alforzas
+          con guías de bordado en un menta de sutil contraste.
 
-  Su lado derecho presenta un calado en deshilado y espina de pescado,
-  mientras que el lado izquierdo despliega en malla siciliana
-  motivos del Yuruparí junto a elementos del paisaje y la fauna.
+          Su lado derecho presenta un calado en deshilado y espina de pescado,
+          mientras que el lado izquierdo despliega en malla siciliana
+          motivos del Yuruparí junto a elementos del paisaje y la fauna.
 
-  Su posterior exhibe franjas deshiladas verticales,
-  complementadas con botones en menta perlado y acabados en costura francesa.
-</p>
-        <p>
-        Talla de la pieza: 10
+          Su posterior exhibe franjas deshiladas verticales,
+          complementadas con botones en menta perlado y acabados en costura francesa.
         </p>
-        <p>
-        Largo total: 60 cm ***
-        </p>
-        
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
           Consultar guía de tallas ↗
         </button>
 
-        <strong class="price">$ 720.000 COP</strong>
+        <strong class="price">$ 680.000 COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2015%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
       </div>
@@ -1082,15 +1094,30 @@
 
       <div class="copy">
         <span>16</span>
-        <h3>NOMBRE DE LA PIEZA</h3>
-        <p>Lino · construcción · detalle artesanal.</p>
+        <h3>PANTALÓN HIRO</h3>
+        <p>
+          Confeccionado en sarga negra de estructura fluida,
+          el Pantalón Hiro reinterpreta la sastrería unisex
+          a través de una imponente silueta estilo hakama.
+
+          Destaca por su pretina gurkha cruzada
+          y tablones profundos que caen holgados desde la cadera,
+          enmarcados por pinzas y bolsillos laterales sastres.
+
+          Su posterior incorpora pinzas de entalle y bolsillos tipo ojal,
+          completado con acabados limpios en costura francesa.
+        </p>
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm ***</p>
+
         <small>Disponible solo por encargo.</small>
 
-        <button class="size-guide-link" type="button" data-size-guide>
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
           Consultar guía de tallas ↗
         </button>
 
-        <strong class="price">$ XXX.XXX COP</strong>
+        <strong class="price">$ 650.000 COP</strong>
 
         <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2016%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
       </div>
@@ -1220,7 +1247,7 @@
 
 </main>
 
-<!-- GUÍA DE TALLAS: UNA SOLA VENTANA PARA TODA LA COLECCIÓN -->
+<!-- GUÍA DE TALLAS: UNA VENTANA, DOS TABLAS -->
 <div
   class="size-guide-overlay"
   id="size-guide"
@@ -1248,44 +1275,173 @@
     </h2>
 
     <p class="size-guide-intro" id="size-guide-description">
-      Consulta las medidas corporales de referencia para elegir
-      tu talla. Las medidas definitivas se incorporarán a esta tabla.
+      Selecciona la línea que deseas consultar. Las medidas corporales
+      definitivas se incorporarán una vez verificadas con los patrones.
     </p>
 
-    <div class="size-guide-table-wrap">
-      <table class="size-guide-table">
-        <thead>
-          <tr>
-            <th scope="col">Talla</th>
-            <th scope="col">Busto</th>
-            <th scope="col">Cintura</th>
-            <th scope="col">Cadera</th>
-          </tr>
-        </thead>
+    <div class="size-guide-tabs" role="tablist" aria-label="Línea de tallas">
+      <button
+        class="size-guide-tab"
+        id="tab-mujer"
+        type="button"
+        role="tab"
+        aria-selected="true"
+        aria-controls="panel-mujer"
+        tabindex="0"
+        data-size-tab="mujer"
+      >MUJER</button>
 
-        <tbody>
-          <tr>
-            <th scope="row">12</th>
-            <td>—</td>
-            <td>—</td>
-            <td>—</td>
-          </tr>
+      <button
+        class="size-guide-tab"
+        id="tab-hombre"
+        type="button"
+        role="tab"
+        aria-selected="false"
+        aria-controls="panel-hombre"
+        tabindex="-1"
+        data-size-tab="hombre"
+      >HOMBRE</button>
+    </div>
 
-          <tr>
-            <th scope="row">14</th>
-            <td>—</td>
-            <td>—</td>
-            <td>—</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- TABLA MUJER -->
+    <div
+      class="size-guide-panel"
+      id="panel-mujer"
+      role="tabpanel"
+      aria-labelledby="tab-mujer"
+      data-size-panel="mujer"
+    >
+      <h3>Tallas numéricas</h3>
+      <p>
+        Medidas corporales en centímetros. La tabla se completará
+        con las medidas correspondientes al sistema de patronaje utilizado.
+      </p>
+
+      <div class="size-guide-table-wrap">
+        <table class="size-guide-table">
+          <thead>
+            <tr>
+              <th scope="col">Talla</th>
+              <th scope="col">Busto</th>
+              <th scope="col">Cintura</th>
+              <th scope="col">Cadera</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <th scope="row">6</th>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">8</th>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">10</th>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">12</th>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">14</th>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">16</th>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">18</th>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">20</th>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">22</th>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABLA HOMBRE -->
+    <div
+      class="size-guide-panel"
+      id="panel-hombre"
+      role="tabpanel"
+      aria-labelledby="tab-hombre"
+      data-size-panel="hombre"
+      hidden
+    >
+      <h3>Tallas numéricas y letras</h3>
+      <p>
+        Equivalencias de tallas utilizadas en la línea masculina.
+        Las medidas corporales en centímetros están pendientes de verificación.
+      </p>
+
+      <div class="size-guide-table-wrap">
+        <table class="size-guide-table">
+          <thead>
+            <tr>
+              <th scope="col">Talla numérica</th>
+              <th scope="col">Equivalencia</th>
+              <th scope="col">Pecho</th>
+              <th scope="col">Cintura</th>
+              <th scope="col">Cadera</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <th scope="row">34</th>
+              <td>XS</td>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">36</th>
+              <td>S</td>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">38</th>
+              <td>M</td>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">40</th>
+              <td>L</td>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">42</th>
+              <td>XL</td>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">44</th>
+              <td>2XL</td>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">46</th>
+              <td>3XL</td>
+              <td>—</td><td>—</td><td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <p class="size-guide-note">
-      Las medidas corresponden al cuerpo, no a la prenda terminada.
-      El ajuste puede variar según el diseño y la construcción.
-      Si necesitas orientación sobre una pieza, puedes consultarme
-      antes de realizar tu pedido.
+      Las medidas de la tabla deben corresponder al cuerpo, no a la prenda terminada.
+      La holgura y el ajuste varían según el diseño. Para confirmar la talla
+      adecuada de una pieza, puedes consultarme antes de realizar tu pedido.
     </p>
   </section>
 </div>
@@ -1303,6 +1459,7 @@
     <a href="https://www.facebook.com/TUUSUARIO" target="_blank" rel="noopener">Facebook</a>
     <a href="https://wa.me/573234338305" target="_blank" rel="noopener">WhatsApp</a>
     <a href="mailto:TUEMAIL@ejemplo.com">Email</a>
+    <a href="#size-guide" data-size-guide data-size-category="mujer">Guía de tallas</a>
   </div>
 
   <small>© 2026 Dave Kolman</small>
@@ -1331,11 +1488,32 @@
     const dialog = overlay.querySelector(".size-guide-dialog");
     const closeButton = overlay.querySelector("[data-size-guide-close]");
     const openButtons = document.querySelectorAll("[data-size-guide]");
+    const tabs = Array.from(overlay.querySelectorAll("[data-size-tab]"));
+    const panels = Array.from(overlay.querySelectorAll("[data-size-panel]"));
 
     let lastFocusedElement = null;
 
-    function openSizeGuide() {
+    function selectSizeTab(category, moveFocus = false) {
+      tabs.forEach((tab) => {
+        const selected = tab.dataset.sizeTab === category;
+
+        tab.setAttribute("aria-selected", String(selected));
+        tab.setAttribute("tabindex", selected ? "0" : "-1");
+
+        if (selected && moveFocus) {
+          tab.focus();
+        }
+      });
+
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.sizePanel !== category;
+      });
+    }
+
+    function openSizeGuide(category = "mujer") {
       lastFocusedElement = document.activeElement;
+
+      selectSizeTab(category);
 
       overlay.classList.add("is-open");
       overlay.setAttribute("aria-hidden", "false");
@@ -1357,7 +1535,35 @@
     }
 
     openButtons.forEach((button) => {
-      button.addEventListener("click", openSizeGuide);
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        openSizeGuide(button.dataset.sizeCategory || "mujer");
+      });
+    });
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => {
+        selectSizeTab(tab.dataset.sizeTab);
+      });
+
+      tab.addEventListener("keydown", (event) => {
+        let nextIndex = index;
+
+        if (event.key === "ArrowRight") {
+          nextIndex = (index + 1) % tabs.length;
+        } else if (event.key === "ArrowLeft") {
+          nextIndex = (index - 1 + tabs.length) % tabs.length;
+        } else if (event.key === "Home") {
+          nextIndex = 0;
+        } else if (event.key === "End") {
+          nextIndex = tabs.length - 1;
+        } else {
+          return;
+        }
+
+        event.preventDefault();
+        selectSizeTab(tabs[nextIndex].dataset.sizeTab, true);
+      });
     });
 
     closeButton.addEventListener("click", closeSizeGuide);
@@ -1373,6 +1579,7 @@
 
       if (event.key === "Escape") {
         closeSizeGuide();
+        return;
       }
 
       if (event.key === "Tab") {
@@ -1382,6 +1589,8 @@
 
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (!firstElement || !lastElement) return;
 
         if (event.shiftKey && document.activeElement === firstElement) {
           event.preventDefault();
@@ -1397,3 +1606,4 @@
 
 </body>
 </html>
+
