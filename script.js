@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (promise && typeof promise.catch === "function") {
       promise.catch(() => {
-        // El navegador puede bloquear el autoplay.
-        // No mostramos controles como alternativa.
+        // El navegador puede bloquear la reproducción.
+        // No mostramos controles nativos como alternativa.
       });
     }
   }
@@ -392,9 +392,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     createLightbox();
 
-    // Detener los vídeos de las galerías al abrir el visor.
+    // Detener y reiniciar los vídeos de las galerías.
     document.querySelectorAll(".gallery video").forEach((video) => {
-      pauseVideo(video);
+      pauseVideo(video, true);
     });
 
     lightboxSlides = Array.from(slides);
@@ -411,18 +411,51 @@ document.addEventListener("DOMContentLoaded", () => {
       if (clone.tagName === "VIDEO") {
         prepareVideo(clone);
 
+        // Los vídeos del visor no se reproducen automáticamente.
         clone.controls = false;
-        clone.loop = true;
+        clone.loop = false;
         clone.autoplay = false;
 
         clone.removeAttribute("controls");
         clone.removeAttribute("autoplay");
-      }
+        clone.removeAttribute("loop");
 
-      clone.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-      });
+        clone.pause();
+
+        /*
+          La reproducción empieza únicamente cuando
+          el visitante toca el vídeo en el visor.
+        */
+        clone.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          if (clone.paused || clone.ended) {
+            if (clone.ended) {
+              try {
+                clone.currentTime = 0;
+              } catch (error) {
+                // El vídeo puede no haber terminado de cargar.
+              }
+
+              playVideo(clone);
+              return;
+            }
+
+            playVideo(clone);
+          } else {
+            pauseVideo(clone);
+          }
+        });
+
+      } else {
+
+        clone.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        });
+
+      }
 
       lightboxTrack.appendChild(clone);
     });
@@ -450,23 +483,21 @@ document.addEventListener("DOMContentLoaded", () => {
       lightboxCurrent = 0;
     }
 
-    lightboxTrack.style.transform =
-      `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
+    /*
+      Al cambiar de diapositiva, pausar y reiniciar
+      cualquier vídeo que haya quedado en el visor.
+    */
 
     const slides = Array.from(lightboxTrack.children);
 
-    slides.forEach((slide, index) => {
-
-      if (slide.tagName !== "VIDEO") return;
-
-      prepareVideo(slide);
-
-      if (index === lightboxCurrent) {
-        playVideo(slide);
-      } else {
+    slides.forEach((slide) => {
+      if (slide.tagName === "VIDEO") {
         pauseVideo(slide, true);
       }
     });
+
+    lightboxTrack.style.transform =
+      `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
   }
 
 
@@ -535,17 +566,17 @@ document.addEventListener("DOMContentLoaded", () => {
           `translate3d(-${activeSlide.offsetLeft}px, 0, 0)`;
       }
 
-      slides.forEach((slide, index) => {
+      /*
+        Ningún vídeo de la galería se reproduce automáticamente.
+        Al cambiar de diapositiva, todos se pausan y reinician.
+      */
+
+      slides.forEach((slide) => {
 
         if (slide.tagName !== "VIDEO") return;
 
         prepareVideo(slide);
-
-        if (index === current) {
-          playVideo(slide);
-        } else {
-          pauseVideo(slide, true);
-        }
+        pauseVideo(slide, true);
       });
     }
 
@@ -755,9 +786,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const activeVideo = track.querySelector("video");
 
       if (activeVideo && !lightbox?.classList.contains("active")) {
-        // La galería gestiona el vídeo activo al navegar.
-        // No iniciar vídeos ocultos indiscriminadamente.
+        // Los vídeos de las piezas no se inician automáticamente.
         prepareVideo(activeVideo);
+        pauseVideo(activeVideo);
       }
     });
   });
