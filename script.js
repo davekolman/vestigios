@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
-     CONFIGURACIÓN GENERAL DE LOS VÍDEOS
+     01. CONFIGURACIÓN GENERAL DE LOS VÍDEOS
   ========================================================= */
 
   function prepareVideo(video) {
@@ -53,19 +53,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  /*
-    Los vídeos de la página no utilizan controles nativos.
-    Los controles de reproducción de las piezas se crean
-    mediante botones propios.
-  */
-
   document.querySelectorAll("video").forEach((video) => {
     prepareVideo(video);
   });
 
 
   /* =========================================================
-     BOTÓN PERSONALIZADO DE REPRODUCCIÓN
+     02. BOTONES PERSONALIZADOS DE REPRODUCCIÓN
   ========================================================= */
 
   function createPlayButton(className, label) {
@@ -75,16 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
     button.className = `video-play-toggle ${className}`;
     button.setAttribute("aria-label", label);
     button.setAttribute("aria-pressed", "false");
-
-    /*
-      El símbolo visual se construye mediante CSS.
-      El botón no depende de controles nativos del navegador.
-    */
-
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-    });
 
     return button;
   }
@@ -109,47 +93,44 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  function bindPlayButton(button, video) {
-    if (!button || !video) return;
+  function toggleVideo(video) {
+    if (!video) return;
 
-    const updateButton = () => {
-      setPlayButtonState(button, video);
-    };
+    if (video.paused || video.ended) {
 
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      if (video.paused || video.ended) {
-
-        if (video.ended) {
-          try {
-            video.currentTime = 0;
-          } catch (error) {
-            // El vídeo puede no haber terminado de cargar.
-          }
+      if (video.ended) {
+        try {
+          video.currentTime = 0;
+        } catch (error) {
+          // El vídeo puede no haber terminado de cargar.
         }
-
-        playVideo(video);
-
-      } else {
-        pauseVideo(video);
       }
 
-      updateButton();
+      playVideo(video);
+
+    } else {
+      pauseVideo(video);
+    }
+  }
+
+
+  function watchVideoButton(button, video, isActive) {
+    if (!button || !video) return;
+
+    const update = () => {
+      if (isActive()) {
+        setPlayButtonState(button, video);
+      }
+    };
+
+    ["play", "playing", "pause", "ended", "error"].forEach((eventName) => {
+      video.addEventListener(eventName, update);
     });
-
-    video.addEventListener("play", updateButton);
-    video.addEventListener("playing", updateButton);
-    video.addEventListener("pause", updateButton);
-    video.addEventListener("ended", updateButton);
-
-    updateButton();
   }
 
 
   /* =========================================================
-     VIDEO DE PORTADA
+     03. VÍDEO DE PORTADA
   ========================================================= */
 
   const heroVideo =
@@ -181,17 +162,17 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("pageshow", startHeroVideo);
 
     document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) {
-        startHeroVideo();
-      } else {
+      if (document.hidden) {
         pauseVideo(heroVideo);
+      } else {
+        startHeroVideo();
       }
     });
   }
 
 
   /* =========================================================
-     VIDEO DE PROCESO
+     04. VÍDEO DE PROCESO
   ========================================================= */
 
   const processVideo =
@@ -223,17 +204,17 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("pageshow", startProcessVideo);
 
     document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) {
-        startProcessVideo();
-      } else {
+      if (document.hidden) {
         pauseVideo(processVideo);
+      } else {
+        startProcessVideo();
       }
     });
   }
 
 
   /* =========================================================
-     MENÚ MÓVIL
+     05. MENÚ MÓVIL
   ========================================================= */
 
   const menuToggle = document.querySelector(".menu-toggle");
@@ -312,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     BOTÓN VOLVER ARRIBA
+     06. BOTÓN VOLVER ARRIBA
   ========================================================= */
 
   const backToTop = document.getElementById("back-to-top");
@@ -359,14 +340,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     VARIABLES DEL LIGHTBOX
+     07. VARIABLES DEL LIGHTBOX
   ========================================================= */
 
   let lightbox = null;
   let lightboxTrack = null;
+  let lightboxWindow = null;
   let lightboxSlides = [];
   let lightboxCurrent = 0;
   let lightboxPlayButton = null;
+
   let lightboxTouchStartX = 0;
   let lightboxTouchStartY = 0;
   let lightboxTouchCurrentX = 0;
@@ -376,11 +359,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     CREAR LIGHTBOX
+     08. FUNCIONES DE NAVEGACIÓN DEL LIGHTBOX
+  ========================================================= */
+
+  function goToLightboxSlide(direction) {
+    if (!lightboxSlides.length) return;
+
+    lightboxCurrent += direction;
+
+    if (lightboxCurrent < 0) {
+      lightboxCurrent = lightboxSlides.length - 1;
+    }
+
+    if (lightboxCurrent >= lightboxSlides.length) {
+      lightboxCurrent = 0;
+    }
+
+    updateLightbox();
+  }
+
+
+  /* =========================================================
+     09. CREAR LIGHTBOX
   ========================================================= */
 
   function createLightbox() {
-
     if (lightbox) return;
 
     lightbox = document.createElement("div");
@@ -413,6 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(lightbox);
 
     lightboxTrack = lightbox.querySelector(".lightbox-track");
+    lightboxWindow = lightbox.querySelector(".lightbox-window");
 
     const closeButton =
       lightbox.querySelector(".lightbox-close");
@@ -423,14 +427,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextButton =
       lightbox.querySelector(".lightbox-next");
 
-    const lightboxWindow =
-      lightbox.querySelector(".lightbox-window");
 
-
-    /*
-      El botón se superpone al vídeo activo.
-      No se añade a las fotografías.
-    */
+    /* Botón de reproducción del vídeo activo. */
 
     lightboxPlayButton = createPlayButton(
       "lightbox-video-play",
@@ -438,6 +436,31 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     lightboxWindow.appendChild(lightboxPlayButton);
+
+
+    /*
+      CORRECCIÓN IMPORTANTE:
+      el botón del lightbox ahora tiene su propia acción.
+      Antes se creaba, pero no tenía un controlador que
+      reprodujera o pausara el vídeo activo.
+    */
+
+    lightboxPlayButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (Date.now() < lightboxSuppressClickUntil) return;
+
+      const activeSlide =
+        lightboxTrack.children[lightboxCurrent];
+
+      if (!activeSlide || activeSlide.tagName !== "VIDEO") {
+        return;
+      }
+
+      toggleVideo(activeSlide);
+      updateLightboxPlayButton();
+    });
 
 
     closeButton.addEventListener("click", (event) => {
@@ -452,15 +475,7 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
       event.stopPropagation();
 
-      if (!lightboxSlides.length) return;
-
-      lightboxCurrent--;
-
-      if (lightboxCurrent < 0) {
-        lightboxCurrent = lightboxSlides.length - 1;
-      }
-
-      updateLightbox();
+      goToLightboxSlide(-1);
     });
 
 
@@ -468,15 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
       event.stopPropagation();
 
-      if (!lightboxSlides.length) return;
-
-      lightboxCurrent++;
-
-      if (lightboxCurrent >= lightboxSlides.length) {
-        lightboxCurrent = 0;
-      }
-
-      updateLightbox();
+      goToLightboxSlide(1);
     });
 
 
@@ -497,13 +504,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /*
-      Navegación táctil dentro del visor.
-      Un toque normal no cambia de diapositiva.
-    */
+    /* =====================================================
+       GESTOS TÁCTILES DEL LIGHTBOX
+    ===================================================== */
 
     lightboxWindow.addEventListener("touchstart", (event) => {
-
       if (!event.touches || !event.touches.length) return;
 
       const touch = event.touches[0];
@@ -520,7 +525,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     lightboxWindow.addEventListener("touchmove", (event) => {
-
       if (!event.touches || !event.touches.length) return;
 
       const touch = event.touches[0];
@@ -535,7 +539,6 @@ document.addEventListener("DOMContentLoaded", () => {
         lightboxTouchCurrentY - lightboxTouchStartY;
 
       if (lightboxGestureDirection === null) {
-
         const absX = Math.abs(differenceX);
         const absY = Math.abs(differenceY);
 
@@ -562,26 +565,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const difference =
         lightboxTouchStartX - lightboxTouchCurrentX;
 
-      if (Math.abs(difference) >= 50 && lightboxSlides.length) {
-
-        if (difference > 0) {
-          lightboxCurrent++;
-
-          if (lightboxCurrent >= lightboxSlides.length) {
-            lightboxCurrent = 0;
-          }
-
-        } else {
-          lightboxCurrent--;
-
-          if (lightboxCurrent < 0) {
-            lightboxCurrent = lightboxSlides.length - 1;
-          }
-        }
-
+      if (Math.abs(difference) >= 50) {
         lightboxSuppressClickUntil = Date.now() + 500;
 
-        updateLightbox();
+        if (difference > 0) {
+          goToLightboxSlide(1);
+        } else {
+          goToLightboxSlide(-1);
+        }
       }
 
       lightboxGestureDirection = null;
@@ -594,8 +585,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
 
 
-    document.addEventListener("keydown", (event) => {
+    /* =====================================================
+       TECLADO
+    ===================================================== */
 
+    document.addEventListener("keydown", (event) => {
       if (!lightbox.classList.contains("active")) return;
 
       if (event.key === "Escape") {
@@ -603,39 +597,22 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (!lightboxSlides.length) return;
-
       if (event.key === "ArrowRight") {
-
-        lightboxCurrent++;
-
-        if (lightboxCurrent >= lightboxSlides.length) {
-          lightboxCurrent = 0;
-        }
-
-        updateLightbox();
+        goToLightboxSlide(1);
       }
 
       if (event.key === "ArrowLeft") {
-
-        lightboxCurrent--;
-
-        if (lightboxCurrent < 0) {
-          lightboxCurrent = lightboxSlides.length - 1;
-        }
-
-        updateLightbox();
+        goToLightboxSlide(-1);
       }
     });
   }
 
 
   /* =========================================================
-     ACTUALIZAR BOTÓN DEL LIGHTBOX
+     10. ACTUALIZAR BOTÓN DE REPRODUCCIÓN DEL LIGHTBOX
   ========================================================= */
 
   function updateLightboxPlayButton() {
-
     if (!lightboxPlayButton || !lightboxTrack) return;
 
     const activeSlide =
@@ -649,26 +626,28 @@ document.addEventListener("DOMContentLoaded", () => {
       !isVideo
     );
 
-    if (!isVideo) return;
-
-    setPlayButtonState(
-      lightboxPlayButton,
-      activeSlide
-    );
+    if (isVideo) {
+      setPlayButtonState(lightboxPlayButton, activeSlide);
+    } else {
+      lightboxPlayButton.setAttribute("aria-pressed", "false");
+      lightboxPlayButton.setAttribute(
+        "aria-label",
+        "Reproducir vídeo"
+      );
+    }
   }
 
 
   /* =========================================================
-     ABRIR LIGHTBOX
+     11. ABRIR LIGHTBOX
   ========================================================= */
 
   function openLightbox(slides, startIndex) {
-
     createLightbox();
 
     /*
-      Al abrir el visor, los vídeos de la galería se pausan
-      y reinician. La reproducción continúa siendo voluntaria.
+      Pausar y reiniciar los vídeos de las galerías
+      antes de abrir el visor.
     */
 
     document.querySelectorAll(".gallery video").forEach((video) => {
@@ -682,13 +661,11 @@ document.addEventListener("DOMContentLoaded", () => {
     lightboxTrack.innerHTML = "";
 
     lightboxSlides.forEach((slide) => {
-
       const clone = slide.cloneNode(true);
 
       clone.removeAttribute("style");
 
       if (clone.tagName === "VIDEO") {
-
         prepareVideo(clone);
 
         clone.controls = false;
@@ -702,67 +679,43 @@ document.addEventListener("DOMContentLoaded", () => {
         clone.pause();
 
         /*
-          En el visor, tocar el área del vídeo también
-          permite reproducirlo o pausarlo.
+          Tocar el vídeo en el lightbox reproduce o pausa.
+          No abre otro visor ni cambia de diapositiva.
         */
 
         clone.addEventListener("click", (event) => {
-
           event.preventDefault();
           event.stopPropagation();
 
-          if (Date.now() < lightboxSuppressClickUntil) {
+          if (Date.now() < lightboxSuppressClickUntil) return;
+
+          if (
+            lightboxTrack.children[lightboxCurrent] !== clone
+          ) {
             return;
           }
 
-          if (clone.paused || clone.ended) {
-
-            if (clone.ended) {
-              try {
-                clone.currentTime = 0;
-              } catch (error) {
-                // El vídeo puede no haber terminado de cargar.
-              }
-            }
-
-            playVideo(clone);
-
-          } else {
-            pauseVideo(clone);
-          }
-
+          toggleVideo(clone);
           updateLightboxPlayButton();
         });
 
-
-        /*
-          Actualizar el botón al comenzar, pausar o terminar.
-        */
-
-        ["play", "playing", "pause", "ended"].forEach((eventName) => {
-          clone.addEventListener(eventName, () => {
-
-            if (
-              lightboxTrack.children[lightboxCurrent] === clone
-            ) {
-              updateLightboxPlayButton();
-            }
-
-          });
-        });
+        watchVideoButton(
+          lightboxPlayButton,
+          clone,
+          () =>
+            lightboxTrack &&
+            lightboxTrack.children[lightboxCurrent] === clone
+        );
 
       } else {
-
         clone.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();
         });
-
       }
 
       lightboxTrack.appendChild(clone);
     });
-
 
     lightbox.classList.add("active");
     document.body.classList.add("lightbox-open");
@@ -772,11 +725,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     ACTUALIZAR LIGHTBOX
+     12. ACTUALIZAR LIGHTBOX
   ========================================================= */
 
   function updateLightbox() {
-
     if (!lightboxTrack || !lightboxSlides.length) return;
 
     if (lightboxCurrent < 0) {
@@ -788,35 +740,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /*
-      Al cambiar de diapositiva, pausar y reiniciar
-      todos los vídeos del visor.
+      Al cambiar de diapositiva, ningún vídeo anterior
+      debe seguir reproduciéndose.
     */
 
-    const slides = Array.from(lightboxTrack.children);
-
-    slides.forEach((slide) => {
-
+    Array.from(lightboxTrack.children).forEach((slide) => {
       if (slide.tagName === "VIDEO") {
         pauseVideo(slide, true);
       }
-
     });
-
 
     lightboxTrack.style.transform =
       `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
-
 
     updateLightboxPlayButton();
   }
 
 
   /* =========================================================
-     CERRAR LIGHTBOX
+     13. CERRAR LIGHTBOX
   ========================================================= */
 
   function closeLightbox() {
-
     if (!lightbox) return;
 
     lightbox.classList.remove("active");
@@ -833,13 +778,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     INICIALIZAR GALERÍAS
+     14. INICIALIZAR GALERÍAS
   ========================================================= */
 
   const galleries = document.querySelectorAll(".gallery");
 
   galleries.forEach((gallery) => {
-
     const track = gallery.querySelector(".gallery-track");
 
     const prevButton =
@@ -861,11 +805,16 @@ document.addEventListener("DOMContentLoaded", () => {
     let current = 0;
     let suppressClickUntil = 0;
 
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchCurrentX = 0;
+    let touchCurrentY = 0;
+    let gestureDirection = null;
 
-    /*
-      Un único botón superpuesto por galería.
-      Solo se muestra cuando la diapositiva activa es un vídeo.
-    */
+
+    /* =====================================================
+       BOTÓN PLAY DE LA GALERÍA
+    ===================================================== */
 
     const galleryPlayButton = createPlayButton(
       "gallery-video-play",
@@ -875,12 +824,7 @@ document.addEventListener("DOMContentLoaded", () => {
     gallery.appendChild(galleryPlayButton);
 
 
-    /* =====================================================
-       ACTUALIZAR BOTÓN DE GALERÍA
-    ===================================================== */
-
     function updateGalleryPlayButton() {
-
       const activeSlide = slides[current];
 
       const isVideo =
@@ -891,23 +835,23 @@ document.addEventListener("DOMContentLoaded", () => {
         !isVideo
       );
 
-      if (!isVideo) return;
-
-      setPlayButtonState(
-        galleryPlayButton,
-        activeSlide
-      );
+      if (isVideo) {
+        setPlayButtonState(galleryPlayButton, activeSlide);
+      } else {
+        galleryPlayButton.setAttribute("aria-pressed", "false");
+        galleryPlayButton.setAttribute(
+          "aria-label",
+          "Reproducir vídeo"
+        );
+      }
     }
 
 
-    /*
-      El botón controla el vídeo activo de esta galería.
-    */
-
     galleryPlayButton.addEventListener("click", (event) => {
-
       event.preventDefault();
       event.stopPropagation();
+
+      if (Date.now() < suppressClickUntil) return;
 
       const activeSlide = slides[current];
 
@@ -915,90 +859,58 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (activeSlide.paused || activeSlide.ended) {
-
-        if (activeSlide.ended) {
-          try {
-            activeSlide.currentTime = 0;
-          } catch (error) {
-            // El vídeo puede no haber terminado de cargar.
-          }
-        }
-
-        playVideo(activeSlide);
-
-      } else {
-        pauseVideo(activeSlide);
-      }
-
+      toggleVideo(activeSlide);
       updateGalleryPlayButton();
     });
 
 
     /* =====================================================
-       ACTUALIZAR CARRUSEL
+       ACTUALIZAR GALERÍA
     ===================================================== */
 
     function updateGallery() {
+      /*
+        Usamos el índice de la diapositiva, no offsetLeft,
+        para mantener el desplazamiento consistente.
+      */
 
-      const activeSlide = slides[current];
-
-      if (activeSlide) {
-
-        track.style.transform =
-          `translate3d(-${activeSlide.offsetLeft}px, 0, 0)`;
-      }
+      track.style.transform =
+        `translate3d(-${current * 100}%, 0, 0)`;
 
       /*
-        Pausar y reiniciar los vídeos al cambiar de diapositiva.
-        No se reproduce automáticamente ningún vídeo de pieza.
+        Detener y reiniciar los vídeos al cambiar de pieza.
       */
 
       slides.forEach((slide) => {
-
-        if (slide.tagName !== "VIDEO") return;
-
-        prepareVideo(slide);
-        pauseVideo(slide, true);
+        if (slide.tagName === "VIDEO") {
+          prepareVideo(slide);
+          pauseVideo(slide, true);
+        }
       });
-
 
       updateGalleryPlayButton();
     }
 
 
-    /*
-      Actualizar el botón si el vídeo se pausa, reproduce
-      o termina desde cualquier interacción.
-    */
+    /* Mantener actualizado el botón ante eventos del vídeo. */
 
     slides.forEach((slide) => {
-
       if (slide.tagName !== "VIDEO") return;
 
-      ["play", "playing", "pause", "ended"].forEach((eventName) => {
-
-        slide.addEventListener(eventName, () => {
-
-          if (slides[current] === slide) {
-            updateGalleryPlayButton();
-          }
-
-        });
-
-      });
-
+      watchVideoButton(
+        galleryPlayButton,
+        slide,
+        () => slides[current] === slide
+      );
     });
 
 
     /* =====================================================
-       SIGUIENTE
+       FLECHA SIGUIENTE
     ===================================================== */
 
     if (nextButton) {
-
       nextButton.addEventListener("click", (event) => {
-
         event.preventDefault();
         event.stopPropagation();
 
@@ -1014,13 +926,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       ANTERIOR
+       FLECHA ANTERIOR
     ===================================================== */
 
     if (prevButton) {
-
       prevButton.addEventListener("click", (event) => {
-
         event.preventDefault();
         event.stopPropagation();
 
@@ -1036,18 +946,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       GESTOS TÁCTILES
+       GESTOS TÁCTILES DE LA GALERÍA
     ===================================================== */
 
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchCurrentX = 0;
-    let touchCurrentY = 0;
-    let gestureDirection = null;
-
-
     gallery.addEventListener("touchstart", (event) => {
-
       if (!event.touches || !event.touches.length) return;
 
       const touch = event.touches[0];
@@ -1064,7 +966,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     gallery.addEventListener("touchmove", (event) => {
-
       if (!event.touches || !event.touches.length) return;
 
       const touch = event.touches[0];
@@ -1076,18 +977,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const differenceY = touchCurrentY - touchStartY;
 
       if (gestureDirection === null) {
-
         const absX = Math.abs(differenceX);
         const absY = Math.abs(differenceY);
 
         if (absX < 8 && absY < 8) return;
 
-        if (absY > absX) {
-          gestureDirection = "vertical";
-          return;
-        }
-
-        gestureDirection = "horizontal";
+        gestureDirection =
+          absX > absY ? "horizontal" : "vertical";
       }
 
       if (gestureDirection === "horizontal") {
@@ -1098,7 +994,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     gallery.addEventListener("touchend", () => {
-
       if (gestureDirection !== "horizontal") {
         gestureDirection = null;
         return;
@@ -1106,31 +1001,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const difference = touchStartX - touchCurrentX;
 
-      if (Math.abs(difference) < 50) {
-        gestureDirection = null;
-        return;
-      }
+      if (Math.abs(difference) >= 50) {
+        if (difference > 0) {
+          current++;
 
-      if (difference > 0) {
+          if (current >= total) {
+            current = 0;
+          }
+        } else {
+          current--;
 
-        current++;
-
-        if (current >= total) {
-          current = 0;
+          if (current < 0) {
+            current = total - 1;
+          }
         }
 
-      } else {
+        /*
+          Impedir que el mismo gesto táctil termine
+          disparando el clic de la imagen o del vídeo.
+        */
 
-        current--;
+        suppressClickUntil = Date.now() + 500;
 
-        if (current < 0) {
-          current = total - 1;
-        }
+        updateGallery();
       }
-
-      suppressClickUntil = Date.now() + 500;
-
-      updateGallery();
 
       gestureDirection = null;
 
@@ -1147,57 +1041,32 @@ document.addEventListener("DOMContentLoaded", () => {
     ===================================================== */
 
     slides.forEach((slide, index) => {
-
       slide.style.cursor = "pointer";
 
       if (slide.tagName === "VIDEO") {
-
         /*
-          En la galería normal, tocar el vídeo reproduce
-          o pausa. No abre el lightbox.
+          Tocar el vídeo de una galería solo reproduce
+          o pausa. Nunca abre el lightbox.
         */
 
         slide.addEventListener("click", (event) => {
-
           event.preventDefault();
           event.stopPropagation();
 
-          if (Date.now() < suppressClickUntil) {
-            return;
-          }
+          if (Date.now() < suppressClickUntil) return;
 
-          if (slide !== slides[current]) {
-            return;
-          }
+          if (slides[current] !== slide) return;
 
-          if (slide.paused || slide.ended) {
-
-            if (slide.ended) {
-              try {
-                slide.currentTime = 0;
-              } catch (error) {
-                // El vídeo puede no haber terminado de cargar.
-              }
-            }
-
-            playVideo(slide);
-
-          } else {
-            pauseVideo(slide);
-          }
-
+          toggleVideo(slide);
           updateGalleryPlayButton();
         });
 
       } else {
-
         /*
-          Las fotografías conservan su comportamiento:
-          al tocarlas se abre el visor ampliado.
+          Las fotografías sí abren el lightbox.
         */
 
         slide.addEventListener("click", (event) => {
-
           if (Date.now() < suppressClickUntil) {
             event.preventDefault();
             event.stopPropagation();
@@ -1229,11 +1098,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     REVISAR VÍDEOS AL VOLVER A LA PÁGINA
+     15. AL VOLVER A LA PÁGINA
   ========================================================= */
 
   window.addEventListener("pageshow", () => {
-
     if (!document.hidden && heroVideo) {
       playVideo(heroVideo);
     }
@@ -1243,8 +1111,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /*
-      Las galerías de piezas nunca se inician automáticamente.
-      Se pausan si el navegador restaura la página.
+      Las piezas no se reproducen automáticamente
+      al restaurar la página.
     */
 
     document.querySelectorAll(".gallery video").forEach((video) => {
@@ -1253,7 +1121,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (lightbox) {
-
       lightbox.querySelectorAll("video").forEach((video) => {
         pauseVideo(video);
       });
