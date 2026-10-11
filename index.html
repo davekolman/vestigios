@@ -121,6 +121,7 @@
 
     .size-guide-tabs {
       display: flex;
+      flex-wrap: wrap;
       gap: 24px;
       margin: 0 0 24px;
       border-bottom: 1px solid #d8d4cc;
@@ -152,18 +153,21 @@
       content: "";
     }
 
-    .size-guide-panel[hidden] {
+    .size-guide-panel[hidden],
+    .size-guide-subpanel[hidden] {
       display: none;
     }
 
-    .size-guide-panel h3 {
+    .size-guide-panel h3,
+    .size-guide-subpanel h3 {
       margin: 0 0 8px;
       font-family: "Cormorant Garamond", serif;
       font-size: 1.65rem;
       font-weight: 400;
     }
 
-    .size-guide-panel > p {
+    .size-guide-panel > p,
+    .size-guide-subpanel > p {
       margin: 0 0 18px;
       font-family: "Inter", sans-serif;
       font-size: 0.8rem;
@@ -208,6 +212,17 @@
       font-size: 0.76rem;
       line-height: 1.7;
       color: #5e5a53;
+    }
+
+    .size-guide-subtabs {
+      margin-top: 24px;
+      gap: 22px;
+    }
+
+    .size-guide-table thead small {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0;
     }
 
     body.size-guide-open {
@@ -1247,7 +1262,7 @@
 
 </main>
 
-<!-- GUÍA DE TALLAS: UNA VENTANA, DOS TABLAS -->
+<!-- GUÍA DE TALLAS -->
 <div
   class="size-guide-overlay"
   id="size-guide"
@@ -1275,10 +1290,11 @@
     </h2>
 
     <p class="size-guide-intro" id="size-guide-description">
-      Selecciona la línea que deseas consultar. Las medidas corporales
-      definitivas se incorporarán una vez verificadas con los patrones.
+      Consulta las medidas de referencia de cada línea. Si tienes dudas
+      sobre la talla de una pieza, puedes contactarme antes de realizar tu pedido.
     </p>
 
+    <!-- PESTAÑAS PRINCIPALES -->
     <div class="size-guide-tabs" role="tablist" aria-label="Línea de tallas">
       <button
         class="size-guide-tab"
@@ -1303,7 +1319,7 @@
       >HOMBRE</button>
     </div>
 
-    <!-- TABLA MUJER -->
+    <!-- GUÍA FEMENINA: SE CONSERVA LA TABLA ORIGINAL -->
     <div
       class="size-guide-panel"
       id="panel-mujer"
@@ -1331,46 +1347,46 @@
           <tbody>
             <tr>
               <th scope="row">6</th>
-              <td>—</td><td>—</td><td>—</td>
+              <td>84</td><td>62</td><td>92</td>
             </tr>
             <tr>
               <th scope="row">8</th>
-              <td>—</td><td>—</td><td>—</td>
+              <td>88</td><td>66</td><td>96</td>
             </tr>
             <tr>
               <th scope="row">10</th>
-              <td>—</td><td>—</td><td>—</td>
+              <td>92</td><td>70</td><td>100</td>
             </tr>
             <tr>
               <th scope="row">12</th>
-              <td>—</td><td>—</td><td>—</td>
+              <td>96</td><td>74</td><td>104</td>
             </tr>
             <tr>
               <th scope="row">14</th>
-              <td>—</td><td>—</td><td>—</td>
+              <td>100</td><td>78</td><td>108</td>
             </tr>
             <tr>
               <th scope="row">16</th>
-              <td>—</td><td>—</td><td>—</td>
+              <td>106</td><td>84</td><td>114</td>
             </tr>
             <tr>
               <th scope="row">18</th>
-              <td>—</td><td>—</td><td>—</td>
+              <td>112</td><td>90</td><td>120</td>
             </tr>
             <tr>
               <th scope="row">20</th>
-              <td>—</td><td>—</td><td>—</td>
+              <td>118</td><td>96</td><td>126</td>
             </tr>
             <tr>
               <th scope="row">22</th>
-              <td>—</td><td>—</td><td>—</td>
+              <td>124</td><td>102</td><td>132</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- TABLA HOMBRE -->
+    <!-- GUÍA MASCULINA -->
     <div
       class="size-guide-panel"
       id="panel-hombre"
@@ -1379,68 +1395,200 @@
       data-size-panel="hombre"
       hidden
     >
-      <h3>Tallas numéricas y letras</h3>
+      <h3>Tallas masculinas</h3>
+
       <p>
-        Equivalencias de tallas utilizadas en la línea masculina.
-        Las medidas corporales en centímetros están pendientes de verificación.
+        Las tallas de camisa y pantalón se consultan por separado.
+        Elige la prenda para ver las medidas principales de referencia.
+        Todas las medidas se expresan en centímetros.
       </p>
 
-      <div class="size-guide-table-wrap">
-        <table class="size-guide-table">
-          <thead>
-            <tr>
-              <th scope="col">Talla numérica</th>
-              <th scope="col">Equivalencia</th>
-              <th scope="col">Pecho</th>
-              <th scope="col">Cintura</th>
-              <th scope="col">Cadera</th>
-            </tr>
-          </thead>
+      <!-- SUBPESTAÑAS: CAMISA Y PANTALÓN -->
+      <div
+        class="size-guide-tabs size-guide-subtabs"
+        role="tablist"
+        aria-label="Tipo de prenda masculina"
+      >
+        <button
+          class="size-guide-tab"
+          id="tab-camisa-hombre"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-camisa-hombre"
+          tabindex="0"
+          data-size-subtab="camisa-hombre"
+        >CAMISA</button>
 
-          <tbody>
-            <tr>
-              <th scope="row">34</th>
-              <td>XS</td>
-              <td>—</td><td>—</td><td>—</td>
-            </tr>
-            <tr>
-              <th scope="row">36</th>
-              <td>S</td>
-              <td>—</td><td>—</td><td>—</td>
-            </tr>
-            <tr>
-              <th scope="row">38</th>
-              <td>M</td>
-              <td>—</td><td>—</td><td>—</td>
-            </tr>
-            <tr>
-              <th scope="row">40</th>
-              <td>L</td>
-              <td>—</td><td>—</td><td>—</td>
-            </tr>
-            <tr>
-              <th scope="row">42</th>
-              <td>XL</td>
-              <td>—</td><td>—</td><td>—</td>
-            </tr>
-            <tr>
-              <th scope="row">44</th>
-              <td>2XL</td>
-              <td>—</td><td>—</td><td>—</td>
-            </tr>
-            <tr>
-              <th scope="row">46</th>
-              <td>3XL</td>
-              <td>—</td><td>—</td><td>—</td>
-            </tr>
-          </tbody>
-        </table>
+        <button
+          class="size-guide-tab"
+          id="tab-pantalon-hombre"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-pantalon-hombre"
+          tabindex="-1"
+          data-size-subtab="pantalon-hombre"
+        >PANTALÓN</button>
+      </div>
+
+      <!-- CAMISA: PECHO Y CUELLO -->
+      <div
+        class="size-guide-subpanel"
+        id="panel-camisa-hombre"
+        role="tabpanel"
+        aria-labelledby="tab-camisa-hombre"
+        data-size-subpanel="camisa-hombre"
+      >
+        <h3>Camisa</h3>
+
+        <p>
+          Medidas corporales de referencia.
+          La equivalencia internacional es orientativa.
+        </p>
+
+        <div class="size-guide-table-wrap">
+          <table class="size-guide-table">
+            <thead>
+              <tr>
+                <th scope="col">Talla</th>
+                <th scope="col">Equivalencia</th>
+                <th scope="col">Pecho</th>
+                <th scope="col">Cuello</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <th scope="row">34</th>
+                <td>XS</td>
+                <td>92</td>
+                <td>34</td>
+              </tr>
+              <tr>
+                <th scope="row">36</th>
+                <td>S</td>
+                <td>96</td>
+                <td>36</td>
+              </tr>
+              <tr>
+                <th scope="row">38</th>
+                <td>M</td>
+                <td>100</td>
+                <td>38</td>
+              </tr>
+              <tr>
+                <th scope="row">40</th>
+                <td>L</td>
+                <td>104</td>
+                <td>40</td>
+              </tr>
+              <tr>
+                <th scope="row">42</th>
+                <td>XL</td>
+                <td>108</td>
+                <td>42</td>
+              </tr>
+              <tr>
+                <th scope="row">44</th>
+                <td>2XL</td>
+                <td>112</td>
+                <td>44</td>
+              </tr>
+              <tr>
+                <th scope="row">46</th>
+                <td>3XL</td>
+                <td>116</td>
+                <td>46</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="size-guide-note">
+          Pecho y cuello se expresan como contornos corporales.
+        </p>
+      </div>
+
+      <!-- PANTALÓN: CINTURA Y CADERA -->
+      <div
+        class="size-guide-subpanel"
+        id="panel-pantalon-hombre"
+        role="tabpanel"
+        aria-labelledby="tab-pantalon-hombre"
+        data-size-subpanel="pantalon-hombre"
+        hidden
+      >
+        <h3>Pantalón</h3>
+
+        <p>
+          Las tallas de pantalón son independientes de las tallas de camisa.
+        </p>
+
+        <div class="size-guide-table-wrap">
+          <table class="size-guide-table">
+            <thead>
+              <tr>
+                <th scope="col">Talla</th>
+                <th scope="col">Cintura</th>
+                <th scope="col">Cadera</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <th scope="row">26</th>
+                <td>70</td>
+                <td>88</td>
+              </tr>
+              <tr>
+                <th scope="row">28</th>
+                <td>74</td>
+                <td>92</td>
+              </tr>
+              <tr>
+                <th scope="row">30</th>
+                <td>78</td>
+                <td>96</td>
+              </tr>
+              <tr>
+                <th scope="row">32</th>
+                <td>82</td>
+                <td>100</td>
+              </tr>
+              <tr>
+                <th scope="row">34</th>
+                <td>86</td>
+                <td>104</td>
+              </tr>
+              <tr>
+                <th scope="row">36</th>
+                <td>90</td>
+                <td>108</td>
+              </tr>
+              <tr>
+                <th scope="row">38</th>
+                <td>94</td>
+                <td>112</td>
+              </tr>
+              <tr>
+                <th scope="row">40</th>
+                <td>98</td>
+                <td>116</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="size-guide-note">
+          Cintura y cadera se expresan como contornos corporales.
+        </p>
       </div>
     </div>
 
     <p class="size-guide-note">
-      Las medidas de la tabla deben corresponder al cuerpo, no a la prenda terminada.
-      La holgura y el ajuste varían según el diseño. Para confirmar la talla
+      Estas tablas son orientativas. El corte, la holgura y la silueta
+      pueden modificar el ajuste de una prenda. Para confirmar la talla
       adecuada de una pieza, puedes consultarme antes de realizar tu pedido.
     </p>
   </section>
@@ -1475,10 +1623,10 @@
   ↑
 </button>
 
-<!-- JavaScript principal existente -->
+<!-- JAVASCRIPT PRINCIPAL EXISTENTE -->
 <script src="script.js?v=4"></script>
 
-<!-- Funcionamiento de la guía de tallas -->
+<!-- FUNCIONAMIENTO DE LA GUÍA DE TALLAS -->
 <script>
   (() => {
     const overlay = document.getElementById("size-guide");
@@ -1488,13 +1636,44 @@
     const dialog = overlay.querySelector(".size-guide-dialog");
     const closeButton = overlay.querySelector("[data-size-guide-close]");
     const openButtons = document.querySelectorAll("[data-size-guide]");
-    const tabs = Array.from(overlay.querySelectorAll("[data-size-tab]"));
-    const panels = Array.from(overlay.querySelectorAll("[data-size-panel]"));
+
+    const mainTabs = Array.from(
+      overlay.querySelectorAll("[data-size-tab]")
+    );
+
+    const mainPanels = Array.from(
+      overlay.querySelectorAll("[data-size-panel]")
+    );
+
+    const subTabs = Array.from(
+      overlay.querySelectorAll("[data-size-subtab]")
+    );
+
+    const subPanels = Array.from(
+      overlay.querySelectorAll("[data-size-subpanel]")
+    );
 
     let lastFocusedElement = null;
 
-    function selectSizeTab(category, moveFocus = false) {
-      tabs.forEach((tab) => {
+    function selectSubTab(category, moveFocus = false) {
+      subTabs.forEach((tab) => {
+        const selected = tab.dataset.sizeSubtab === category;
+
+        tab.setAttribute("aria-selected", String(selected));
+        tab.setAttribute("tabindex", selected ? "0" : "-1");
+
+        if (selected && moveFocus) {
+          tab.focus();
+        }
+      });
+
+      subPanels.forEach((panel) => {
+        panel.hidden = panel.dataset.sizeSubpanel !== category;
+      });
+    }
+
+    function selectMainTab(category, moveFocus = false) {
+      mainTabs.forEach((tab) => {
         const selected = tab.dataset.sizeTab === category;
 
         tab.setAttribute("aria-selected", String(selected));
@@ -1505,15 +1684,19 @@
         }
       });
 
-      panels.forEach((panel) => {
+      mainPanels.forEach((panel) => {
         panel.hidden = panel.dataset.sizePanel !== category;
       });
+
+      if (category === "hombre") {
+        selectSubTab("camisa-hombre");
+      }
     }
 
     function openSizeGuide(category = "mujer") {
       lastFocusedElement = document.activeElement;
 
-      selectSizeTab(category);
+      selectMainTab(category);
 
       overlay.classList.add("is-open");
       overlay.setAttribute("aria-hidden", "false");
@@ -1534,6 +1717,33 @@
       }
     }
 
+    function addTabKeyboardNavigation(tabs, selectFunction, dataKey) {
+      tabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => {
+          selectFunction(tab.dataset[dataKey]);
+        });
+
+        tab.addEventListener("keydown", (event) => {
+          let nextIndex = index;
+
+          if (event.key === "ArrowRight") {
+            nextIndex = (index + 1) % tabs.length;
+          } else if (event.key === "ArrowLeft") {
+            nextIndex = (index - 1 + tabs.length) % tabs.length;
+          } else if (event.key === "Home") {
+            nextIndex = 0;
+          } else if (event.key === "End") {
+            nextIndex = tabs.length - 1;
+          } else {
+            return;
+          }
+
+          event.preventDefault();
+          selectFunction(tabs[nextIndex].dataset[dataKey], true);
+        });
+      });
+    }
+
     openButtons.forEach((button) => {
       button.addEventListener("click", (event) => {
         event.preventDefault();
@@ -1541,30 +1751,17 @@
       });
     });
 
-    tabs.forEach((tab, index) => {
-      tab.addEventListener("click", () => {
-        selectSizeTab(tab.dataset.sizeTab);
-      });
+    addTabKeyboardNavigation(
+      mainTabs,
+      selectMainTab,
+      "sizeTab"
+    );
 
-      tab.addEventListener("keydown", (event) => {
-        let nextIndex = index;
-
-        if (event.key === "ArrowRight") {
-          nextIndex = (index + 1) % tabs.length;
-        } else if (event.key === "ArrowLeft") {
-          nextIndex = (index - 1 + tabs.length) % tabs.length;
-        } else if (event.key === "Home") {
-          nextIndex = 0;
-        } else if (event.key === "End") {
-          nextIndex = tabs.length - 1;
-        } else {
-          return;
-        }
-
-        event.preventDefault();
-        selectSizeTab(tabs[nextIndex].dataset.sizeTab, true);
-      });
-    });
+    addTabKeyboardNavigation(
+      subTabs,
+      selectSubTab,
+      "sizeSubtab"
+    );
 
     closeButton.addEventListener("click", closeSizeGuide);
 
@@ -1583,19 +1780,29 @@
       }
 
       if (event.key === "Tab") {
-        const focusableElements = dialog.querySelectorAll(
-          'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
+        const focusableElements = Array.from(
+          dialog.querySelectorAll(
+            'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((element) => {
+          return !element.closest("[hidden]");
+        });
 
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
 
         if (!firstElement || !lastElement) return;
 
-        if (event.shiftKey && document.activeElement === firstElement) {
+        if (
+          event.shiftKey &&
+          document.activeElement === firstElement
+        ) {
           event.preventDefault();
           lastElement.focus();
-        } else if (!event.shiftKey && document.activeElement === lastElement) {
+        } else if (
+          !event.shiftKey &&
+          document.activeElement === lastElement
+        ) {
           event.preventDefault();
           firstElement.focus();
         }
