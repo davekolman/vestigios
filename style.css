@@ -1421,7 +1421,10 @@ footer small:last-child {
   will-change: transform;
   user-select: none;
   -webkit-user-select: none;
-  pointer-events: none;
+
+  /* Permite que el video reciba la interacción del visitante. */
+  pointer-events: auto;
+
   z-index: 1;
 }
 
@@ -1438,6 +1441,8 @@ footer small:last-child {
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
+
+  /* Evita que las imágenes intercepten los gestos del visor. */
   pointer-events: none;
 }
 
@@ -1465,7 +1470,11 @@ footer small:last-child {
   max-width: 100%;
   object-fit: contain;
   box-sizing: border-box;
-  pointer-events: none;
+
+  /* El video sí debe poder pulsarse para reproducirlo. */
+  pointer-events: auto;
+  cursor: pointer;
+
   user-select: none;
 }
 
