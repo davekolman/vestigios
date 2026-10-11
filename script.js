@@ -1,1133 +1,768 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =========================================================
-     01. CONFIGURACIÓN GENERAL DE LOS VÍDEOS
-  ========================================================= */
+/* =========================================================
+CONFIGURACIÓN GENERAL DE LOS VÍDEOS
+========================================================= */
 
-  function prepareVideo(video) {
-    if (!video) return;
+function prepareVideo(video) {
+if (!video) return;
 
-    video.muted = true;
-    video.defaultMuted = true;
-    video.volume = 0;
-    video.playsInline = true;
+video.muted = true;  
+video.defaultMuted = true;  
+video.volume = 0;  
+video.controls = false;  
+video.playsInline = true;  
 
-    video.setAttribute("muted", "");
-    video.setAttribute("playsinline", "");
-    video.setAttribute("webkit-playsinline", "");
-    video.setAttribute("disablepictureinpicture", "");
-    video.setAttribute("controlslist", "nodownload noplaybackrate");
+video.setAttribute("muted", "");  
+video.setAttribute("playsinline", "");  
+video.setAttribute("webkit-playsinline", "");  
+video.setAttribute("disablepictureinpicture", "");  
+video.setAttribute("controlslist", "nodownload noplaybackrate");  
+video.removeAttribute("controls");
 
-    video.controls = false;
-    video.removeAttribute("controls");
-  }
+}
 
+function playVideo(video) {
+if (!video) return;
 
-  function playVideo(video) {
-    if (!video) return;
+prepareVideo(video);  
 
-    prepareVideo(video);
+const promise = video.play();  
 
-    const promise = video.play();
+if (promise && typeof promise.catch === "function") {  
+  promise.catch(() => {  
+    // El navegador puede bloquear el autoplay.  
+    // No mostramos controles como alternativa.  
+  });  
+}
 
-    if (promise && typeof promise.catch === "function") {
-      promise.catch(() => {
-        // El navegador puede bloquear la reproducción.
-      });
-    }
-  }
+}
 
+function pauseVideo(video, reset = false) {
+if (!video) return;
 
-  function pauseVideo(video, reset = false) {
-    if (!video) return;
+video.pause();  
 
-    video.pause();
+if (reset) {  
+  try {  
+    video.currentTime = 0;  
+  } catch (error) {  
+    // El vídeo puede no haber terminado de cargar.  
+  }  
+}
 
-    if (reset) {
-      try {
-        video.currentTime = 0;
-      } catch (error) {
-        // El vídeo puede no haber terminado de cargar.
-      }
-    }
-  }
+}
 
+/* Evitar controles nativos en todos los vídeos de la página. */
 
-  document.querySelectorAll("video").forEach((video) => {
-    prepareVideo(video);
-  });
+document.querySelectorAll("video").forEach((video) => {
+prepareVideo(video);
+});
 
+/* =========================================================
+VIDEO DE PORTADA
+========================================================= */
 
-  /* =========================================================
-     02. BOTONES PERSONALIZADOS DE REPRODUCCIÓN
-  ========================================================= */
+const heroVideo = document.getElementById("hero-video");
 
-  function createPlayButton(className, label) {
-    const button = document.createElement("button");
+if (heroVideo) {
+prepareVideo(heroVideo);
 
-    button.type = "button";
-    button.className = `video-play-toggle ${className}`;
-    button.setAttribute("aria-label", label);
-    button.setAttribute("aria-pressed", "false");
+heroVideo.loop = true;  
+heroVideo.autoplay = true;  
 
-    return button;
-  }
+heroVideo.setAttribute("autoplay", "");  
+heroVideo.setAttribute("loop", "");  
 
+const startHeroVideo = () => {  
+  if (document.hidden) return;  
+  playVideo(heroVideo);  
+};  
 
-  function setPlayButtonState(button, video) {
-    if (!button || !video) return;
+if (heroVideo.readyState >= 2) {  
+  startHeroVideo();  
+} else {  
+  heroVideo.addEventListener("canplay", startHeroVideo, {  
+    once: true  
+  });  
+}  
 
-    const isPlaying = !video.paused && !video.ended;
+window.addEventListener("pageshow", startHeroVideo);  
 
-    button.classList.toggle("is-hidden", isPlaying);
+document.addEventListener("visibilitychange", () => {  
+  if (!document.hidden) {  
+    startHeroVideo();  
+  } else {  
+    pauseVideo(heroVideo);  
+  }  
+});
 
-    button.setAttribute(
-      "aria-label",
-      isPlaying ? "Pausar vídeo" : "Reproducir vídeo"
-    );
+}
 
-    button.setAttribute(
-      "aria-pressed",
-      isPlaying ? "true" : "false"
-    );
-  }
+/* =========================================================
+VIDEO DE PROCESO
+========================================================= */
+
+const processVideo = document.getElementById("process-video");
 
+if (processVideo) {
+prepareVideo(processVideo);
+
+processVideo.loop = true;  
+processVideo.autoplay = true;  
+
+processVideo.setAttribute("autoplay", "");  
+processVideo.setAttribute("loop", "");  
+
+const startProcessVideo = () => {  
+  if (document.hidden) return;  
+  playVideo(processVideo);  
+};  
 
-  function toggleVideo(video) {
-    if (!video) return;
+if (processVideo.readyState >= 2) {  
+  startProcessVideo();  
+} else {  
+  processVideo.addEventListener("canplay", startProcessVideo, {  
+    once: true  
+  });  
+}  
 
-    if (video.paused || video.ended) {
+document.addEventListener("visibilitychange", () => {  
+  if (!document.hidden) {  
+    startProcessVideo();  
+  } else {  
+    pauseVideo(processVideo);  
+  }  
+});
+
+}
 
-      if (video.ended) {
-        try {
-          video.currentTime = 0;
-        } catch (error) {
-          // El vídeo puede no haber terminado de cargar.
-        }
-      }
-
-      playVideo(video);
-
-    } else {
-      pauseVideo(video);
-    }
-  }
-
-
-  function watchVideoButton(button, video, isActive) {
-    if (!button || !video) return;
-
-    const update = () => {
-      if (isActive()) {
-        setPlayButtonState(button, video);
-      }
-    };
+/* =========================================================
+MENÚ MÓVIL
+========================================================= */
 
-    ["play", "playing", "pause", "ended", "error"].forEach((eventName) => {
-      video.addEventListener(eventName, update);
-    });
-  }
+const menuToggle = document.querySelector(".menu-toggle");
+const mainNav = document.getElementById("main-nav");
+const siteHeader = document.querySelector(".site-header");
 
+function closeMenu() {
+if (!menuToggle || !mainNav) return;
 
-  /* =========================================================
-     03. VÍDEO DE PORTADA
-  ========================================================= */
+menuToggle.setAttribute("aria-expanded", "false");  
+menuToggle.setAttribute("aria-label", "Abrir menú");  
 
-  const heroVideo =
-    document.getElementById("hero-video") ||
-    document.querySelector(".hero video");
+mainNav.classList.remove("open");  
+document.body.classList.remove("menu-open");
+
+}
 
-  if (heroVideo) {
-    prepareVideo(heroVideo);
+function openMenu() {
+if (!menuToggle || !mainNav) return;
 
-    heroVideo.loop = true;
-    heroVideo.autoplay = true;
+menuToggle.setAttribute("aria-expanded", "true");  
+menuToggle.setAttribute("aria-label", "Cerrar menú");  
 
-    heroVideo.setAttribute("autoplay", "");
-    heroVideo.setAttribute("loop", "");
+mainNav.classList.add("open");  
+document.body.classList.add("menu-open");
 
-    const startHeroVideo = () => {
-      if (document.hidden) return;
-      playVideo(heroVideo);
-    };
+}
 
-    if (heroVideo.readyState >= 2) {
-      startHeroVideo();
-    } else {
-      heroVideo.addEventListener("canplay", startHeroVideo, {
-        once: true
-      });
-    }
+if (menuToggle && mainNav) {
 
-    window.addEventListener("pageshow", startHeroVideo);
+menuToggle.addEventListener("click", (event) => {  
+  event.preventDefault();  
+  event.stopPropagation();  
 
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        pauseVideo(heroVideo);
-      } else {
-        startHeroVideo();
-      }
-    });
-  }
+  const isExpanded =  
+    menuToggle.getAttribute("aria-expanded") === "true";  
 
+  if (isExpanded) {  
+    closeMenu();  
+  } else {  
+    openMenu();  
+  }  
+});  
 
-  /* =========================================================
-     04. VÍDEO DE PROCESO
-  ========================================================= */
+mainNav.querySelectorAll('a[href^="#"]').forEach((link) => {  
+  link.addEventListener("click", closeMenu);  
+});  
 
-  const processVideo =
-    document.getElementById("process-video") ||
-    document.querySelector(".process video");
+document.addEventListener("click", (event) => {  
+  if (  
+    mainNav.classList.contains("open") &&  
+    siteHeader &&  
+    !siteHeader.contains(event.target)  
+  ) {  
+    closeMenu();  
+  }  
+});  
 
-  if (processVideo) {
-    prepareVideo(processVideo);
+document.addEventListener("keydown", (event) => {  
+  if (event.key === "Escape") {  
+    closeMenu();  
+  }  
+});  
 
-    processVideo.loop = true;
-    processVideo.autoplay = true;
+window.addEventListener("resize", () => {  
+  if (window.innerWidth > 700) {  
+    closeMenu();  
+  }  
+});
 
-    processVideo.setAttribute("autoplay", "");
-    processVideo.setAttribute("loop", "");
+}
 
-    const startProcessVideo = () => {
-      if (document.hidden) return;
-      playVideo(processVideo);
-    };
+/* =========================================================
+BOTÓN VOLVER ARRIBA
+========================================================= */
+
+const backToTop = document.getElementById("back-to-top");
 
-    if (processVideo.readyState >= 2) {
-      startProcessVideo();
-    } else {
-      processVideo.addEventListener("canplay", startProcessVideo, {
-        once: true
-      });
-    }
+if (backToTop) {
+
+const updateBackToTop = () => {  
+  const scrollPosition =  
+    window.scrollY ||  
+    document.documentElement.scrollTop ||  
+    0;  
 
-    window.addEventListener("pageshow", startProcessVideo);
+  backToTop.classList.toggle(  
+    "visible",  
+    scrollPosition > 120  
+  );  
+};  
 
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        pauseVideo(processVideo);
-      } else {
-        startProcessVideo();
-      }
-    });
-  }
+window.addEventListener("scroll", updateBackToTop, {  
+  passive: true  
+});  
 
+window.addEventListener("resize", updateBackToTop, {  
+  passive: true  
+});  
 
-  /* =========================================================
-     05. MENÚ MÓVIL
-  ========================================================= */
+window.addEventListener("pageshow", updateBackToTop);  
 
-  const menuToggle = document.querySelector(".menu-toggle");
-  const mainNav = document.getElementById("main-nav");
-  const siteHeader = document.querySelector(".site-header");
+updateBackToTop();  
 
+backToTop.addEventListener("click", () => {  
+  const reduceMotion = window.matchMedia(  
+    "(prefers-reduced-motion: reduce)"  
+  ).matches;  
 
-  function closeMenu() {
-    if (!menuToggle || !mainNav) return;
+  window.scrollTo({  
+    top: 0,  
+    behavior: reduceMotion ? "auto" : "smooth"  
+  });  
+});
 
-    menuToggle.setAttribute("aria-expanded", "false");
-    menuToggle.setAttribute("aria-label", "Abrir menú");
+}
 
-    mainNav.classList.remove("open");
-    document.body.classList.remove("menu-open");
-  }
+/* =========================================================
+VARIABLES DEL LIGHTBOX
+========================================================= */
 
+let lightbox = null;
+let lightboxTrack = null;
+let lightboxSlides = [];
+let lightboxCurrent = 0;
 
-  function openMenu() {
-    if (!menuToggle || !mainNav) return;
+/* =========================================================
+CREAR LIGHTBOX
+========================================================= */
 
-    menuToggle.setAttribute("aria-expanded", "true");
-    menuToggle.setAttribute("aria-label", "Cerrar menú");
+function createLightbox() {
 
-    mainNav.classList.add("open");
-    document.body.classList.add("menu-open");
-  }
+if (lightbox) return;  
 
+lightbox = document.createElement("div");  
+lightbox.className = "lightbox";  
 
-  if (menuToggle && mainNav) {
+lightbox.innerHTML = `  
+  <button  
+    class="lightbox-close"  
+    type="button"  
+    aria-label="Cerrar visor"  
+  >×</button>  
 
-    menuToggle.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+  <button  
+    class="lightbox-arrow lightbox-prev"  
+    type="button"  
+    aria-label="Imagen anterior"  
+  >‹</button>  
 
-      const isExpanded =
-        menuToggle.getAttribute("aria-expanded") === "true";
+  <div class="lightbox-window">  
+    <div class="lightbox-track"></div>  
+  </div>  
 
-      if (isExpanded) {
-        closeMenu();
-      } else {
-        openMenu();
-      }
-    });
+  <button  
+    class="lightbox-arrow lightbox-next"  
+    type="button"  
+    aria-label="Siguiente imagen"  
+  >›</button>  
+`;  
 
+document.body.appendChild(lightbox);  
 
-    mainNav.querySelectorAll('a[href^="#"]').forEach((link) => {
-      link.addEventListener("click", closeMenu);
-    });
+lightboxTrack = lightbox.querySelector(".lightbox-track");  
 
+const closeButton = lightbox.querySelector(".lightbox-close");  
+const prevButton = lightbox.querySelector(".lightbox-prev");  
+const nextButton = lightbox.querySelector(".lightbox-next");  
+const lightboxWindow = lightbox.querySelector(".lightbox-window");  
 
-    document.addEventListener("click", (event) => {
-      if (
-        mainNav.classList.contains("open") &&
-        siteHeader &&
-        !siteHeader.contains(event.target)
-      ) {
-        closeMenu();
-      }
-    });
+closeButton.addEventListener("click", (event) => {  
+  event.preventDefault();  
+  event.stopPropagation();  
+  closeLightbox();  
+});  
 
+prevButton.addEventListener("click", (event) => {  
+  event.preventDefault();  
+  event.stopPropagation();  
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        closeMenu();
-      }
-    });
+  if (!lightboxSlides.length) return;  
 
+  lightboxCurrent--;  
 
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 700) {
-        closeMenu();
-      }
-    });
-  }
+  if (lightboxCurrent < 0) {  
+    lightboxCurrent = lightboxSlides.length - 1;  
+  }  
 
+  updateLightbox();  
+});  
 
-  /* =========================================================
-     06. BOTÓN VOLVER ARRIBA
-  ========================================================= */
+nextButton.addEventListener("click", (event) => {  
+  event.preventDefault();  
+  event.stopPropagation();  
 
-  const backToTop = document.getElementById("back-to-top");
+  if (!lightboxSlides.length) return;  
 
-  if (backToTop) {
+  lightboxCurrent++;  
 
-    const updateBackToTop = () => {
-      const scrollPosition =
-        window.scrollY ||
-        document.documentElement.scrollTop ||
-        0;
+  if (lightboxCurrent >= lightboxSlides.length) {  
+    lightboxCurrent = 0;  
+  }  
 
-      backToTop.classList.toggle(
-        "visible",
-        scrollPosition > 120
-      );
-    };
+  updateLightbox();  
+});  
 
+lightbox.addEventListener("click", (event) => {  
+  if (  
+    event.target === lightbox ||  
+    event.target === lightboxWindow  
+  ) {  
+    closeLightbox();  
+  }  
+});  
 
-    window.addEventListener("scroll", updateBackToTop, {
-      passive: true
-    });
+document.addEventListener("keydown", (event) => {  
+  if (!lightbox.classList.contains("active")) return;  
 
-    window.addEventListener("resize", updateBackToTop, {
-      passive: true
-    });
+  if (event.key === "Escape") {  
+    closeLightbox();  
+    return;  
+  }  
 
-    window.addEventListener("pageshow", updateBackToTop);
+  if (!lightboxSlides.length) return;  
 
-    updateBackToTop();
+  if (event.key === "ArrowRight") {  
+    lightboxCurrent++;  
 
+    if (lightboxCurrent >= lightboxSlides.length) {  
+      lightboxCurrent = 0;  
+    }  
 
-    backToTop.addEventListener("click", () => {
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
+    updateLightbox();  
+  }  
 
-      window.scrollTo({
-        top: 0,
-        behavior: reduceMotion ? "auto" : "smooth"
-      });
-    });
-  }
+  if (event.key === "ArrowLeft") {  
+    lightboxCurrent--;  
 
+    if (lightboxCurrent < 0) {  
+      lightboxCurrent = lightboxSlides.length - 1;  
+    }  
 
-  /* =========================================================
-     07. VARIABLES DEL LIGHTBOX
-  ========================================================= */
+    updateLightbox();  
+  }  
+});
 
-  let lightbox = null;
-  let lightboxTrack = null;
-  let lightboxWindow = null;
-  let lightboxSlides = [];
-  let lightboxCurrent = 0;
-  let lightboxPlayButton = null;
+}
 
-  let lightboxTouchStartX = 0;
-  let lightboxTouchStartY = 0;
-  let lightboxTouchCurrentX = 0;
-  let lightboxTouchCurrentY = 0;
-  let lightboxGestureDirection = null;
-  let lightboxSuppressClickUntil = 0;
+/* =========================================================
+ABRIR LIGHTBOX
+========================================================= */
 
+function openLightbox(slides, startIndex) {
 
-  /* =========================================================
-     08. FUNCIONES DE NAVEGACIÓN DEL LIGHTBOX
-  ========================================================= */
+createLightbox();  
 
-  function goToLightboxSlide(direction) {
-    if (!lightboxSlides.length) return;
+// Detener los vídeos de las galerías al abrir el visor.  
+document.querySelectorAll(".gallery video").forEach((video) => {  
+  pauseVideo(video);  
+});  
 
-    lightboxCurrent += direction;
+lightboxSlides = Array.from(slides);  
+lightboxCurrent = Number(startIndex) || 0;  
 
-    if (lightboxCurrent < 0) {
-      lightboxCurrent = lightboxSlides.length - 1;
-    }
+lightboxTrack.innerHTML = "";  
 
-    if (lightboxCurrent >= lightboxSlides.length) {
-      lightboxCurrent = 0;
-    }
+lightboxSlides.forEach((slide) => {  
 
-    updateLightbox();
-  }
+  const clone = slide.cloneNode(true);  
 
+  clone.removeAttribute("style");  
 
-  /* =========================================================
-     09. CREAR LIGHTBOX
-  ========================================================= */
+  if (clone.tagName === "VIDEO") {  
+    prepareVideo(clone);  
 
-  function createLightbox() {
-    if (lightbox) return;
+    clone.controls = false;  
+    clone.loop = true;  
+    clone.autoplay = false;  
 
-    lightbox = document.createElement("div");
-    lightbox.className = "lightbox";
+    clone.removeAttribute("controls");  
+    clone.removeAttribute("autoplay");  
+  }  
 
-    lightbox.innerHTML = `
-      <button
-        class="lightbox-close"
-        type="button"
-        aria-label="Cerrar visor"
-      >×</button>
+  clone.addEventListener("click", (event) => {  
+    event.preventDefault();  
+    event.stopPropagation();  
+  });  
 
-      <button
-        class="lightbox-arrow lightbox-prev"
-        type="button"
-        aria-label="Imagen anterior"
-      >‹</button>
+  lightboxTrack.appendChild(clone);  
+});  
 
-      <div class="lightbox-window">
-        <div class="lightbox-track"></div>
-      </div>
+lightbox.classList.add("active");  
+document.body.classList.add("lightbox-open");  
 
-      <button
-        class="lightbox-arrow lightbox-next"
-        type="button"
-        aria-label="Siguiente imagen"
-      >›</button>
-    `;
+updateLightbox();
 
-    document.body.appendChild(lightbox);
+}
 
-    lightboxTrack = lightbox.querySelector(".lightbox-track");
-    lightboxWindow = lightbox.querySelector(".lightbox-window");
+/* =========================================================
+ACTUALIZAR LIGHTBOX
+========================================================= */
 
-    const closeButton =
-      lightbox.querySelector(".lightbox-close");
+function updateLightbox() {
 
-    const prevButton =
-      lightbox.querySelector(".lightbox-prev");
+if (!lightboxTrack || !lightboxSlides.length) return;  
 
-    const nextButton =
-      lightbox.querySelector(".lightbox-next");
+if (lightboxCurrent < 0) {  
+  lightboxCurrent = lightboxSlides.length - 1;  
+}  
 
+if (lightboxCurrent >= lightboxSlides.length) {  
+  lightboxCurrent = 0;  
+}  
 
-    /* Botón de reproducción del vídeo activo. */
+lightboxTrack.style.transform =  
+  `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;  
 
-    lightboxPlayButton = createPlayButton(
-      "lightbox-video-play",
-      "Reproducir vídeo"
-    );
+const slides = Array.from(lightboxTrack.children);  
 
-    lightboxWindow.appendChild(lightboxPlayButton);
+slides.forEach((slide, index) => {  
 
+  if (slide.tagName !== "VIDEO") return;  
 
-    /*
-      CORRECCIÓN IMPORTANTE:
-      el botón del lightbox ahora tiene su propia acción.
-      Antes se creaba, pero no tenía un controlador que
-      reprodujera o pausara el vídeo activo.
-    */
+  prepareVideo(slide);  
 
-    lightboxPlayButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+  if (index === lightboxCurrent) {  
+    playVideo(slide);  
+  } else {  
+    pauseVideo(slide, true);  
+  }  
+});
 
-      if (Date.now() < lightboxSuppressClickUntil) return;
+}
 
-      const activeSlide =
-        lightboxTrack.children[lightboxCurrent];
+/* =========================================================
+CERRAR LIGHTBOX
+========================================================= */
 
-      if (!activeSlide || activeSlide.tagName !== "VIDEO") {
-        return;
-      }
+function closeLightbox() {
 
-      toggleVideo(activeSlide);
-      updateLightboxPlayButton();
-    });
+if (!lightbox) return;  
 
+lightbox.classList.remove("active");  
+document.body.classList.remove("lightbox-open");  
 
-    closeButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+lightbox.querySelectorAll("video").forEach((video) => {  
+  pauseVideo(video, true);  
+});
 
-      closeLightbox();
-    });
+}
 
+/* =========================================================
+INICIALIZAR GALERÍAS
+========================================================= */
 
-    prevButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+const galleries = document.querySelectorAll(".gallery");
 
-      goToLightboxSlide(-1);
-    });
+galleries.forEach((gallery) => {
 
+const track = gallery.querySelector(".gallery-track");  
 
-    nextButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+const prevButton =  
+  gallery.querySelector(".gallery-arrow.prev");  
 
-      goToLightboxSlide(1);
-    });
+const nextButton =  
+  gallery.querySelector(".gallery-arrow.next");  
 
+if (!track) return;  
 
-    lightbox.addEventListener("click", (event) => {
+const slides = Array.from(  
+  track.querySelectorAll("img, video")  
+);  
 
-      if (Date.now() < lightboxSuppressClickUntil) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
+const total = slides.length;  
 
-      if (
-        event.target === lightbox ||
-        event.target === lightboxWindow
-      ) {
-        closeLightbox();
-      }
-    });
+if (!total) return;  
 
+let current = 0;  
+let suppressClickUntil = 0;  
 
-    /* =====================================================
-       GESTOS TÁCTILES DEL LIGHTBOX
-    ===================================================== */
 
-    lightboxWindow.addEventListener("touchstart", (event) => {
-      if (!event.touches || !event.touches.length) return;
+/* =====================================================  
+   ACTUALIZAR CARRUSEL  
+===================================================== */  
 
-      const touch = event.touches[0];
+function updateGallery() {  
 
-      lightboxTouchStartX = touch.clientX;
-      lightboxTouchStartY = touch.clientY;
+  /*  
+    Usar la posición real de cada diapositiva evita  
+    depender del ancho total de la pista.  
+  */  
 
-      lightboxTouchCurrentX = touch.clientX;
-      lightboxTouchCurrentY = touch.clientY;
+  const activeSlide = slides[current];  
 
-      lightboxGestureDirection = null;
+  if (activeSlide) {  
+    track.style.transform =  
+      `translate3d(-${activeSlide.offsetLeft}px, 0, 0)`;  
+  }  
 
-    }, { passive: true });
+  slides.forEach((slide, index) => {  
 
+    if (slide.tagName !== "VIDEO") return;  
 
-    lightboxWindow.addEventListener("touchmove", (event) => {
-      if (!event.touches || !event.touches.length) return;
+    prepareVideo(slide);  
 
-      const touch = event.touches[0];
+    if (index === current) {  
+      playVideo(slide);  
+    } else {  
+      pauseVideo(slide, true);  
+    }  
+  });  
+}  
 
-      lightboxTouchCurrentX = touch.clientX;
-      lightboxTouchCurrentY = touch.clientY;
 
-      const differenceX =
-        lightboxTouchCurrentX - lightboxTouchStartX;
+/* =====================================================  
+   SIGUIENTE  
+===================================================== */  
 
-      const differenceY =
-        lightboxTouchCurrentY - lightboxTouchStartY;
+if (nextButton) {  
+  nextButton.addEventListener("click", (event) => {  
 
-      if (lightboxGestureDirection === null) {
-        const absX = Math.abs(differenceX);
-        const absY = Math.abs(differenceY);
+    event.preventDefault();  
+    event.stopPropagation();  
 
-        if (absX < 8 && absY < 8) return;
+    current++;  
 
-        lightboxGestureDirection =
-          absX > absY ? "horizontal" : "vertical";
-      }
+    if (current >= total) {  
+      current = 0;  
+    }  
 
-      if (lightboxGestureDirection === "horizontal") {
-        event.preventDefault();
-      }
+    updateGallery();  
+  });  
+}  
 
-    }, { passive: false });
 
+/* =====================================================  
+   ANTERIOR  
+===================================================== */  
 
-    lightboxWindow.addEventListener("touchend", () => {
+if (prevButton) {  
+  prevButton.addEventListener("click", (event) => {  
 
-      if (lightboxGestureDirection !== "horizontal") {
-        lightboxGestureDirection = null;
-        return;
-      }
+    event.preventDefault();  
+    event.stopPropagation();  
 
-      const difference =
-        lightboxTouchStartX - lightboxTouchCurrentX;
+    current--;  
 
-      if (Math.abs(difference) >= 50) {
-        lightboxSuppressClickUntil = Date.now() + 500;
+    if (current < 0) {  
+      current = total - 1;  
+    }  
 
-        if (difference > 0) {
-          goToLightboxSlide(1);
-        } else {
-          goToLightboxSlide(-1);
-        }
-      }
+    updateGallery();  
+  });  
+}  
 
-      lightboxGestureDirection = null;
 
-    }, { passive: true });
+/* =====================================================  
+   GESTOS TÁCTILES  
+===================================================== */  
 
+let touchStartX = 0;  
+let touchStartY = 0;  
+let touchCurrentX = 0;  
+let touchCurrentY = 0;  
+let gestureDirection = null;  
 
-    lightboxWindow.addEventListener("touchcancel", () => {
-      lightboxGestureDirection = null;
-    }, { passive: true });
+gallery.addEventListener("touchstart", (event) => {  
 
+  if (!event.touches || !event.touches.length) return;  
 
-    /* =====================================================
-       TECLADO
-    ===================================================== */
+  const touch = event.touches[0];  
 
-    document.addEventListener("keydown", (event) => {
-      if (!lightbox.classList.contains("active")) return;
+  touchStartX = touch.clientX;  
+  touchStartY = touch.clientY;  
 
-      if (event.key === "Escape") {
-        closeLightbox();
-        return;
-      }
+  touchCurrentX = touchStartX;  
+  touchCurrentY = touchStartY;  
 
-      if (event.key === "ArrowRight") {
-        goToLightboxSlide(1);
-      }
+  gestureDirection = null;  
 
-      if (event.key === "ArrowLeft") {
-        goToLightboxSlide(-1);
-      }
-    });
-  }
+}, { passive: true });  
 
 
-  /* =========================================================
-     10. ACTUALIZAR BOTÓN DE REPRODUCCIÓN DEL LIGHTBOX
-  ========================================================= */
+gallery.addEventListener("touchmove", (event) => {  
 
-  function updateLightboxPlayButton() {
-    if (!lightboxPlayButton || !lightboxTrack) return;
+  if (!event.touches || !event.touches.length) return;  
 
-    const activeSlide =
-      lightboxTrack.children[lightboxCurrent];
+  const touch = event.touches[0];  
 
-    const isVideo =
-      activeSlide && activeSlide.tagName === "VIDEO";
+  touchCurrentX = touch.clientX;  
+  touchCurrentY = touch.clientY;  
 
-    lightboxPlayButton.classList.toggle(
-      "is-hidden",
-      !isVideo
-    );
+  const differenceX = touchCurrentX - touchStartX;  
+  const differenceY = touchCurrentY - touchStartY;  
 
-    if (isVideo) {
-      setPlayButtonState(lightboxPlayButton, activeSlide);
-    } else {
-      lightboxPlayButton.setAttribute("aria-pressed", "false");
-      lightboxPlayButton.setAttribute(
-        "aria-label",
-        "Reproducir vídeo"
-      );
-    }
-  }
+  if (gestureDirection === null) {  
 
+    const absX = Math.abs(differenceX);  
+    const absY = Math.abs(differenceY);  
 
-  /* =========================================================
-     11. ABRIR LIGHTBOX
-  ========================================================= */
+    if (absX < 8 && absY < 8) return;  
 
-  function openLightbox(slides, startIndex) {
-    createLightbox();
+    if (absY > absX) {  
+      gestureDirection = "vertical";  
+      return;  
+    }  
 
-    /*
-      Pausar y reiniciar los vídeos de las galerías
-      antes de abrir el visor.
-    */
+    gestureDirection = "horizontal";  
+  }  
 
-    document.querySelectorAll(".gallery video").forEach((video) => {
-      pauseVideo(video, true);
-    });
+  if (gestureDirection === "horizontal") {  
+    event.preventDefault();  
+  }  
 
-    lightboxSlides = Array.from(slides);
+}, { passive: false });  
 
-    lightboxCurrent = Number(startIndex) || 0;
 
-    lightboxTrack.innerHTML = "";
+gallery.addEventListener("touchend", () => {  
 
-    lightboxSlides.forEach((slide) => {
-      const clone = slide.cloneNode(true);
+  if (gestureDirection !== "horizontal") {  
+    gestureDirection = null;  
+    return;  
+  }  
 
-      clone.removeAttribute("style");
+  const difference = touchStartX - touchCurrentX;  
 
-      if (clone.tagName === "VIDEO") {
-        prepareVideo(clone);
+  if (Math.abs(difference) < 50) {  
+    gestureDirection = null;  
+    return;  
+  }  
 
-        clone.controls = false;
-        clone.loop = false;
-        clone.autoplay = false;
+  if (difference > 0) {  
+    current++;  
 
-        clone.removeAttribute("controls");
-        clone.removeAttribute("autoplay");
-        clone.removeAttribute("loop");
+    if (current >= total) {  
+      current = 0;  
+    }  
+  } else {  
+    current--;  
 
-        clone.pause();
+    if (current < 0) {  
+      current = total - 1;  
+    }  
+  }  
 
-        /*
-          Tocar el vídeo en el lightbox reproduce o pausa.
-          No abre otro visor ni cambia de diapositiva.
-        */
+  suppressClickUntil = Date.now() + 500;  
 
-        clone.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
+  updateGallery();  
 
-          if (Date.now() < lightboxSuppressClickUntil) return;
+  gestureDirection = null;  
 
-          if (
-            lightboxTrack.children[lightboxCurrent] !== clone
-          ) {
-            return;
-          }
+}, { passive: true });  
 
-          toggleVideo(clone);
-          updateLightboxPlayButton();
-        });
 
-        watchVideoButton(
-          lightboxPlayButton,
-          clone,
-          () =>
-            lightboxTrack &&
-            lightboxTrack.children[lightboxCurrent] === clone
-        );
+gallery.addEventListener("touchcancel", () => {  
+  gestureDirection = null;  
+}, { passive: true });  
 
-      } else {
-        clone.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-        });
-      }
 
-      lightboxTrack.appendChild(clone);
-    });
+/* =====================================================  
+   ABRIR VISOR AL TOCAR UNA IMAGEN O VÍDEO  
+===================================================== */  
 
-    lightbox.classList.add("active");
-    document.body.classList.add("lightbox-open");
+slides.forEach((slide, index) => {  
 
-    updateLightbox();
-  }
+  slide.style.cursor = "pointer";  
 
+  slide.addEventListener("click", (event) => {  
 
-  /* =========================================================
-     12. ACTUALIZAR LIGHTBOX
-  ========================================================= */
+    if (Date.now() < suppressClickUntil) {  
+      event.preventDefault();  
+      event.stopPropagation();  
+      return;  
+    }  
 
-  function updateLightbox() {
-    if (!lightboxTrack || !lightboxSlides.length) return;
+    event.preventDefault();  
+    event.stopPropagation();  
 
-    if (lightboxCurrent < 0) {
-      lightboxCurrent = lightboxSlides.length - 1;
-    }
+    openLightbox(slides, index);  
+  });  
+});  
 
-    if (lightboxCurrent >= lightboxSlides.length) {
-      lightboxCurrent = 0;
-    }
 
-    /*
-      Al cambiar de diapositiva, ningún vídeo anterior
-      debe seguir reproduciéndose.
-    */
+/* =====================================================  
+   INICIALIZAR Y REAJUSTAR  
+===================================================== */  
 
-    Array.from(lightboxTrack.children).forEach((slide) => {
-      if (slide.tagName === "VIDEO") {
-        pauseVideo(slide, true);
-      }
-    });
+updateGallery();  
 
-    lightboxTrack.style.transform =
-      `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
+window.addEventListener("resize", updateGallery);  
 
-    updateLightboxPlayButton();
-  }
-
-
-  /* =========================================================
-     13. CERRAR LIGHTBOX
-  ========================================================= */
-
-  function closeLightbox() {
-    if (!lightbox) return;
-
-    lightbox.classList.remove("active");
-    document.body.classList.remove("lightbox-open");
-
-    lightbox.querySelectorAll("video").forEach((video) => {
-      pauseVideo(video, true);
-    });
-
-    if (lightboxPlayButton) {
-      lightboxPlayButton.classList.add("is-hidden");
-    }
-  }
-
-
-  /* =========================================================
-     14. INICIALIZAR GALERÍAS
-  ========================================================= */
-
-  const galleries = document.querySelectorAll(".gallery");
-
-  galleries.forEach((gallery) => {
-    const track = gallery.querySelector(".gallery-track");
-
-    const prevButton =
-      gallery.querySelector(".gallery-arrow.prev");
-
-    const nextButton =
-      gallery.querySelector(".gallery-arrow.next");
-
-    if (!track) return;
-
-    const slides = Array.from(
-      track.querySelectorAll("img, video")
-    );
-
-    const total = slides.length;
-
-    if (!total) return;
-
-    let current = 0;
-    let suppressClickUntil = 0;
-
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchCurrentX = 0;
-    let touchCurrentY = 0;
-    let gestureDirection = null;
-
-
-    /* =====================================================
-       BOTÓN PLAY DE LA GALERÍA
-    ===================================================== */
-
-    const galleryPlayButton = createPlayButton(
-      "gallery-video-play",
-      "Reproducir vídeo"
-    );
-
-    gallery.appendChild(galleryPlayButton);
-
-
-    function updateGalleryPlayButton() {
-      const activeSlide = slides[current];
-
-      const isVideo =
-        activeSlide && activeSlide.tagName === "VIDEO";
-
-      galleryPlayButton.classList.toggle(
-        "is-hidden",
-        !isVideo
-      );
-
-      if (isVideo) {
-        setPlayButtonState(galleryPlayButton, activeSlide);
-      } else {
-        galleryPlayButton.setAttribute("aria-pressed", "false");
-        galleryPlayButton.setAttribute(
-          "aria-label",
-          "Reproducir vídeo"
-        );
-      }
-    }
-
-
-    galleryPlayButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      if (Date.now() < suppressClickUntil) return;
-
-      const activeSlide = slides[current];
-
-      if (!activeSlide || activeSlide.tagName !== "VIDEO") {
-        return;
-      }
-
-      toggleVideo(activeSlide);
-      updateGalleryPlayButton();
-    });
-
-
-    /* =====================================================
-       ACTUALIZAR GALERÍA
-    ===================================================== */
-
-    function updateGallery() {
-      /*
-        Usamos el índice de la diapositiva, no offsetLeft,
-        para mantener el desplazamiento consistente.
-      */
-
-      track.style.transform =
-        `translate3d(-${current * 100}%, 0, 0)`;
-
-      /*
-        Detener y reiniciar los vídeos al cambiar de pieza.
-      */
-
-      slides.forEach((slide) => {
-        if (slide.tagName === "VIDEO") {
-          prepareVideo(slide);
-          pauseVideo(slide, true);
-        }
-      });
-
-      updateGalleryPlayButton();
-    }
-
-
-    /* Mantener actualizado el botón ante eventos del vídeo. */
-
-    slides.forEach((slide) => {
-      if (slide.tagName !== "VIDEO") return;
-
-      watchVideoButton(
-        galleryPlayButton,
-        slide,
-        () => slides[current] === slide
-      );
-    });
-
-
-    /* =====================================================
-       FLECHA SIGUIENTE
-    ===================================================== */
-
-    if (nextButton) {
-      nextButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        current++;
-
-        if (current >= total) {
-          current = 0;
-        }
-
-        updateGallery();
-      });
-    }
-
-
-    /* =====================================================
-       FLECHA ANTERIOR
-    ===================================================== */
-
-    if (prevButton) {
-      prevButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        current--;
-
-        if (current < 0) {
-          current = total - 1;
-        }
-
-        updateGallery();
-      });
-    }
-
-
-    /* =====================================================
-       GESTOS TÁCTILES DE LA GALERÍA
-    ===================================================== */
-
-    gallery.addEventListener("touchstart", (event) => {
-      if (!event.touches || !event.touches.length) return;
-
-      const touch = event.touches[0];
-
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-
-      touchCurrentX = touchStartX;
-      touchCurrentY = touchStartY;
-
-      gestureDirection = null;
-
-    }, { passive: true });
-
-
-    gallery.addEventListener("touchmove", (event) => {
-      if (!event.touches || !event.touches.length) return;
-
-      const touch = event.touches[0];
-
-      touchCurrentX = touch.clientX;
-      touchCurrentY = touch.clientY;
-
-      const differenceX = touchCurrentX - touchStartX;
-      const differenceY = touchCurrentY - touchStartY;
-
-      if (gestureDirection === null) {
-        const absX = Math.abs(differenceX);
-        const absY = Math.abs(differenceY);
-
-        if (absX < 8 && absY < 8) return;
-
-        gestureDirection =
-          absX > absY ? "horizontal" : "vertical";
-      }
-
-      if (gestureDirection === "horizontal") {
-        event.preventDefault();
-      }
-
-    }, { passive: false });
-
-
-    gallery.addEventListener("touchend", () => {
-      if (gestureDirection !== "horizontal") {
-        gestureDirection = null;
-        return;
-      }
-
-      const difference = touchStartX - touchCurrentX;
-
-      if (Math.abs(difference) >= 50) {
-        if (difference > 0) {
-          current++;
-
-          if (current >= total) {
-            current = 0;
-          }
-        } else {
-          current--;
-
-          if (current < 0) {
-            current = total - 1;
-          }
-        }
-
-        /*
-          Impedir que el mismo gesto táctil termine
-          disparando el clic de la imagen o del vídeo.
-        */
-
-        suppressClickUntil = Date.now() + 500;
-
-        updateGallery();
-      }
-
-      gestureDirection = null;
-
-    }, { passive: true });
-
-
-    gallery.addEventListener("touchcancel", () => {
-      gestureDirection = null;
-    }, { passive: true });
-
-
-    /* =====================================================
-       INTERACCIÓN CON FOTOGRAFÍAS Y VÍDEOS
-    ===================================================== */
-
-    slides.forEach((slide, index) => {
-      slide.style.cursor = "pointer";
-
-      if (slide.tagName === "VIDEO") {
-        /*
-          Tocar el vídeo de una galería solo reproduce
-          o pausa. Nunca abre el lightbox.
-        */
-
-        slide.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-
-          if (Date.now() < suppressClickUntil) return;
-
-          if (slides[current] !== slide) return;
-
-          toggleVideo(slide);
-          updateGalleryPlayButton();
-        });
-
-      } else {
-        /*
-          Las fotografías sí abren el lightbox.
-        */
-
-        slide.addEventListener("click", (event) => {
-          if (Date.now() < suppressClickUntil) {
-            event.preventDefault();
-            event.stopPropagation();
-            return;
-          }
-
-          event.preventDefault();
-          event.stopPropagation();
-
-          openLightbox(slides, index);
-        });
-      }
-    });
-
-
-    /* =====================================================
-       INICIALIZAR Y REAJUSTAR
-    ===================================================== */
-
-    updateGallery();
-
-    window.addEventListener("resize", updateGallery);
-
-    window.addEventListener("orientationchange", () => {
-      requestAnimationFrame(updateGallery);
-    });
-
-  });
-
-
-  /* =========================================================
-     15. AL VOLVER A LA PÁGINA
-  ========================================================= */
-
-  window.addEventListener("pageshow", () => {
-    if (!document.hidden && heroVideo) {
-      playVideo(heroVideo);
-    }
-
-    if (!document.hidden && processVideo) {
-      playVideo(processVideo);
-    }
-
-    /*
-      Las piezas no se reproducen automáticamente
-      al restaurar la página.
-    */
-
-    document.querySelectorAll(".gallery video").forEach((video) => {
-      prepareVideo(video);
-      pauseVideo(video);
-    });
-
-    if (lightbox) {
-      lightbox.querySelectorAll("video").forEach((video) => {
-        pauseVideo(video);
-      });
-
-      updateLightboxPlayButton();
-    }
-  });
+window.addEventListener("orientationchange", () => {  
+  requestAnimationFrame(updateGallery);  
+});
 
 });
 
+/* =========================================================
+REVISAR VÍDEOS AL VOLVER A LA PÁGINA
+========================================================= */
+
+window.addEventListener("pageshow", () => {
+
+if (!document.hidden && heroVideo) {  
+  playVideo(heroVideo);  
+}  
+
+if (!document.hidden && processVideo) {  
+  playVideo(processVideo);  
+}  
+
+document.querySelectorAll(".gallery").forEach((gallery) => {  
+  const track = gallery.querySelector(".gallery-track");  
+  if (!track) return;  
+
+  const activeVideo = track.querySelector("video");  
+
+  if (activeVideo && !lightbox?.classList.contains("active")) {  
+    // La galería gestiona el vídeo activo al navegar.  
+    // No iniciar vídeos ocultos indiscriminadamente.  
+    prepareVideo(activeVideo);  
+  }  
+});
+
+});
+
+});
