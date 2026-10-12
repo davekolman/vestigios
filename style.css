@@ -557,6 +557,9 @@ font: 400 clamp(2.8rem, 5vw, 5.5rem) / 0.9
 var(--font-editorial);
 margin: 16px 0 25px;
 color: var(--color-text);
+word-break: normal;
+overflow-wrap: normal;
+hyphens: none;
 }
 
 .copy p {
