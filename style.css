@@ -1620,3 +1620,120 @@ scroll-behavior: auto;
 transition-duration: 0.01ms !important;
 }
 }
+
+
+/* =========================
+   VIDEO OPCIONAL EN GALERÍAS
+   ========================= */
+
+.gallery-video-slide {
+  position: relative;
+  display: flex;
+  flex: 0 0 100%;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.gallery-track .gallery-video-slide video.gallery-optional-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Botón minimalista de reproducción */
+
+.gallery-video-play,
+.lightbox-video-toggle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0;
+  padding: 0 0 0 3px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #15151370;
+  border-radius: 50%;
+  background: rgba(245, 244, 240, 0.9);
+  color: #151513;
+  font-family: Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gallery-video-play:hover,
+.lightbox-video-toggle:hover {
+  background: #f5f4f0;
+}
+
+/* Interacción limitada al video opcional ampliado.
+   Las fotografías conservan su comportamiento actual. */
+
+.lightbox-track > .lightbox-video-slide {
+  position: relative;
+  display: flex;
+  flex: 0 0 100%;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.lightbox-track .lightbox-video-slide video.gallery-optional-video {
+  display: block;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.lightbox-video-toggle {
+  z-index: 30;
+}
+
+.lightbox-video-slide.is-playing .lightbox-video-toggle {
+  display: none;
+}
+
+/* Ajuste del control en pantallas pequeñas */
+
+@media (max-width: 700px) {
+  .gallery-video-play,
+  .lightbox-video-toggle {
+    width: 48px;
+    height: 48px;
+    font-size: 17px;
+  }
+}
