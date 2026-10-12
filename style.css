@@ -1737,3 +1737,38 @@ transition-duration: 0.01ms !important;
     font-size: 17px;
   }
 }
+/* =========================================
+   CORRECCIÓN DEFINITIVA DEL PLAY DEL LIGHTBOX
+   ========================================= */
+
+/* Ocultar el botón mientras se reproduce el vídeo,
+   independientemente del nombre de la diapositiva. */
+
+.gallery-video-slide.is-playing .gallery-video-play,
+.gallery-video-slide.is-playing .lightbox-video-toggle,
+.lightbox-video-slide.is-playing .gallery-video-play,
+.lightbox-video-slide.is-playing .lightbox-video-toggle {
+  display: none !important;
+}
+
+/* También ocultarlo si JavaScript marca el vídeo como activo
+   mediante la clase is-playing en el propio vídeo. */
+
+video.gallery-optional-video.is-playing
+  ~ .gallery-video-play,
+video.gallery-optional-video.is-playing
+  ~ .lightbox-video-toggle {
+  display: none !important;
+}
+
+/* No permitir que el botón quede por encima de un vídeo
+   que ya está reproduciéndose. */
+
+.gallery-video-slide.is-playing .gallery-video-play,
+.gallery-video-slide.is-playing .lightbox-video-toggle,
+.lightbox-video-slide.is-playing .gallery-video-play,
+.lightbox-video-slide.is-playing .lightbox-video-toggle {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
