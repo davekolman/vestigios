@@ -1,144 +1,209 @@
+
 document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================================================
-CONFIGURACIÓN GENERAL DE LOS VÍDEOS
+   CONFIGURACIÓN GENERAL DE LOS VÍDEOS
 ========================================================= */
 
 function prepareVideo(video) {
-if (!video) return;
+  if (!video) return;
 
-video.muted = true;  
-video.defaultMuted = true;  
-video.volume = 0;  
-video.controls = false;  
-video.playsInline = true;  
+  video.muted = true;
+  video.defaultMuted = true;
+  video.volume = 0;
+  video.controls = false;
+  video.playsInline = true;
 
-video.setAttribute("muted", "");  
-video.setAttribute("playsinline", "");  
-video.setAttribute("webkit-playsinline", "");  
-video.setAttribute("disablepictureinpicture", "");  
-video.setAttribute("controlslist", "nodownload noplaybackrate");  
-video.removeAttribute("controls");
-
+  video.setAttribute("muted", "");
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  video.setAttribute("disablepictureinpicture", "");
+  video.setAttribute("controlslist", "nodownload noplaybackrate");
+  video.removeAttribute("controls");
 }
 
 function playVideo(video) {
-if (!video) return;
+  if (!video) return;
 
-prepareVideo(video);  
+  prepareVideo(video);
 
-const promise = video.play();  
+  const promise = video.play();
 
-if (promise && typeof promise.catch === "function") {  
-  promise.catch(() => {  
-    // El navegador puede bloquear el autoplay.  
-    // No mostramos controles como alternativa.  
-  });  
-}
-
+  if (promise && typeof promise.catch === "function") {
+    promise.catch(() => {
+      // El navegador puede bloquear el autoplay.
+      // No mostramos controles nativos como alternativa.
+    });
+  }
 }
 
 function pauseVideo(video, reset = false) {
-if (!video) return;
+  if (!video) return;
 
-video.pause();  
+  video.pause();
 
-if (reset) {  
-  try {  
-    video.currentTime = 0;  
-  } catch (error) {  
-    // El vídeo puede no haber terminado de cargar.  
-  }  
+  if (reset) {
+    try {
+      video.currentTime = 0;
+    } catch (error) {
+      // El vídeo puede no haber terminado de cargar.
+    }
+  }
 }
 
+/* Identificar las diapositivas que contienen vídeos opcionales. */
+
+function isOptionalVideoSlide(slide) {
+  return Boolean(
+    slide &&
+    slide.classList &&
+    slide.classList.contains("gallery-video-slide")
+  );
+}
+
+function getOptionalVideo(slide) {
+  if (!slide) return null;
+
+  return slide.querySelector("video.gallery-optional-video");
+}
+
+function showOptionalPlayButton(slide) {
+  if (!slide) return;
+
+  slide.classList.remove("is-playing");
+
+  const button = slide.querySelector(
+    ".gallery-video-play, .lightbox-video-toggle"
+  );
+
+  if (button) {
+    button.setAttribute(
+      "aria-label",
+      button.classList.contains("lightbox-video-toggle")
+        ? "Reproducir video"
+        : "Abrir video ampliado"
+    );
+  }
+}
+
+/*
+  Reproducir o pausar un vídeo opcional del lightbox.
+  El botón se oculta durante la reproducción y reaparece
+  cuando el vídeo se pausa o termina.
+*/
+
+function toggleOptionalVideo(slide) {
+  const video = getOptionalVideo(slide);
+
+  if (!video) return;
+
+  if (!video.paused && !video.ended) {
+    pauseVideo(video);
+    showOptionalPlayButton(slide);
+    return;
+  }
+
+  prepareVideo(video);
+
+  const promise = video.play();
+
+  if (promise && typeof promise.then === "function") {
+    promise
+      .then(() => {
+        slide.classList.add("is-playing");
+      })
+      .catch(() => {
+        showOptionalPlayButton(slide);
+      });
+  } else {
+    slide.classList.add("is-playing");
+  }
 }
 
 /* Evitar controles nativos en todos los vídeos de la página. */
 
 document.querySelectorAll("video").forEach((video) => {
-prepareVideo(video);
+  prepareVideo(video);
 });
 
 /* =========================================================
-VIDEO DE PORTADA
+   VIDEO DE PORTADA
 ========================================================= */
 
 const heroVideo = document.getElementById("hero-video");
 
 if (heroVideo) {
-prepareVideo(heroVideo);
+  prepareVideo(heroVideo);
 
-heroVideo.loop = true;  
-heroVideo.autoplay = true;  
+  heroVideo.loop = true;
+  heroVideo.autoplay = true;
 
-heroVideo.setAttribute("autoplay", "");  
-heroVideo.setAttribute("loop", "");  
+  heroVideo.setAttribute("autoplay", "");
+  heroVideo.setAttribute("loop", "");
 
-const startHeroVideo = () => {  
-  if (document.hidden) return;  
-  playVideo(heroVideo);  
-};  
+  const startHeroVideo = () => {
+    if (document.hidden) return;
+    playVideo(heroVideo);
+  };
 
-if (heroVideo.readyState >= 2) {  
-  startHeroVideo();  
-} else {  
-  heroVideo.addEventListener("canplay", startHeroVideo, {  
-    once: true  
-  });  
-}  
+  if (heroVideo.readyState >= 2) {
+    startHeroVideo();
+  } else {
+    heroVideo.addEventListener("canplay", startHeroVideo, {
+      once: true
+    });
+  }
 
-window.addEventListener("pageshow", startHeroVideo);  
+  window.addEventListener("pageshow", startHeroVideo);
 
-document.addEventListener("visibilitychange", () => {  
-  if (!document.hidden) {  
-    startHeroVideo();  
-  } else {  
-    pauseVideo(heroVideo);  
-  }  
-});
-
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      startHeroVideo();
+    } else {
+      pauseVideo(heroVideo);
+    }
+  });
 }
 
 /* =========================================================
-VIDEO DE PROCESO
+   VIDEO DE PROCESO
 ========================================================= */
 
 const processVideo = document.getElementById("process-video");
 
 if (processVideo) {
-prepareVideo(processVideo);
+  prepareVideo(processVideo);
 
-processVideo.loop = true;  
-processVideo.autoplay = true;  
+  processVideo.loop = true;
+  processVideo.autoplay = true;
 
-processVideo.setAttribute("autoplay", "");  
-processVideo.setAttribute("loop", "");  
+  processVideo.setAttribute("autoplay", "");
+  processVideo.setAttribute("loop", "");
 
-const startProcessVideo = () => {  
-  if (document.hidden) return;  
-  playVideo(processVideo);  
-};  
+  const startProcessVideo = () => {
+    if (document.hidden) return;
+    playVideo(processVideo);
+  };
 
-if (processVideo.readyState >= 2) {  
-  startProcessVideo();  
-} else {  
-  processVideo.addEventListener("canplay", startProcessVideo, {  
-    once: true  
-  });  
-}  
+  if (processVideo.readyState >= 2) {
+    startProcessVideo();
+  } else {
+    processVideo.addEventListener("canplay", startProcessVideo, {
+      once: true
+    });
+  }
 
-document.addEventListener("visibilitychange", () => {  
-  if (!document.hidden) {  
-    startProcessVideo();  
-  } else {  
-    pauseVideo(processVideo);  
-  }  
-});
-
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      startProcessVideo();
+    } else {
+      pauseVideo(processVideo);
+    }
+  });
 }
 
 /* =========================================================
-MENÚ MÓVIL
+   MENÚ MÓVIL
 ========================================================= */
 
 const menuToggle = document.querySelector(".menu-toggle");
@@ -146,118 +211,112 @@ const mainNav = document.getElementById("main-nav");
 const siteHeader = document.querySelector(".site-header");
 
 function closeMenu() {
-if (!menuToggle || !mainNav) return;
+  if (!menuToggle || !mainNav) return;
 
-menuToggle.setAttribute("aria-expanded", "false");  
-menuToggle.setAttribute("aria-label", "Abrir menú");  
+  menuToggle.setAttribute("aria-expanded", "false");
+  menuToggle.setAttribute("aria-label", "Abrir menú");
 
-mainNav.classList.remove("open");  
-document.body.classList.remove("menu-open");
-
+  mainNav.classList.remove("open");
+  document.body.classList.remove("menu-open");
 }
 
 function openMenu() {
-if (!menuToggle || !mainNav) return;
+  if (!menuToggle || !mainNav) return;
 
-menuToggle.setAttribute("aria-expanded", "true");  
-menuToggle.setAttribute("aria-label", "Cerrar menú");  
+  menuToggle.setAttribute("aria-expanded", "true");
+  menuToggle.setAttribute("aria-label", "Cerrar menú");
 
-mainNav.classList.add("open");  
-document.body.classList.add("menu-open");
-
+  mainNav.classList.add("open");
+  document.body.classList.add("menu-open");
 }
 
 if (menuToggle && mainNav) {
+  menuToggle.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-menuToggle.addEventListener("click", (event) => {  
-  event.preventDefault();  
-  event.stopPropagation();  
+    const isExpanded =
+      menuToggle.getAttribute("aria-expanded") === "true";
 
-  const isExpanded =  
-    menuToggle.getAttribute("aria-expanded") === "true";  
+    if (isExpanded) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
 
-  if (isExpanded) {  
-    closeMenu();  
-  } else {  
-    openMenu();  
-  }  
-});  
+  mainNav.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
 
-mainNav.querySelectorAll('a[href^="#"]').forEach((link) => {  
-  link.addEventListener("click", closeMenu);  
-});  
+  document.addEventListener("click", (event) => {
+    if (
+      mainNav.classList.contains("open") &&
+      siteHeader &&
+      !siteHeader.contains(event.target)
+    ) {
+      closeMenu();
+    }
+  });
 
-document.addEventListener("click", (event) => {  
-  if (  
-    mainNav.classList.contains("open") &&  
-    siteHeader &&  
-    !siteHeader.contains(event.target)  
-  ) {  
-    closeMenu();  
-  }  
-});  
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMenu();
+    }
+  });
 
-document.addEventListener("keydown", (event) => {  
-  if (event.key === "Escape") {  
-    closeMenu();  
-  }  
-});  
-
-window.addEventListener("resize", () => {  
-  if (window.innerWidth > 700) {  
-    closeMenu();  
-  }  
-});
-
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 700) {
+      closeMenu();
+    }
+  });
 }
 
 /* =========================================================
-BOTÓN VOLVER ARRIBA
+   BOTÓN VOLVER ARRIBA
 ========================================================= */
 
 const backToTop = document.getElementById("back-to-top");
 
 if (backToTop) {
+  const updateBackToTop = () => {
+    const scrollPosition =
+      window.scrollY ||
+      document.documentElement.scrollTop ||
+      0;
 
-const updateBackToTop = () => {  
-  const scrollPosition =  
-    window.scrollY ||  
-    document.documentElement.scrollTop ||  
-    0;  
+    backToTop.classList.toggle(
+      "visible",
+      scrollPosition > 120
+    );
+  };
 
-  backToTop.classList.toggle(  
-    "visible",  
-    scrollPosition > 120  
-  );  
-};  
+  window.addEventListener("scroll", updateBackToTop, {
+    passive: true
+  });
 
-window.addEventListener("scroll", updateBackToTop, {  
-  passive: true  
-});  
+  window.addEventListener("resize", updateBackToTop, {
+    passive: true
+  });
 
-window.addEventListener("resize", updateBackToTop, {  
-  passive: true  
-});  
+  window.addEventListener("pageshow", updateBackToTop);
 
-window.addEventListener("pageshow", updateBackToTop);  
+  updateBackToTop();
 
-updateBackToTop();  
+  backToTop.addEventListener("click", () => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-backToTop.addEventListener("click", () => {  
-  const reduceMotion = window.matchMedia(  
-    "(prefers-reduced-motion: reduce)"  
-  ).matches;  
-
-  window.scrollTo({  
-    top: 0,  
-    behavior: reduceMotion ? "auto" : "smooth"  
-  });  
-});
-
+    window.scrollTo({
+      top: 0,
+      behavior: reduceMotion ? "auto" : "smooth"
+    });
+  });
 }
 
 /* =========================================================
-VARIABLES DEL LIGHTBOX
+   VARIABLES DEL LIGHTBOX
 ========================================================= */
 
 let lightbox = null;
@@ -266,503 +325,600 @@ let lightboxSlides = [];
 let lightboxCurrent = 0;
 
 /* =========================================================
-CREAR LIGHTBOX
+   CREAR LIGHTBOX
 ========================================================= */
 
 function createLightbox() {
+  if (lightbox) return;
 
-if (lightbox) return;  
+  lightbox = document.createElement("div");
+  lightbox.className = "lightbox";
 
-lightbox = document.createElement("div");  
-lightbox.className = "lightbox";  
+  lightbox.innerHTML = `
+    <button
+      class="lightbox-close"
+      type="button"
+      aria-label="Cerrar visor"
+    >×</button>
 
-lightbox.innerHTML = `  
-  <button  
-    class="lightbox-close"  
-    type="button"  
-    aria-label="Cerrar visor"  
-  >×</button>  
+    <button
+      class="lightbox-arrow lightbox-prev"
+      type="button"
+      aria-label="Imagen anterior"
+    >‹</button>
 
-  <button  
-    class="lightbox-arrow lightbox-prev"  
-    type="button"  
-    aria-label="Imagen anterior"  
-  >‹</button>  
+    <div class="lightbox-window">
+      <div class="lightbox-track"></div>
+    </div>
 
-  <div class="lightbox-window">  
-    <div class="lightbox-track"></div>  
-  </div>  
+    <button
+      class="lightbox-arrow lightbox-next"
+      type="button"
+      aria-label="Siguiente imagen"
+    >›</button>
+  `;
 
-  <button  
-    class="lightbox-arrow lightbox-next"  
-    type="button"  
-    aria-label="Siguiente imagen"  
-  >›</button>  
-`;  
+  document.body.appendChild(lightbox);
 
-document.body.appendChild(lightbox);  
+  lightboxTrack = lightbox.querySelector(".lightbox-track");
 
-lightboxTrack = lightbox.querySelector(".lightbox-track");  
+  const closeButton = lightbox.querySelector(".lightbox-close");
+  const prevButton = lightbox.querySelector(".lightbox-prev");
+  const nextButton = lightbox.querySelector(".lightbox-next");
+  const lightboxWindow = lightbox.querySelector(".lightbox-window");
 
-const closeButton = lightbox.querySelector(".lightbox-close");  
-const prevButton = lightbox.querySelector(".lightbox-prev");  
-const nextButton = lightbox.querySelector(".lightbox-next");  
-const lightboxWindow = lightbox.querySelector(".lightbox-window");  
+  closeButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    closeLightbox();
+  });
 
-closeButton.addEventListener("click", (event) => {  
-  event.preventDefault();  
-  event.stopPropagation();  
-  closeLightbox();  
-});  
+  prevButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-prevButton.addEventListener("click", (event) => {  
-  event.preventDefault();  
-  event.stopPropagation();  
+    if (!lightboxSlides.length) return;
 
-  if (!lightboxSlides.length) return;  
+    lightboxCurrent--;
 
-  lightboxCurrent--;  
+    if (lightboxCurrent < 0) {
+      lightboxCurrent = lightboxSlides.length - 1;
+    }
 
-  if (lightboxCurrent < 0) {  
-    lightboxCurrent = lightboxSlides.length - 1;  
-  }  
+    updateLightbox();
+  });
 
-  updateLightbox();  
-});  
+  nextButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-nextButton.addEventListener("click", (event) => {  
-  event.preventDefault();  
-  event.stopPropagation();  
+    if (!lightboxSlides.length) return;
 
-  if (!lightboxSlides.length) return;  
+    lightboxCurrent++;
 
-  lightboxCurrent++;  
+    if (lightboxCurrent >= lightboxSlides.length) {
+      lightboxCurrent = 0;
+    }
 
-  if (lightboxCurrent >= lightboxSlides.length) {  
-    lightboxCurrent = 0;  
-  }  
+    updateLightbox();
+  });
 
-  updateLightbox();  
-});  
+  lightbox.addEventListener("click", (event) => {
+    if (
+      event.target === lightbox ||
+      event.target === lightboxWindow
+    ) {
+      closeLightbox();
+    }
+  });
 
-lightbox.addEventListener("click", (event) => {  
-  if (  
-    event.target === lightbox ||  
-    event.target === lightboxWindow  
-  ) {  
-    closeLightbox();  
-  }  
-});  
+  document.addEventListener("keydown", (event) => {
+    if (!lightbox.classList.contains("active")) return;
 
-document.addEventListener("keydown", (event) => {  
-  if (!lightbox.classList.contains("active")) return;  
+    if (event.key === "Escape") {
+      closeLightbox();
+      return;
+    }
 
-  if (event.key === "Escape") {  
-    closeLightbox();  
-    return;  
-  }  
+    if (!lightboxSlides.length) return;
 
-  if (!lightboxSlides.length) return;  
+    if (event.key === "ArrowRight") {
+      lightboxCurrent++;
 
-  if (event.key === "ArrowRight") {  
-    lightboxCurrent++;  
+      if (lightboxCurrent >= lightboxSlides.length) {
+        lightboxCurrent = 0;
+      }
 
-    if (lightboxCurrent >= lightboxSlides.length) {  
-      lightboxCurrent = 0;  
-    }  
+      updateLightbox();
+    }
 
-    updateLightbox();  
-  }  
+    if (event.key === "ArrowLeft") {
+      lightboxCurrent--;
 
-  if (event.key === "ArrowLeft") {  
-    lightboxCurrent--;  
+      if (lightboxCurrent < 0) {
+        lightboxCurrent = lightboxSlides.length - 1;
+      }
 
-    if (lightboxCurrent < 0) {  
-      lightboxCurrent = lightboxSlides.length - 1;  
-    }  
-
-    updateLightbox();  
-  }  
-});
-
+      updateLightbox();
+    }
+  });
 }
 
 /* =========================================================
-ABRIR LIGHTBOX
+   PREPARAR VÍDEO OPCIONAL EN EL LIGHTBOX
+========================================================= */
+
+function setupOptionalLightboxSlide(slide) {
+  if (!isOptionalVideoSlide(slide)) return;
+
+  const video = getOptionalVideo(slide);
+  const button = slide.querySelector(".gallery-video-play");
+
+  if (!video) return;
+
+  /*
+    El vídeo opcional comienza pausado y no se repite.
+    No se activan controles nativos.
+  */
+
+  prepareVideo(video);
+
+  video.controls = false;
+  video.autoplay = false;
+  video.loop = false;
+  video.preload = "metadata";
+
+  video.removeAttribute("controls");
+  video.removeAttribute("autoplay");
+  video.removeAttribute("loop");
+
+  if (button) {
+    button.classList.remove("gallery-video-play");
+    button.classList.add("lightbox-video-toggle");
+    button.textContent = "▶";
+    button.setAttribute("type", "button");
+    button.setAttribute("aria-label", "Reproducir video");
+
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleOptionalVideo(slide);
+    });
+  }
+
+  video.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleOptionalVideo(slide);
+  });
+
+  video.addEventListener("play", () => {
+    slide.classList.add("is-playing");
+  });
+
+  video.addEventListener("pause", () => {
+    showOptionalPlayButton(slide);
+  });
+
+  video.addEventListener("ended", () => {
+    showOptionalPlayButton(slide);
+  });
+
+  showOptionalPlayButton(slide);
+}
+
+/* =========================================================
+   ABRIR LIGHTBOX
 ========================================================= */
 
 function openLightbox(slides, startIndex) {
+  createLightbox();
 
-createLightbox();  
+  /*
+    Detener los vídeos de las galerías al abrir el visor.
+    Los opcionales también se reinician.
+  */
 
-// Detener los vídeos de las galerías al abrir el visor.  
-document.querySelectorAll(".gallery video").forEach((video) => {  
-  pauseVideo(video);  
-});  
+  document.querySelectorAll(".gallery video").forEach((video) => {
+    const optionalSlide = video.closest(".gallery-video-slide");
 
-lightboxSlides = Array.from(slides);  
-lightboxCurrent = Number(startIndex) || 0;  
+    pauseVideo(video, Boolean(optionalSlide));
 
-lightboxTrack.innerHTML = "";  
+    if (optionalSlide) {
+      showOptionalPlayButton(optionalSlide);
+    }
+  });
 
-lightboxSlides.forEach((slide) => {  
+  lightboxSlides = Array.from(slides);
+  lightboxCurrent = Number(startIndex) || 0;
 
-  const clone = slide.cloneNode(true);  
+  lightboxTrack.innerHTML = "";
 
-  clone.removeAttribute("style");  
+  lightboxSlides.forEach((slide) => {
+    const clone = slide.cloneNode(true);
 
-  if (clone.tagName === "VIDEO") {  
-    prepareVideo(clone);  
+    clone.removeAttribute("style");
 
-    clone.controls = false;  
-    clone.loop = true;  
-    clone.autoplay = false;  
+    if (isOptionalVideoSlide(clone)) {
+      setupOptionalLightboxSlide(clone);
+    } else if (clone.tagName === "VIDEO") {
+      /*
+        Conservar el comportamiento original de los vídeos
+        que estén directamente dentro de una galería.
+      */
 
-    clone.removeAttribute("controls");  
-    clone.removeAttribute("autoplay");  
-  }  
+      prepareVideo(clone);
 
-  clone.addEventListener("click", (event) => {  
-    event.preventDefault();  
-    event.stopPropagation();  
-  });  
+      clone.controls = false;
+      clone.loop = true;
+      clone.autoplay = false;
 
-  lightboxTrack.appendChild(clone);  
-});  
+      clone.removeAttribute("controls");
+      clone.removeAttribute("autoplay");
+    }
 
-lightbox.classList.add("active");  
-document.body.classList.add("lightbox-open");  
+    /*
+      Mantener la prevención de clics sobre las diapositivas.
+      Los controles del vídeo opcional detienen su propagación.
+    */
 
-updateLightbox();
+    clone.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
 
+    lightboxTrack.appendChild(clone);
+  });
+
+  lightbox.classList.add("active");
+  document.body.classList.add("lightbox-open");
+
+  updateLightbox();
 }
 
 /* =========================================================
-ACTUALIZAR LIGHTBOX
+   ACTUALIZAR LIGHTBOX
 ========================================================= */
 
 function updateLightbox() {
+  if (!lightboxTrack || !lightboxSlides.length) return;
 
-if (!lightboxTrack || !lightboxSlides.length) return;  
+  if (lightboxCurrent < 0) {
+    lightboxCurrent = lightboxSlides.length - 1;
+  }
 
-if (lightboxCurrent < 0) {  
-  lightboxCurrent = lightboxSlides.length - 1;  
-}  
+  if (lightboxCurrent >= lightboxSlides.length) {
+    lightboxCurrent = 0;
+  }
 
-if (lightboxCurrent >= lightboxSlides.length) {  
-  lightboxCurrent = 0;  
-}  
+  lightboxTrack.style.transform =
+    `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
 
-lightboxTrack.style.transform =  
-  `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;  
+  const slides = Array.from(lightboxTrack.children);
 
-const slides = Array.from(lightboxTrack.children);  
+  slides.forEach((slide, index) => {
+    /*
+      Los vídeos opcionales nunca se reproducen automáticamente.
+      Al cambiar de diapositiva se pausan y reinician.
+    */
 
-slides.forEach((slide, index) => {  
+    if (isOptionalVideoSlide(slide)) {
+      const video = getOptionalVideo(slide);
 
-  if (slide.tagName !== "VIDEO") return;  
+      pauseVideo(video, true);
+      showOptionalPlayButton(slide);
 
-  prepareVideo(slide);  
+      return;
+    }
 
-  if (index === lightboxCurrent) {  
-    playVideo(slide);  
-  } else {  
-    pauseVideo(slide, true);  
-  }  
-});
+    /*
+      Mantener el comportamiento original para los vídeos
+      colocados directamente como diapositivas.
+    */
 
+    if (slide.tagName !== "VIDEO") return;
+
+    prepareVideo(slide);
+
+    if (index === lightboxCurrent) {
+      playVideo(slide);
+    } else {
+      pauseVideo(slide, true);
+    }
+  });
 }
 
 /* =========================================================
-CERRAR LIGHTBOX
+   CERRAR LIGHTBOX
 ========================================================= */
 
 function closeLightbox() {
+  if (!lightbox) return;
 
-if (!lightbox) return;  
+  lightbox.classList.remove("active");
+  document.body.classList.remove("lightbox-open");
 
-lightbox.classList.remove("active");  
-document.body.classList.remove("lightbox-open");  
+  lightbox.querySelectorAll("video").forEach((video) => {
+    pauseVideo(video, true);
+  });
 
-lightbox.querySelectorAll("video").forEach((video) => {  
-  pauseVideo(video, true);  
-});
-
+  lightbox.querySelectorAll(".lightbox-video-slide").forEach((slide) => {
+    showOptionalPlayButton(slide);
+  });
 }
 
 /* =========================================================
-INICIALIZAR GALERÍAS
+   INICIALIZAR GALERÍAS
 ========================================================= */
 
 const galleries = document.querySelectorAll(".gallery");
 
 galleries.forEach((gallery) => {
+  const track = gallery.querySelector(".gallery-track");
 
-const track = gallery.querySelector(".gallery-track");  
+  const prevButton =
+    gallery.querySelector(".gallery-arrow.prev");
 
-const prevButton =  
-  gallery.querySelector(".gallery-arrow.prev");  
+  const nextButton =
+    gallery.querySelector(".gallery-arrow.next");
 
-const nextButton =  
-  gallery.querySelector(".gallery-arrow.next");  
+  if (!track) return;
 
-if (!track) return;  
+  /*
+    Contar cada elemento directo de la pista como una diapositiva.
+    Así, el contenedor del vídeo opcional cuenta una sola vez.
+    Las imágenes y los vídeos directos conservan su estructura.
+  */
 
-const slides = Array.from(  
-  track.querySelectorAll("img, video")  
-);  
+  const slides = Array.from(track.children).filter((slide) => {
+    return (
+      slide.matches("img, video, .gallery-video-slide")
+    );
+  });
 
-const total = slides.length;  
+  const total = slides.length;
 
-if (!total) return;  
+  if (!total) return;
 
-let current = 0;  
-let suppressClickUntil = 0;  
+  let current = 0;
+  let suppressClickUntil = 0;
 
+  /* =====================================================
+     ACTUALIZAR CARRUSEL
+  ===================================================== */
 
-/* =====================================================  
-   ACTUALIZAR CARRUSEL  
-===================================================== */  
+  function updateGallery() {
+    /*
+      Usar la posición real de cada diapositiva evita
+      depender del ancho total de la pista.
+    */
 
-function updateGallery() {  
+    const activeSlide = slides[current];
 
-  /*  
-    Usar la posición real de cada diapositiva evita  
-    depender del ancho total de la pista.  
-  */  
+    if (activeSlide) {
+      track.style.transform =
+        `translate3d(-${activeSlide.offsetLeft}px, 0, 0)`;
+    }
 
-  const activeSlide = slides[current];  
+    slides.forEach((slide, index) => {
+      /*
+        El vídeo opcional de la galería permanece pausado.
+        Solo se reproduce dentro del lightbox.
+      */
 
-  if (activeSlide) {  
-    track.style.transform =  
-      `translate3d(-${activeSlide.offsetLeft}px, 0, 0)`;  
-  }  
+      if (isOptionalVideoSlide(slide)) {
+        const video = getOptionalVideo(slide);
 
-  slides.forEach((slide, index) => {  
+        pauseVideo(video, true);
+        showOptionalPlayButton(slide);
 
-    if (slide.tagName !== "VIDEO") return;  
+        return;
+      }
 
-    prepareVideo(slide);  
+      if (slide.tagName !== "VIDEO") return;
 
-    if (index === current) {  
-      playVideo(slide);  
-    } else {  
-      pauseVideo(slide, true);  
-    }  
-  });  
-}  
+      prepareVideo(slide);
 
+      if (index === current) {
+        playVideo(slide);
+      } else {
+        pauseVideo(slide, true);
+      }
+    });
+  }
 
-/* =====================================================  
-   SIGUIENTE  
-===================================================== */  
+  /* =====================================================
+     SIGUIENTE
+  ===================================================== */
 
-if (nextButton) {  
-  nextButton.addEventListener("click", (event) => {  
+  if (nextButton) {
+    nextButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    event.preventDefault();  
-    event.stopPropagation();  
+      current++;
 
-    current++;  
+      if (current >= total) {
+        current = 0;
+      }
 
-    if (current >= total) {  
-      current = 0;  
-    }  
+      updateGallery();
+    });
+  }
 
-    updateGallery();  
-  });  
-}  
+  /* =====================================================
+     ANTERIOR
+  ===================================================== */
 
+  if (prevButton) {
+    prevButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-/* =====================================================  
-   ANTERIOR  
-===================================================== */  
+      current--;
 
-if (prevButton) {  
-  prevButton.addEventListener("click", (event) => {  
+      if (current < 0) {
+        current = total - 1;
+      }
 
-    event.preventDefault();  
-    event.stopPropagation();  
+      updateGallery();
+    });
+  }
 
-    current--;  
+  /* =====================================================
+     GESTOS TÁCTILES
+  ===================================================== */
 
-    if (current < 0) {  
-      current = total - 1;  
-    }  
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchCurrentX = 0;
+  let touchCurrentY = 0;
+  let gestureDirection = null;
 
-    updateGallery();  
-  });  
-}  
+  gallery.addEventListener("touchstart", (event) => {
+    if (!event.touches || !event.touches.length) return;
 
+    const touch = event.touches[0];
 
-/* =====================================================  
-   GESTOS TÁCTILES  
-===================================================== */  
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
 
-let touchStartX = 0;  
-let touchStartY = 0;  
-let touchCurrentX = 0;  
-let touchCurrentY = 0;  
-let gestureDirection = null;  
+    touchCurrentX = touchStartX;
+    touchCurrentY = touchStartY;
 
-gallery.addEventListener("touchstart", (event) => {  
+    gestureDirection = null;
+  }, { passive: true });
 
-  if (!event.touches || !event.touches.length) return;  
+  gallery.addEventListener("touchmove", (event) => {
+    if (!event.touches || !event.touches.length) return;
 
-  const touch = event.touches[0];  
+    const touch = event.touches[0];
 
-  touchStartX = touch.clientX;  
-  touchStartY = touch.clientY;  
+    touchCurrentX = touch.clientX;
+    touchCurrentY = touch.clientY;
 
-  touchCurrentX = touchStartX;  
-  touchCurrentY = touchStartY;  
+    const differenceX = touchCurrentX - touchStartX;
+    const differenceY = touchCurrentY - touchStartY;
 
-  gestureDirection = null;  
+    if (gestureDirection === null) {
+      const absX = Math.abs(differenceX);
+      const absY = Math.abs(differenceY);
 
-}, { passive: true });  
+      if (absX < 8 && absY < 8) return;
 
+      if (absY > absX) {
+        gestureDirection = "vertical";
+        return;
+      }
 
-gallery.addEventListener("touchmove", (event) => {  
+      gestureDirection = "horizontal";
+    }
 
-  if (!event.touches || !event.touches.length) return;  
+    if (gestureDirection === "horizontal") {
+      event.preventDefault();
+    }
+  }, { passive: false });
 
-  const touch = event.touches[0];  
+  gallery.addEventListener("touchend", () => {
+    if (gestureDirection !== "horizontal") {
+      gestureDirection = null;
+      return;
+    }
 
-  touchCurrentX = touch.clientX;  
-  touchCurrentY = touch.clientY;  
+    const difference = touchStartX - touchCurrentX;
 
-  const differenceX = touchCurrentX - touchStartX;  
-  const differenceY = touchCurrentY - touchStartY;  
+    if (Math.abs(difference) < 50) {
+      gestureDirection = null;
+      return;
+    }
 
-  if (gestureDirection === null) {  
+    if (difference > 0) {
+      current++;
 
-    const absX = Math.abs(differenceX);  
-    const absY = Math.abs(differenceY);  
+      if (current >= total) {
+        current = 0;
+      }
+    } else {
+      current--;
 
-    if (absX < 8 && absY < 8) return;  
+      if (current < 0) {
+        current = total - 1;
+      }
+    }
 
-    if (absY > absX) {  
-      gestureDirection = "vertical";  
-      return;  
-    }  
+    suppressClickUntil = Date.now() + 500;
 
-    gestureDirection = "horizontal";  
-  }  
+    updateGallery();
 
-  if (gestureDirection === "horizontal") {  
-    event.preventDefault();  
-  }  
+    gestureDirection = null;
+  }, { passive: true });
 
-}, { passive: false });  
+  gallery.addEventListener("touchcancel", () => {
+    gestureDirection = null;
+  }, { passive: true });
 
+  /* =====================================================
+     ABRIR VISOR AL TOCAR UNA IMAGEN O VÍDEO
+  ===================================================== */
 
-gallery.addEventListener("touchend", () => {  
+  slides.forEach((slide, index) => {
+    slide.style.cursor = "pointer";
 
-  if (gestureDirection !== "horizontal") {  
-    gestureDirection = null;  
-    return;  
-  }  
+    slide.addEventListener("click", (event) => {
+      if (Date.now() < suppressClickUntil) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
 
-  const difference = touchStartX - touchCurrentX;  
+      event.preventDefault();
+      event.stopPropagation();
 
-  if (Math.abs(difference) < 50) {  
-    gestureDirection = null;  
-    return;  
-  }  
+      openLightbox(slides, index);
+    });
+  });
 
-  if (difference > 0) {  
-    current++;  
+  /* =====================================================
+     INICIALIZAR Y REAJUSTAR
+  ===================================================== */
 
-    if (current >= total) {  
-      current = 0;  
-    }  
-  } else {  
-    current--;  
+  updateGallery();
 
-    if (current < 0) {  
-      current = total - 1;  
-    }  
-  }  
+  window.addEventListener("resize", updateGallery);
 
-  suppressClickUntil = Date.now() + 500;  
-
-  updateGallery();  
-
-  gestureDirection = null;  
-
-}, { passive: true });  
-
-
-gallery.addEventListener("touchcancel", () => {  
-  gestureDirection = null;  
-}, { passive: true });  
-
-
-/* =====================================================  
-   ABRIR VISOR AL TOCAR UNA IMAGEN O VÍDEO  
-===================================================== */  
-
-slides.forEach((slide, index) => {  
-
-  slide.style.cursor = "pointer";  
-
-  slide.addEventListener("click", (event) => {  
-
-    if (Date.now() < suppressClickUntil) {  
-      event.preventDefault();  
-      event.stopPropagation();  
-      return;  
-    }  
-
-    event.preventDefault();  
-    event.stopPropagation();  
-
-    openLightbox(slides, index);  
-  });  
-});  
-
-
-/* =====================================================  
-   INICIALIZAR Y REAJUSTAR  
-===================================================== */  
-
-updateGallery();  
-
-window.addEventListener("resize", updateGallery);  
-
-window.addEventListener("orientationchange", () => {  
-  requestAnimationFrame(updateGallery);  
-});
-
+  window.addEventListener("orientationchange", () => {
+    requestAnimationFrame(updateGallery);
+  });
 });
 
 /* =========================================================
-REVISAR VÍDEOS AL VOLVER A LA PÁGINA
+   REVISAR VÍDEOS AL VOLVER A LA PÁGINA
 ========================================================= */
 
 window.addEventListener("pageshow", () => {
+  if (!document.hidden && heroVideo) {
+    playVideo(heroVideo);
+  }
 
-if (!document.hidden && heroVideo) {  
-  playVideo(heroVideo);  
-}  
+  if (!document.hidden && processVideo) {
+    playVideo(processVideo);
+  }
 
-if (!document.hidden && processVideo) {  
-  playVideo(processVideo);  
-}  
+  document.querySelectorAll(".gallery").forEach((gallery) => {
+    const track = gallery.querySelector(".gallery-track");
+    if (!track) return;
 
-document.querySelectorAll(".gallery").forEach((gallery) => {  
-  const track = gallery.querySelector(".gallery-track");  
-  if (!track) return;  
+    /*
+      No iniciar vídeos de galería indiscriminadamente.
+      Los opcionales deben permanecer pausados.
+    */
 
-  const activeVideo = track.querySelector("video");  
+    const activeVideo = track.querySelector("video");
 
-  if (activeVideo && !lightbox?.classList.contains("active")) {  
-    // La galería gestiona el vídeo activo al navegar.  
-    // No iniciar vídeos ocultos indiscriminadamente.  
-    prepareVideo(activeVideo);  
-  }  
-});
-
+    if (activeVideo && !lightbox?.classList.contains("active")) {
+      prepareVideo(activeVideo);
+    }
+  });
 });
 
 });
