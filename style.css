@@ -14,6 +14,10 @@ VARIABLES Y BASE
   --text-small: 0.8rem;
   --line-body: 1.8;
   --text-opacity: 0.65;
+
+  /* Espaciado general de la colección */
+  --collection-gap: 10vw;
+  --section-gap: 5vw;
 }
 
 *,
@@ -44,8 +48,6 @@ body.menu-open,
 body.lightbox-open {
   overflow: hidden;
 }
-
-/* Estilo general para textos nuevos */
 
 p {
   margin: 0 0 1.25em;
@@ -305,9 +307,6 @@ INTRO / HISTORIA
   font-weight: 300;
 }
 
-/* Todos los párrafos de historia comparten estilo.
-El primero mantiene la separación respecto al título. */
-
 .intro > p {
   max-width: 550px;
   margin: 1.25em 0 0 auto;
@@ -325,17 +324,17 @@ COLECCIÓN
 ========================= */
 
 .collection {
-  padding: 6vw 6vw 15vw;
+  padding: 5vw 6vw 12vw;
   background: var(--color-bg);
   width: 100%;
   max-width: 100%;
   min-width: 0;
 }
 
-/* Separación reducida entre el título general y las secciones */
+/* Título general: menor separación con Mujer */
 
 .heading {
-  margin-bottom: 3vw;
+  margin-bottom: 2vw;
 }
 
 .heading h2 {
@@ -344,16 +343,16 @@ COLECCIÓN
   margin: 0;
 }
 
-/* Menos espacio antes y después de los títulos Mujer y Hombre */
+/* Encabezados Mujer y Hombre */
 
 .collection-section-title {
-  margin: 2vw 0 4vw;
-  padding-top: 1.5vw;
+  margin: 1.5vw 0 3vw;
+  padding-top: 1.2vw;
   border-top: 1px solid #15151318;
 }
 
 .collection-section-title .eyebrow {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .collection-section-title h2 {
@@ -362,8 +361,10 @@ COLECCIÓN
   margin: 0;
 }
 
+/* Separación antes de la sección Hombre */
+
 .collection-section-men {
-  margin-top: 12vw;
+  margin-top: 8vw;
 }
 
 /* =========================
@@ -373,9 +374,9 @@ LOOK / PIEZA
 .look {
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.7fr);
-  gap: 7vw;
+  gap: 5vw;
   align-items: end;
-  margin-bottom: 16vw;
+  margin: 0 0 var(--collection-gap);
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -400,7 +401,7 @@ LOOK / PIEZA
 }
 
 /* =========================
-GALERÍAS — ANCHO CONTROLADO
+GALERÍAS
 ========================= */
 
 .photo {
@@ -557,12 +558,10 @@ TEXTO DE LAS PIEZAS
   opacity: 0.5;
 }
 
-/* Títulos de las prendas: tamaño ligeramente reducido */
-
 .copy h3 {
   font: 400 clamp(2.5rem, 4.2vw, 4.8rem) / 0.95
     var(--font-editorial);
-  margin: 16px 0 25px;
+  margin: 12px 0 18px;
   color: var(--color-text);
   word-break: normal;
   overflow-wrap: normal;
@@ -571,7 +570,7 @@ TEXTO DE LAS PIEZAS
 
 .copy p {
   max-width: 350px;
-  margin: 0 0 1.25em;
+  margin: 0 0 1.1em;
   font-size: 0.8rem;
   line-height: 1.8;
   color: var(--color-text);
@@ -584,7 +583,7 @@ TEXTO DE LAS PIEZAS
 
 .copy small {
   display: block;
-  margin-top: 32px;
+  margin-top: 24px;
   font-family: var(--font-body);
   font-size: 0.63rem;
   line-height: 1.7;
@@ -594,7 +593,7 @@ TEXTO DE LAS PIEZAS
 
 .copy .price {
   display: block;
-  margin-top: 26px;
+  margin-top: 22px;
   font-family: var(--font-body);
   font-size: 0.8rem;
   line-height: 1.6;
@@ -615,7 +614,7 @@ TEXTO DE LAS PIEZAS
 
 .copy .request {
   display: inline-block;
-  margin-top: 20px;
+  margin-top: 16px;
   padding-bottom: 7px;
   border-bottom: 1px solid #15151355;
   font-family: var(--font-body);
@@ -641,7 +640,7 @@ DETALLES
   gap: 8px;
   width: 100%;
   min-width: 0;
-  margin-top: 4vw;
+  margin-top: 3vw;
   padding: 0;
 }
 
@@ -727,9 +726,6 @@ PROCESO — VIDEO VERTICAL
     var(--font-editorial);
   margin: 0;
 }
-
-/* Todos los párrafos del proceso reciben el mismo estilo.
-El espacio entre ellos se mantiene controlado. */
 
 .process > div:last-child p {
   max-width: 550px;
@@ -967,6 +963,10 @@ MÓVIL
 ========================= */
 
 @media (max-width: 700px) {
+  :root {
+    --collection-gap: 17vw;
+    --section-gap: 8vw;
+  }
 
   html {
     scroll-padding-top: 76px;
@@ -1071,29 +1071,43 @@ MÓVIL
     margin-top: 30px;
   }
 
+  /* Colección: márgenes laterales y espacio inferior */
+
   .collection {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    padding: 12vw 5vw 28vw;
+    padding: 9vw 5vw 22vw;
   }
 
-  /* Menos espacio entre Piezas y el título de sección */
+  /* Piezas → Mujer */
 
   .heading {
-    margin-bottom: 6vw;
+    margin-bottom: 3vw;
   }
 
-  /* Separación más contenida entre Mujer/Hombre y las prendas */
+  /* Encabezados de sección más compactos */
 
   .collection-section-title {
-    margin: 8vw 0 10vw;
-    padding-top: 5vw;
+    margin: 5vw 0 7vw;
+    padding-top: 3.5vw;
   }
 
-  .collection-section-men {
-    margin-top: 18vw;
+  .collection-section-title .eyebrow {
+    margin-bottom: 6px;
   }
+
+  .collection-section-title h2 {
+    line-height: 0.9;
+  }
+
+  /* Separación entre las colecciones de mujer y hombre */
+
+  .collection-section-men {
+    margin-top: 12vw;
+  }
+
+  /* Una columna en móvil */
 
   .look,
   .look.reverse,
@@ -1106,7 +1120,7 @@ MÓVIL
 
   .look,
   .look.reverse {
-    gap: 8vw;
+    gap: 5vw;
   }
 
   .look.reverse .photo,
@@ -1114,7 +1128,7 @@ MÓVIL
     order: initial;
   }
 
-  /* GALERÍAS EN MÓVIL */
+  /* Galerías */
 
   .look > .photo,
   .look.reverse > .photo {
@@ -1226,10 +1240,16 @@ MÓVIL
     display: none;
   }
 
+  /* Texto de cada prenda */
+
   .copy {
     padding: 0 4vw;
     min-width: 0;
     max-width: 100%;
+  }
+
+  .copy h3 {
+    margin: 8px 0 14px;
   }
 
   .copy p {
@@ -1237,8 +1257,12 @@ MÓVIL
     line-height: 1.8;
   }
 
+  .copy small {
+    margin-top: 18px;
+  }
+
   .copy .price {
-    margin-top: 22px;
+    margin-top: 18px;
   }
 
   .copy .availability {
@@ -1246,8 +1270,10 @@ MÓVIL
   }
 
   .copy .request {
-    margin-top: 18px;
+    margin-top: 14px;
   }
+
+  /* Detalles */
 
   .details {
     display: grid;
@@ -1255,7 +1281,7 @@ MÓVIL
     gap: 5px;
     width: 100%;
     min-width: 0;
-    margin-top: 10vw;
+    margin-top: 7vw;
     overflow: hidden;
   }
 
@@ -1280,6 +1306,8 @@ MÓVIL
     object-position: center;
   }
 
+  /* Proceso */
+
   .process-photo {
     width: 100%;
     height: 80vh;
@@ -1303,14 +1331,14 @@ MÓVIL
   }
 
   .process > div:last-child {
-    padding: 22vw 8vw 28vw;
+    padding: 18vw 8vw 22vw;
   }
 
   .process > div:last-child p {
     font-size: 0.85rem;
   }
 
-  /* FORMACIÓN EN MÓVIL */
+  /* Formación */
 
   .education {
     padding: 12vw 7vw 25vw;
@@ -1356,7 +1384,7 @@ MÓVIL
     margin-top: 25px;
   }
 
-  /* FOOTER EN MÓVIL */
+  /* Footer */
 
   footer {
     grid-template-columns: 1fr;
@@ -1580,7 +1608,6 @@ body.lightbox-open #back-to-top {
 }
 
 @media (max-width: 700px) {
-
   .lightbox {
     width: 100%;
     max-width: 100%;
@@ -1710,8 +1737,7 @@ VIDEO OPCIONAL EN GALERÍAS
   background: #f5f4f0;
 }
 
-/* Interacción del vídeo opcional ampliado.
-Las fotografías conservan su comportamiento actual. */
+/* Interacción del vídeo opcional ampliado */
 
 .lightbox-track > .gallery-video-slide {
   position: relative;
@@ -1744,9 +1770,9 @@ Las fotografías conservan su comportamiento actual. */
   z-index: 30;
 }
 
-/* Ocultar el botón del lightbox durante la reproducción.
-El botón original de la galería no cambia su comportamiento. */
+/* Ocultar botones durante la reproducción */
 
+.gallery-video-slide.is-playing .gallery-video-play,
 .gallery-video-slide.is-playing .lightbox-video-toggle {
   display: none !important;
   visibility: hidden !important;
@@ -1754,7 +1780,7 @@ El botón original de la galería no cambia su comportamiento. */
   pointer-events: none !important;
 }
 
-/* Ajuste del control en pantallas pequeñas */
+/* Controles en pantallas pequeñas */
 
 @media (max-width: 700px) {
   .gallery-video-play,
@@ -1763,16 +1789,4 @@ El botón original de la galería no cambia su comportamiento. */
     height: 48px;
     font-size: 17px;
   }
-}
-
-/* =========================
-VIDEO OPCIONAL: BOTÓN PLAY DEL LIGHTBOX
-========================= */
-
-.gallery-video-slide.is-playing .gallery-video-play,
-.gallery-video-slide.is-playing .lightbox-video-toggle {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }
