@@ -32,7 +32,6 @@ function playVideo(video) {
   if (promise && typeof promise.catch === "function") {
     promise.catch(() => {
       // El navegador puede bloquear el autoplay.
-      // No mostramos controles nativos como alternativa.
     });
   }
 }
@@ -51,7 +50,9 @@ function pauseVideo(video, reset = false) {
   }
 }
 
-/* Identificar las diapositivas que contienen vídeos opcionales. */
+/* =========================================================
+   IDENTIFICAR VÍDEOS OPCIONALES
+========================================================= */
 
 function isOptionalVideoSlide(slide) {
   return Boolean(
@@ -67,6 +68,11 @@ function getOptionalVideo(slide) {
   return slide.querySelector("video.gallery-optional-video");
 }
 
+/*
+  MOSTRAR EL BOTÓN cuando el vídeo está pausado
+  o ha terminado.
+*/
+
 function showOptionalPlayButton(slide) {
   if (!slide) return;
 
@@ -77,20 +83,37 @@ function showOptionalPlayButton(slide) {
   );
 
   if (button) {
-    button.setAttribute(
-      "aria-label",
-      button.classList.contains("lightbox-video-toggle")
-        ? "Reproducir video"
-        : "Abrir video ampliado"
-    );
+    button.style.removeProperty("display");
+
+    button.setAttribute("aria-label", "Reproducir video");
   }
 }
 
 /*
-  Reproducir o pausar un vídeo opcional del lightbox.
-  El botón se oculta durante la reproducción y reaparece
-  cuando el vídeo se pausa o termina.
+  OCULTAR EL BOTÓN mientras el vídeo se reproduce.
+
+  Se aplica display:none directamente al botón y se utiliza
+  !important para evitar que una regla CSS lo mantenga visible.
+  Funciona tanto en escritorio como en dispositivos móviles.
 */
+
+function hideOptionalPlayButton(slide) {
+  if (!slide) return;
+
+  slide.classList.add("is-playing");
+
+  const button = slide.querySelector(
+    ".gallery-video-play, .lightbox-video-toggle"
+  );
+
+  if (button) {
+    button.style.setProperty("display", "none", "important");
+  }
+}
+
+/* =========================================================
+   REPRODUCIR O PAUSAR VÍDEO OPCIONAL
+========================================================= */
 
 function toggleOptionalVideo(slide) {
   const video = getOptionalVideo(slide);
@@ -110,17 +133,23 @@ function toggleOptionalVideo(slide) {
   if (promise && typeof promise.then === "function") {
     promise
       .then(() => {
-        slide.classList.add("is-playing");
+        if (!video.paused && !video.ended) {
+          hideOptionalPlayButton(slide);
+        }
       })
       .catch(() => {
         showOptionalPlayButton(slide);
       });
   } else {
-    slide.classList.add("is-playing");
+    if (!video.paused && !video.ended) {
+      hideOptionalPlayButton(slide);
+    }
   }
 }
 
-/* Evitar controles nativos en todos los vídeos de la página. */
+/* =========================================================
+   PREPARAR TODOS LOS VÍDEOS
+========================================================= */
 
 document.querySelectorAll("video").forEach((video) => {
   prepareVideo(video);
@@ -452,7 +481,9 @@ function setupOptionalLightboxSlide(slide) {
   if (!isOptionalVideoSlide(slide)) return;
 
   const video = getOptionalVideo(slide);
-  const button = slide.querySelector(".gallery-video-play");
+  const button = slide.querySelector(
+    ".gallery-video-play, .lightbox-video-toggle"
+  );
 
   if (!video) return;
 
@@ -486,14 +517,12 @@ function setupOptionalLightboxSlide(slide) {
     });
   }
 
-  video.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    toggleOptionalVideo(slide);
+  video.addEventListener("play", () => {
+    hideOptionalPlayButton(slide);
   });
 
-  video.addEventListener("play", () => {
-    slide.classList.add("is-playing");
+  video.addEventListener("playing", () => {
+    hideOptionalPlayButton(slide);
   });
 
   video.addEventListener("pause", () => {
@@ -502,6 +531,17 @@ function setupOptionalLightboxSlide(slide) {
 
   video.addEventListener("ended", () => {
     showOptionalPlayButton(slide);
+  });
+
+  /*
+    El clic directo sobre el vídeo también permite
+    pausar o reanudar su reproducción.
+  */
+
+  video.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleOptionalVideo(slide);
   });
 
   showOptionalPlayButton(slide);
@@ -642,7 +682,7 @@ function closeLightbox() {
     pauseVideo(video, true);
   });
 
-  lightbox.querySelectorAll(".lightbox-video-slide").forEach((slide) => {
+  lightbox.querySelectorAll(".gallery-video-slide").forEach((slide) => {
     showOptionalPlayButton(slide);
   });
 }
@@ -667,13 +707,10 @@ galleries.forEach((gallery) => {
   /*
     Contar cada elemento directo de la pista como una diapositiva.
     Así, el contenedor del vídeo opcional cuenta una sola vez.
-    Las imágenes y los vídeos directos conservan su estructura.
   */
 
   const slides = Array.from(track.children).filter((slide) => {
-    return (
-      slide.matches("img, video, .gallery-video-slide")
-    );
+    return slide.matches("img, video, .gallery-video-slide");
   });
 
   const total = slides.length;
@@ -688,11 +725,6 @@ galleries.forEach((gallery) => {
   ===================================================== */
 
   function updateGallery() {
-    /*
-      Usar la posición real de cada diapositiva evita
-      depender del ancho total de la pista.
-    */
-
     const activeSlide = slides[current];
 
     if (activeSlide) {
@@ -909,8 +941,7 @@ window.addEventListener("pageshow", () => {
     if (!track) return;
 
     /*
-      No iniciar vídeos de galería indiscriminadamente.
-      Los opcionales deben permanecer pausados.
+      No iniciar vídeos opcionales automáticamente.
     */
 
     const activeVideo = track.querySelector("video");
