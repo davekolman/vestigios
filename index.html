@@ -1965,6 +1965,29 @@
 <!-- JAVASCRIPT PRINCIPAL EXISTENTE -->
 <script src="script.js?v=4"></script>
 
+  
+<!-- CONTROL DEL BOTÓN PLAY EN VIDEOS DE LAS PIEZAS -->
+<script>
+  document.querySelectorAll(".gallery-video-slide").forEach((slide) => {
+    const video = slide.querySelector(".gallery-optional-video");
+    const playButton = slide.querySelector(".gallery-video-play");
+
+    if (!video || !playButton) return;
+
+    video.addEventListener("play", () => {
+      playButton.style.display = "none";
+    });
+
+    video.addEventListener("pause", () => {
+      playButton.style.display = "";
+    });
+
+    video.addEventListener("ended", () => {
+      playButton.style.display = "";
+    });
+  });
+</script>
+
 <!-- FUNCIONAMIENTO DE LA GUÍA DE TALLAS -->
 <script>
   (() => {
