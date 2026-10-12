@@ -1469,6 +1469,10 @@ pointer-events: none;
 user-select: none;
 }
 
+/* =========================
+FLECHAS Y CIERRE DEL LIGHTBOX
+========================= */
+
 .lightbox-arrow {
 position: absolute;
 top: 50%;
@@ -1621,154 +1625,137 @@ transition-duration: 0.01ms !important;
 }
 }
 
-
 /* =========================
-   VIDEO OPCIONAL EN GALERÍAS
-   ========================= */
+VIDEO OPCIONAL EN GALERÍAS
+========================= */
 
 .gallery-video-slide {
-  position: relative;
-  display: flex;
-  flex: 0 0 100%;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  box-sizing: border-box;
+position: relative;
+display: flex;
+flex: 0 0 100%;
+align-items: center;
+justify-content: center;
+width: 100%;
+min-width: 0;
+max-width: 100%;
+height: 100%;
+margin: 0;
+padding: 0;
+overflow: hidden;
+box-sizing: border-box;
 }
 
 .gallery-track .gallery-video-slide video.gallery-optional-video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
-  object-fit: contain;
-  object-position: center;
-  pointer-events: auto;
-  cursor: pointer;
+display: block;
+width: 100%;
+height: 100%;
+min-width: 0;
+max-width: 100%;
+margin: 0;
+padding: 0;
+object-fit: contain;
+object-position: center;
+pointer-events: auto;
+cursor: pointer;
 }
 
 /* Botón minimalista de reproducción */
 
 .gallery-video-play,
 .lightbox-video-toggle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 30;
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  margin: 0;
-  padding: 0 0 0 3px;
-  transform: translate(-50%, -50%);
-  border: 1px solid #15151370;
-  border-radius: 50%;
-  background: rgba(245, 244, 240, 0.9);
-  color: #151513;
-  font-family: Arial, sans-serif;
-  font-size: 19px;
-  line-height: 1;
-  cursor: pointer;
-  pointer-events: auto;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+position: absolute;
+top: 50%;
+left: 50%;
+z-index: 30;
+display: grid;
+place-items: center;
+width: 52px;
+height: 52px;
+margin: 0;
+padding: 0 0 0 3px;
+transform: translate(-50%, -50%);
+border: 1px solid #15151370;
+border-radius: 50%;
+background: rgba(245, 244, 240, 0.9);
+color: #151513;
+font-family: Arial, sans-serif;
+font-size: 19px;
+line-height: 1;
+cursor: pointer;
+pointer-events: auto;
+touch-action: manipulation;
+-webkit-tap-highlight-color: transparent;
 }
 
 .gallery-video-play:hover,
 .lightbox-video-toggle:hover {
-  background: #f5f4f0;
+background: #f5f4f0;
 }
 
-/* Interacción limitada al video opcional ampliado.
+/* Interacción del vídeo opcional ampliado.
    Las fotografías conservan su comportamiento actual. */
 
-.lightbox-track > .lightbox-video-slide {
-  position: relative;
-  display: flex;
-  flex: 0 0 100%;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: auto;
+.lightbox-track > .gallery-video-slide {
+position: relative;
+display: flex;
+flex: 0 0 100%;
+align-items: center;
+justify-content: center;
+width: 100%;
+min-width: 0;
+max-width: 100%;
+height: 100%;
+overflow: hidden;
+pointer-events: auto;
 }
 
-.lightbox-track .lightbox-video-slide video.gallery-optional-video {
-  display: block;
-  flex: 0 0 100%;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  max-width: 100%;
-  object-fit: contain;
-  object-position: center;
-  pointer-events: auto;
-  cursor: pointer;
+.lightbox-track .gallery-video-slide video.gallery-optional-video {
+display: block;
+flex: 0 0 100%;
+width: 100%;
+height: 100%;
+min-width: 0;
+max-width: 100%;
+object-fit: contain;
+object-position: center;
+pointer-events: auto;
+cursor: pointer;
 }
 
 .lightbox-video-toggle {
-  z-index: 30;
+z-index: 30;
 }
 
-.lightbox-video-slide.is-playing .lightbox-video-toggle {
-  display: none;
+/* Ocultar el botón del lightbox durante la reproducción.
+   El botón original de la galería no cambia su comportamiento. */
+
+.gallery-video-slide.is-playing .lightbox-video-toggle {
+display: none !important;
+visibility: hidden !important;
+opacity: 0 !important;
+pointer-events: none !important;
 }
 
 /* Ajuste del control en pantallas pequeñas */
 
 @media (max-width: 700px) {
-  .gallery-video-play,
-  .lightbox-video-toggle {
-    width: 48px;
-    height: 48px;
-    font-size: 17px;
-  }
+.gallery-video-play,
+.lightbox-video-toggle {
+width: 48px;
+height: 48px;
+font-size: 17px;
 }
-/* =========================================
-   CORRECCIÓN DEFINITIVA DEL PLAY DEL LIGHTBOX
-   ========================================= */
+}
 
-/* Ocultar el botón mientras se reproduce el vídeo,
-   independientemente del nombre de la diapositiva. */
+/* =========================
+VIDEO OPCIONAL: BOTÓN PLAY DEL LIGHTBOX
+========================= */
 
 .gallery-video-slide.is-playing .gallery-video-play,
-.gallery-video-slide.is-playing .lightbox-video-toggle,
-.lightbox-video-slide.is-playing .gallery-video-play,
-.lightbox-video-slide.is-playing .lightbox-video-toggle {
-  display: none !important;
+.gallery-video-slide.is-playing .lightbox-video-toggle {
+display: none !important;
+visibility: hidden !important;
+opacity: 0 !important;
+pointer-events: none !important;
 }
 
-/* También ocultarlo si JavaScript marca el vídeo como activo
-   mediante la clase is-playing en el propio vídeo. */
-
-video.gallery-optional-video.is-playing
-  ~ .gallery-video-play,
-video.gallery-optional-video.is-playing
-  ~ .lightbox-video-toggle {
-  display: none !important;
-}
-
-/* No permitir que el botón quede por encima de un vídeo
-   que ya está reproduciéndose. */
-
-.gallery-video-slide.is-playing .gallery-video-play,
-.gallery-video-slide.is-playing .lightbox-video-toggle,
-.lightbox-video-slide.is-playing .gallery-video-play,
-.lightbox-video-slide.is-playing .lightbox-video-toggle {
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
