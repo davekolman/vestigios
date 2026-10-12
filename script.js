@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================================================
@@ -68,10 +67,10 @@ function getOptionalVideo(slide) {
   return slide.querySelector("video.gallery-optional-video");
 }
 
-/*
-  MOSTRAR EL BOTÓN cuando el vídeo está pausado
-  o ha terminado.
-*/
+/* =========================================================
+   MOSTRAR EL BOTÓN CUANDO EL VÍDEO ESTÁ PAUSADO
+   O HA TERMINADO
+========================================================= */
 
 function showOptionalPlayButton(slide) {
   if (!slide) return;
@@ -89,13 +88,10 @@ function showOptionalPlayButton(slide) {
   }
 }
 
-/*
-  OCULTAR EL BOTÓN mientras el vídeo se reproduce.
-
-  Se aplica display:none directamente al botón y se utiliza
-  !important para evitar que una regla CSS lo mantenga visible.
-  Funciona tanto en escritorio como en dispositivos móviles.
-*/
+/* =========================================================
+   OCULTAR EL BOTÓN MIENTRAS SE REPRODUCE EL VÍDEO
+   SOLO AFECTA AL VÍDEO OPCIONAL DE LA GALERÍA
+========================================================= */
 
 function hideOptionalPlayButton(slide) {
   if (!slide) return;
@@ -108,6 +104,8 @@ function hideOptionalPlayButton(slide) {
 
   if (button) {
     button.style.setProperty("display", "none", "important");
+
+    button.setAttribute("aria-label", "Vídeo en reproducción");
   }
 }
 
@@ -135,6 +133,8 @@ function toggleOptionalVideo(slide) {
       .then(() => {
         if (!video.paused && !video.ended) {
           hideOptionalPlayButton(slide);
+        } else {
+          showOptionalPlayButton(slide);
         }
       })
       .catch(() => {
@@ -143,6 +143,8 @@ function toggleOptionalVideo(slide) {
   } else {
     if (!video.paused && !video.ended) {
       hideOptionalPlayButton(slide);
+    } else {
+      showOptionalPlayButton(slide);
     }
   }
 }
@@ -157,6 +159,7 @@ document.querySelectorAll("video").forEach((video) => {
 
 /* =========================================================
    VIDEO DE PORTADA
+   SE CONSERVA SU COMPORTAMIENTO ORIGINAL
 ========================================================= */
 
 const heroVideo = document.getElementById("hero-video");
@@ -196,6 +199,7 @@ if (heroVideo) {
 
 /* =========================================================
    VIDEO DE PROCESO
+   SE CONSERVA SU COMPORTAMIENTO ORIGINAL
 ========================================================= */
 
 const processVideo = document.getElementById("process-video");
@@ -475,12 +479,21 @@ function createLightbox() {
 
 /* =========================================================
    PREPARAR VÍDEO OPCIONAL EN EL LIGHTBOX
+
+   CORRECCIÓN:
+   - El botón ▶ desaparece al empezar la reproducción.
+   - El botón ▶ reaparece al pausar.
+   - El botón ▶ reaparece cuando termina el vídeo.
+   - Si el navegador bloquea la reproducción, el botón
+     permanece visible.
+   - No modifica el vídeo de portada ni el de proceso.
 ========================================================= */
 
 function setupOptionalLightboxSlide(slide) {
   if (!isOptionalVideoSlide(slide)) return;
 
   const video = getOptionalVideo(slide);
+
   const button = slide.querySelector(
     ".gallery-video-play, .lightbox-video-toggle"
   );
@@ -506,6 +519,7 @@ function setupOptionalLightboxSlide(slide) {
   if (button) {
     button.classList.remove("gallery-video-play");
     button.classList.add("lightbox-video-toggle");
+
     button.textContent = "▶";
     button.setAttribute("type", "button");
     button.setAttribute("aria-label", "Reproducir video");
@@ -513,9 +527,14 @@ function setupOptionalLightboxSlide(slide) {
     button.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
+
       toggleOptionalVideo(slide);
     });
   }
+
+  /*
+    Al comenzar la reproducción, ocultar el botón.
+  */
 
   video.addEventListener("play", () => {
     hideOptionalPlayButton(slide);
@@ -525,24 +544,37 @@ function setupOptionalLightboxSlide(slide) {
     hideOptionalPlayButton(slide);
   });
 
+  /*
+    Al pausar, volver a mostrar el botón.
+  */
+
   video.addEventListener("pause", () => {
     showOptionalPlayButton(slide);
   });
+
+  /*
+    Al terminar el vídeo, volver a mostrar el botón.
+  */
 
   video.addEventListener("ended", () => {
     showOptionalPlayButton(slide);
   });
 
   /*
-    El clic directo sobre el vídeo también permite
-    pausar o reanudar su reproducción.
+    El clic directo sobre el vídeo permite pausar
+    o reanudar su reproducción.
   */
 
   video.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
+
     toggleOptionalVideo(slide);
   });
+
+  /*
+    Estado inicial: vídeo pausado y botón visible.
+  */
 
   showOptionalPlayButton(slide);
 }
