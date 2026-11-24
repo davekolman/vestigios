@@ -987,65 +987,226 @@ window.addEventListener("pageshow", () => {
 });
 
 
+
 /* =========================================================
-   FICHAS EMERGENTES — PIEZAS INDEPENDIENTES
-   Datos ficticios de demostración, reemplazables después.
+   PIEZAS INDEPENDIENTES — VISOR Y CARRUSEL
 ========================================================= */
+
 (() => {
   const pieces = [
-    { name: "ALBA", description: "Blusa de líneas limpias con volumen sutil en la manga y una silueta ligeramente relajada. Esta descripción es provisional y sirve únicamente para probar la ficha de producto.", price: "$ 185.000 COP", size: "M", length: "58 cm", fabric: "Algodón", measures: [["Contorno de busto", "96 cm"], ["Contorno de cintura", "88 cm"], ["Largo total", "58 cm"], ["Largo de manga", "30 cm"]] },
-    { name: "UMBRAL", description: "Top de estructura sencilla con escote geométrico y terminaciones cuidadas. Texto ficticio para visualizar la presentación de una pieza independiente.", price: "$ 210.000 COP", size: "S", length: "54 cm", fabric: "Lino", measures: [["Contorno de busto", "90 cm"], ["Contorno de cintura", "82 cm"], ["Largo total", "54 cm"], ["Ancho de espalda", "36 cm"]] },
-    { name: "NIEBLA", description: "Camisa amplia de inspiración contemporánea, pensada para combinar proporción y movimiento. Información descriptiva temporal para esta prueba.", price: "$ 235.000 COP", size: "M", length: "66 cm", fabric: "Mezcla de algodón", measures: [["Contorno de busto", "100 cm"], ["Contorno de cadera", "106 cm"], ["Largo total", "66 cm"], ["Largo de manga", "59 cm"]] },
-    { name: "ORIGEN", description: "Prenda de silueta definida con un detalle de construcción como acento principal. Nombre, descripción y especificaciones inventados para comprobar el pop-up.", price: "$ 260.000 COP", size: "L", length: "62 cm", fabric: "Sarga", measures: [["Contorno de busto", "104 cm"], ["Contorno de cintura", "94 cm"], ["Largo total", "62 cm"], ["Ancho de hombros", "40 cm"]] }
+    {
+      name: "ALBA",
+      description: "Blusa de líneas limpias con volumen sutil en la manga y una silueta ligeramente relajada. Descripción provisional.",
+      price: "$ 185.000 COP",
+      size: "M",
+      fabric: "Algodón",
+      length: "58 cm",
+      measures: [
+        ["Contorno de busto", "96 cm"],
+        ["Contorno de cintura", "88 cm"],
+        ["Largo total", "58 cm"],
+        ["Largo de manga", "30 cm"]
+      ],
+      images: ["detalle-01.webp", "detalle-02.webp"]
+    },
+    {
+      name: "UMBRAL",
+      description: "Top de estructura sencilla con escote geométrico y terminaciones cuidadas. Texto provisional.",
+      price: "$ 210.000 COP",
+      size: "S",
+      fabric: "Lino",
+      length: "54 cm",
+      measures: [
+        ["Contorno de busto", "90 cm"],
+        ["Contorno de cintura", "82 cm"],
+        ["Largo total", "54 cm"],
+        ["Ancho de espalda", "36 cm"]
+      ],
+      images: ["detalle-02.webp", "detalle-01.webp"]
+    },
+    {
+      name: "NIEBLA",
+      description: "Camisa amplia de inspiración contemporánea, pensada para combinar proporción y movimiento.",
+      price: "$ 235.000 COP",
+      size: "M",
+      fabric: "Mezcla de algodón",
+      length: "66 cm",
+      measures: [
+        ["Contorno de busto", "100 cm"],
+        ["Contorno de cadera", "106 cm"],
+        ["Largo total", "66 cm"],
+        ["Largo de manga", "59 cm"]
+      ],
+      images: ["detalle-01.webp", "detalle-02.webp"]
+    },
+    {
+      name: "ORIGEN",
+      description: "Prenda de silueta definida con un detalle de construcción como acento principal.",
+      price: "$ 260.000 COP",
+      size: "L",
+      fabric: "Sarga",
+      length: "62 cm",
+      measures: [
+        ["Contorno de busto", "104 cm"],
+        ["Contorno de cintura", "94 cm"],
+        ["Largo total", "62 cm"],
+        ["Ancho de hombros", "40 cm"]
+      ],
+      images: ["detalle-02.webp", "detalle-01.webp"]
+    }
   ];
+
   const cards = document.querySelectorAll("[data-independent-piece]");
   if (!cards.length) return;
+
+  let currentPiece = null;
+  let currentImage = 0;
 
   const modal = document.createElement("div");
   modal.className = "independent-modal";
   modal.setAttribute("aria-hidden", "true");
+
   modal.innerHTML = `
-    <section class="independent-dialog" role="dialog" aria-modal="true" aria-labelledby="independent-modal-title">
-      <button class="independent-modal-close" type="button" aria-label="Cerrar">×</button>
-      <div class="independent-modal-image"><img alt=""></div>
+    <section class="independent-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="independent-modal-title">
+
+      <button class="independent-modal-close"
+        type="button" aria-label="Cerrar">×</button>
+
+      <div class="independent-modal-image">
+        <img alt="">
+      </div>
+
+      <button class="lightbox-arrow lightbox-prev independent-gallery-arrow independent-gallery-prev"
+        type="button" aria-label="Fotografía anterior">‹</button>
+
+      <button class="lightbox-arrow lightbox-next independent-gallery-arrow independent-gallery-next"
+        type="button" aria-label="Fotografía siguiente">›</button>
+
       <div class="independent-modal-copy">
         <p class="independent-modal-kicker">DAVE KOLMAN · PIEZA INDEPENDIENTE</p>
         <h2 class="independent-modal-title" id="independent-modal-title"></h2>
         <p class="independent-modal-description"></p>
         <strong class="independent-modal-price"></strong>
         <dl class="independent-modal-meta"></dl>
+
+        <button class="independent-size-link" type="button">
+          Consultar guía de tallas ↗
+        </button>
+
         <h3 class="independent-measure-title">Medidas de la prenda</h3>
-        <table class="independent-measure-table"><tbody></tbody></table>
-        <p class="independent-modal-note">Datos ficticios de demostración. Se reemplazarán por la información definitiva de cada pieza.</p>
+        <table class="independent-measure-table">
+          <tbody></tbody>
+        </table>
+
+        <p class="independent-modal-note">
+          Datos ficticios de demostración. Se reemplazarán por la información definitiva.
+        </p>
       </div>
-    </section>`;
+    </section>
+  `;
+
   document.body.appendChild(modal);
 
-  const close = () => { modal.classList.remove("is-open"); modal.setAttribute("aria-hidden", "true"); document.body.classList.remove("independent-modal-open"); };
+  const image = modal.querySelector(".independent-modal-image img");
   const closeButton = modal.querySelector(".independent-modal-close");
-  closeButton.addEventListener("click", close);
-  modal.addEventListener("click", event => { if (event.target === modal) close(); });
-  document.addEventListener("keydown", event => { if (event.key === "Escape" && modal.classList.contains("is-open")) close(); });
+  const previousButton = modal.querySelector(".independent-gallery-prev");
+  const nextButton = modal.querySelector(".independent-gallery-next");
 
-  cards.forEach(card => card.addEventListener("click", () => {
-    const piece = pieces[Number(card.dataset.independentPiece)];
-    const source = card.querySelector("img");
-    if (!piece || !source) return;
-    const image = modal.querySelector(".independent-modal-image img");
-    image.src = source.currentSrc || source.src;
-    image.alt = source.alt;
-    modal.querySelector(".independent-modal-title").textContent = piece.name;
-    modal.querySelector(".independent-modal-description").textContent = piece.description;
-    modal.querySelector(".independent-modal-price").textContent = piece.price;
+  function updateImage() {
+    if (!currentPiece) return;
+
+    const images = currentPiece.images;
+    currentImage = (currentImage + images.length) % images.length;
+
+    image.src = images[currentImage];
+    image.alt = currentPiece.name + " — fotografía " + (currentImage + 1);
+  }
+
+  function previousImage() {
+    if (!currentPiece) return;
+    currentImage--;
+    updateImage();
+  }
+
+  function nextImage() {
+    if (!currentPiece) return;
+    currentImage++;
+    updateImage();
+  }
+
+  function openPiece(index) {
+    currentPiece = pieces[index];
+    if (!currentPiece) return;
+
+    currentImage = 0;
+    updateImage();
+
+    modal.querySelector(".independent-modal-title").textContent =
+      currentPiece.name;
+
+    modal.querySelector(".independent-modal-description").textContent =
+      currentPiece.description;
+
+    modal.querySelector(".independent-modal-price").textContent =
+      currentPiece.price;
+
     modal.querySelector(".independent-modal-meta").innerHTML = `
-      <div><dt>Talla</dt><dd>${piece.size}</dd></div>
-      <div><dt>Material</dt><dd>${piece.fabric}</dd></div>
-      <div><dt>Largo total</dt><dd>${piece.length}</dd></div>
-      <div><dt>Disponibilidad</dt><dd>Por encargo</dd></div>`;
-    modal.querySelector(".independent-measure-table tbody").innerHTML = piece.measures.map(row => `<tr><th scope="row">${row[0]}</th><td>${row[1]}</td></tr>`).join("");
+      <div><dt>Talla</dt><dd>${currentPiece.size}</dd></div>
+      <div><dt>Material</dt><dd>${currentPiece.fabric}</dd></div>
+      <div><dt>Largo total</dt><dd>${currentPiece.length}</dd></div>
+      <div><dt>Disponibilidad</dt><dd>Por encargo</dd></div>
+    `;
+
+    modal.querySelector(".independent-measure-table tbody").innerHTML =
+      currentPiece.measures.map(row =>
+        `<tr><th scope="row">${row[0]}</th><td>${row[1]}</td></tr>`
+      ).join("");
+
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
     document.body.classList.add("independent-modal-open");
     closeButton.focus();
-  }));
+  }
+
+  function closePiece() {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("independent-modal-open");
+  }
+
+  cards.forEach(card => {
+    card.addEventListener("click", () => {
+      openPiece(Number(card.dataset.independentPiece));
+    });
+  });
+
+  previousButton.addEventListener("click", previousImage);
+  nextButton.addEventListener("click", nextImage);
+  closeButton.addEventListener("click", closePiece);
+
+  modal.addEventListener("click", event => {
+    if (event.target === modal) closePiece();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (!modal.classList.contains("is-open")) return;
+
+    if (event.key === "Escape") closePiece();
+    if (event.key === "ArrowLeft") previousImage();
+    if (event.key === "ArrowRight") nextImage();
+  });
+
+  modal.querySelector(".independent-size-link")
+    .addEventListener("click", () => {
+      closePiece();
+
+      const guideButton = document.querySelector(
+        '.size-guide-link[data-size-category="mujer"]'
+      );
+
+      if (guideButton) guideButton.click();
+    });
 })();
