@@ -1,0 +1,2149 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Dave Kolman — Vestigios</title>
+  <meta name="description" content="Dave Kolman — Vestigios, cápsula 2026.">
+  <meta name="theme-color" content="#f5f4f0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=4">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon.png?v=4">
+  <link rel="shortcut icon" type="image/png" href="favicon.png?v=4">
+
+  <link rel="stylesheet" href="style.css?v=10">
+
+  <!-- Estilos de la guía de tallas -->
+  <style>
+    .size-guide-link {
+      display: inline-block;
+      margin: 10px 0 16px;
+      padding: 0;
+      border: 0;
+      border-bottom: 1px solid currentColor;
+      background: none;
+      color: inherit;
+      font: inherit;
+      font-size: 0.82rem;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .size-guide-link:hover {
+      opacity: 0.65;
+    }
+
+    .size-guide-link:focus-visible,
+    .size-guide-close:focus-visible,
+    .size-guide-tab:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 4px;
+    }
+
+    .size-guide-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(20, 19, 17, 0.65);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+    }
+
+    .size-guide-overlay.is-open {
+      display: flex;
+    }
+
+    .size-guide-dialog {
+      position: relative;
+      width: min(100%, 720px);
+      max-height: 85vh;
+      max-height: 85dvh;
+      overflow-y: auto;
+      padding: clamp(24px, 5vw, 44px);
+      background: #f5f4f0;
+      color: #292722;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2);
+      animation: sizeGuideAppear 0.2s ease-out;
+    }
+
+    .size-guide-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(41, 39, 34, 0.25);
+      border-radius: 50%;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-size: 23px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .size-guide-eyebrow {
+      margin: 0 45px 10px 0;
+      font-family: "Inter", sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .size-guide-title {
+      margin: 0 35px 12px 0;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 400;
+      line-height: 1.05;
+    }
+
+    .size-guide-intro {
+      margin: 0 0 24px;
+      font-family: "Inter", sans-serif;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: #5e5a53;
+    }
+
+    .size-guide-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin: 0 0 24px;
+      border-bottom: 1px solid #d8d4cc;
+    }
+
+    .size-guide-tab {
+      position: relative;
+      padding: 0 0 12px;
+      border: 0;
+      background: transparent;
+      color: #777168;
+      font-family: "Inter", sans-serif;
+      font-size: 0.76rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+    }
+
+    .size-guide-tab[aria-selected="true"] {
+      color: #292722;
+    }
+
+    .size-guide-tab[aria-selected="true"]::after {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 2px;
+      background: #292722;
+      content: "";
+    }
+
+    .size-guide-panel[hidden],
+    .size-guide-subpanel[hidden] {
+      display: none;
+    }
+
+    .size-guide-panel h3,
+    .size-guide-subpanel h3 {
+      margin: 0 0 8px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.65rem;
+      font-weight: 400;
+    }
+
+    .size-guide-panel > p,
+    .size-guide-subpanel > p {
+      margin: 0 0 18px;
+      font-family: "Inter", sans-serif;
+      font-size: 0.8rem;
+      line-height: 1.65;
+      color: #5e5a53;
+    }
+
+    .size-guide-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 0 0 18px;
+    }
+
+    .size-guide-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "Inter", sans-serif;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+
+    .size-guide-table th,
+    .size-guide-table td {
+      padding: 13px 10px;
+      border-bottom: 1px solid #d8d4cc;
+      white-space: nowrap;
+    }
+
+    .size-guide-table th {
+      font-weight: 500;
+      border-top: 1px solid #bcb6ab;
+    }
+
+    .size-guide-table td:first-child,
+    .size-guide-table th:first-child {
+      padding-left: 0;
+    }
+
+    .size-guide-note {
+      margin: 18px 0 0;
+      font-family: "Inter", sans-serif;
+      font-size: 0.76rem;
+      line-height: 1.7;
+      color: #5e5a53;
+    }
+
+    .size-guide-subtabs {
+      margin-top: 24px;
+      gap: 22px;
+    }
+
+    .size-guide-table thead small {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    body.size-guide-open {
+      overflow: hidden;
+    }
+
+    @keyframes sizeGuideAppear {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .size-guide-overlay {
+        padding: 12px;
+      }
+
+      .size-guide-dialog {
+        max-height: 90vh;
+        max-height: 90dvh;
+        padding: 26px 20px;
+      }
+
+      .size-guide-tabs {
+        gap: 20px;
+      }
+
+      .size-guide-table {
+        font-size: 0.75rem;
+      }
+
+      .size-guide-table th,
+      .size-guide-table td {
+        padding: 12px 8px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .size-guide-dialog {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <a class="brand" href="#top">DAVE KOLMAN</a>
+
+  <button
+    class="menu-toggle"
+    type="button"
+    aria-label="Abrir menú"
+    aria-expanded="false"
+    aria-controls="main-nav"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav id="main-nav">
+    <a href="#coleccion">Colección</a>
+    <a href="#historia">Historia</a>
+    <a href="#formacion">Formación</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-media">
+      <video
+        id="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        webkit-playsinline
+        preload="auto"
+        disablepictureinpicture
+        controlslist="nodownload noplaybackrate noremoteplayback"
+        src="vestigios-nuevo.mp4"
+      ></video>
+    </div>
+
+    <div class="hero-text">
+      <p class="eyebrow">CÁPSULA 2026 · PRE-ORDER</p>
+      <h1>Vestigios</h1>
+      <p>Una colección de materia, estructura y memoria artesanal.</p>
+      <a class="button" href="#coleccion">Explorar ↓</a>
+    </div>
+  </section>
+
+  <!-- HISTORIA -->
+  <section class="intro" id="historia">
+    <p class="eyebrow">DAVE KOLMAN</p>
+
+    <h2>
+      Lo que permanece<br>
+      <i>después de la forma.</i>
+    </h2>
+
+    <p>
+      Vestigios nace de una investigación sobre estructura,
+      proporción y memoria artesanal. La nobleza del lino,
+      la estructura de una sarga y la construcción
+      contemporánea se encuentran con el bordado y el
+      deshilado, a través de técnicas como el calado
+      Cartago, el siciliano y el bordado Luneville.
+    </p>
+
+    <p>
+      En esta cápsula, el universo simbólico de la cultura
+      quimbaya, arraigada en el territorio del Quindío
+      colombiano, orienta la exploración del bordado.
+      Sus referentes se reinterpretan desde una mirada
+      contemporánea, donde materia, gesto y estructura
+      dialogan para dar forma a piezas que conectan la
+      herencia artesanal con una expresión propia.
+    </p>
+  </section>
+
+  <!-- COLECCIÓN -->
+  <section class="collection" id="coleccion">
+
+    <div class="heading">
+      <p class="eyebrow">THE COLLECTION</p>
+      <h2>Piezas</h2>
+    </div>
+
+    <!-- MUJER -->
+    <div class="collection-section-title">
+      <p class="eyebrow">WOMEN</p>
+      <h2>Mujer</h2>
+    </div>
+
+    <!-- PIEZA 01 -->
+    <article class="look">
+      <div class="photo gallery" data-gallery="pieza01">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-01-1.webp" alt="Pieza 01 — vista frontal">
+          <img src="pieza-01-2.webp" alt="Pieza 01 — vista posterior">
+          <img src="pieza-01-3.webp" alt="Pieza 01 — vista lateral">
+          
+<!-- VIDEO OPCIONAL — PIEZA 01
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="VIDEO-PIEZA-01.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>01</span>
+        <h3>CAMISA CAYENA</h3>
+        <p>
+          Confeccionada en popelina de algodón,
+          la Camisa Cayena destaca por un entalle preciso con pinzas
+          que moldean sutilmente la silueta.
+
+          Suma un clásico cuello camisero,
+          botones de borde plateado y mangas rematadas en volantes de corte caracol
+          que aportan fluidez y movimiento orgánico.
+
+          Cuenta con acabados limpios e impecables en costura francesa.
+        </p>
+
+        <p>Talla de la pieza: 12</p>
+        <p>Largo total: 60 cm</p>
+        <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 195.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2001%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 02 -->
+    <article class="look reverse">
+      <div class="photo gallery" data-gallery="pieza02">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-02-1.webp" alt="Pieza 02 — vista frontal">
+          <img src="pieza-02-2.webp" alt="Pieza 02 — vista posterior">
+          <img src="pieza-02-3.webp" alt="Pieza 02 — vista lateral">
+          <img src="pieza-02-4.webp" alt="Pieza 02 — detalle">
+          
+<!-- VIDEO OPCIONAL — PIEZA 02
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-01.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>02</span>
+        <h3>BLUSA ELISA</h3>
+        <p>
+          La Blusa Elisa combina la soltura de la manga Dolman
+          y la delicadeza del escote ojal
+          sobre un tejido de algodón de minicorazones.
+
+          Destaca por el fruncido sutil de sus puños elásticos
+          y el detalle artesanal de dos corazones
+          bordados a mano en hilo de madeja sobre el delantero inferior.
+
+          Una pieza versátil confeccionada con terminaciones en costura francesa.
+        </p>
+
+        <p>Talla de la pieza: 14</p>
+        <p>Largo total: 60 cm</p>
+
+        <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 250.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2002%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 03 -->
+    <article class="look">
+      <div class="photo gallery" data-gallery="pieza03">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-03-1.jpg" alt="Pieza 03 — vista frontal">
+          <img src="pieza-03-2.jpg" alt="Pieza 03 — vista posterior">
+          <img src="pieza-03-3.webp" alt="Pieza 03 — vista lateral">
+          <img src="pieza-03-4.webp" alt="Pieza 03 — detalle">
+          <img src="pieza-03-5.webp" alt="Pieza 03 — bordado">
+          
+<- VIDEO OPCIONAL — PIEZA 03
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="VIDEO-PIEZA-03.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>03</span>
+        <h3>VESTIDO ROSETA</h3>
+        <p>
+          Confeccionado en lino negro,
+          el Vestido Roseta combina un corpiño estructurado en corte princesa,
+          entretelado y forrado,
+          con una falda de volumen fluido fruncida a la cintura.
+
+          Su atractivo reside en el ritmo de sus franjas de deshilado escalonado
+          y en el minucioso bordado de rosetas
+          elaborado a mano en técnica de calado Cartago.
+
+          Cuenta con cremallera posterior invisible
+          y acabados impecables en costura francesa.
+        </p>
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 97 cm</p>
+
+        <small>Disponible talla 10 | Disponible por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 390.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2003%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 04 -->
+    <article class="look reverse">
+      <div class="photo gallery" data-gallery="pieza04">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-04-1.webp" alt="Pieza 04 — vista frontal">
+          <img src="pieza-04-2.webp" alt="Pieza 04 — vista posterior">
+          <img src="pieza-04-3.webp" alt="Pieza 04 — vista lateral">
+          <img src="pieza-04-4.webp" alt="Pieza 04 — detalle">
+          <img src="pieza-04-5.webp" alt="Pieza 04 — bordado">
+          <img src="pieza-04-6.webp" alt="Pieza 04 — detalle de bordado">
+          <img src="pieza-04-7.webp" alt="Pieza 04 — detalle de bordado">
+          
+<- VIDEO OPCIONAL — PIEZA 04
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-04.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>04</span>
+        <h3>VESTIDO ALMA</h3>
+        <p>
+          Confeccionado en lino negro,
+          el Vestido Alma cuenta con un corpiño de talle natural
+          y escote recto estructurado con entretela y ballenas,
+          complementado con tirantes en contraste tono hueso.
+
+          Su falda de tablones amplios de silueta fluida
+          integra bolsillos invisibles en las costuras laterales.
+
+          Como sello artesanal, exhibe un bordado botánico a mano
+          que combina la técnica japonesa sashiko
+          con relleno en hilo color hueso.
+
+          Incluye forro interior completo,
+          cremallera posterior invisible y acabados en costura francesa.
+        </p>
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 117 cm</p>
+
+        <small>Disponible talla 10 | Disponible por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 450.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2004%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 05 -->
+    <article class="look">
+      <div class="photo gallery" data-gallery="pieza05">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-05-1.webp" alt="Pieza 05 — vista frontal">
+          <img src="pieza-05-2.webp" alt="Pieza 05 — vista posterior">
+          <img src="pieza-05-3.webp" alt="Pieza 05 — vista lateral">
+          <img src="pieza-05-4.webp" alt="Pieza 05 — detalle">
+          <img src="pieza-05-5.webp" alt="Pieza 05 — bordado">
+          
+<- VIDEO OPCIONAL — PIEZA 05
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-05.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>05</span>
+        <h3>VESTIDO NAYRA</h3>
+        <p>
+          Confeccionado en shantung de seda negra,
+          el Vestido Nayra cuenta con un corpiño de escote corazón
+          entretelado y estructurado con ballenas,
+          complementado con tirantes en seda para anudar.
+
+          Su falda de corte amplio
+          integra bolsillos invisibles en las costuras laterales.
+
+          En el ruedo, exhibe una cenefa bordada a mano
+          en hilo blanco con técnica sashiko de inspiración Quimbaya,
+          donde triángulos y espirales simbolizan la fuerza femenina y la eternidad.
+
+          Incluye forro interior completo,
+          cremallera posterior invisible y acabados en costura francesa.
+        </p>
+
+        <p>Talla de la pieza: 14</p>
+        <p>Largo total: 90 cm (Ajustable) </p>
+
+        <small>Disponible talla 14 | Disponible por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 495.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2005%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 06 -->
+    <article class="look reverse">
+      <div class="photo gallery" data-gallery="pieza06">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-06-1.webp" alt="Pieza 06 — vista frontal">
+          <img src="pieza-06-2.webp" alt="Pieza 06 — vista posterior">
+          <img src="pieza-06-3.webp" alt="Pieza 06 — vista lateral">
+          <img src="pieza-06-4.webp" alt="Pieza 06 — detalle">
+          <img src="pieza-06-5.webp" alt="Pieza 06 — bordado">
+          <img src="pieza-06-6.webp" alt="Pieza 06 — detalle de bordado">
+          
+<- VIDEO OPCIONAL — PIEZA 06
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-06.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>06</span>
+        <h3>VESTIDO CHIARA</h3>
+        <p>
+          Confeccionado en lino tono hueso, el Vestido Chiara de cuello redondo y
+          sin mangas destaca por su franja central en calado Cartago con deshilado
+          e incrustación sutil de lentejuela y mostacilla transparente.
+          En la cintura, el diseño se divide en dos columnas en bordado siciliano
+          de inspiración Quimbaya con motivos de una figura humana y un ave autóctona.
+          La falda de tablones amplios integra bolsillos laterales ocultos
+          y un forro parcial estratégico que conserva la transparencia artesanal del tejido.
+          Presenta cierre posterior con cremallera invisible y acabados en costura francesa.
+        </p>
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 133 cm</p>
+
+        <small>Disponible talla 10 | Disponible por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 420.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2006%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 07 -->
+    <article class="look">
+      <div class="photo gallery" data-gallery="pieza07">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-07-1.webp" alt="Pieza 07 — vista frontal">
+          <img src="pieza-07-2.webp" alt="Pieza 07 — vista posterior">
+          <img src="pieza-07-3.webp" alt="Pieza 07 — vista lateral">
+          <img src="pieza-07-4.webp" alt="Pieza 07 — detalle">
+          <img src="pieza-07-5.webp" alt="Pieza 07 — bordado">
+          <img src="pieza-07-6.webp" alt="Pieza 07 — detalle de bordado">
+          <img src="pieza-07-7.webp" alt="Pieza 07 — detalle de bordado">
+          
+<- VIDEO OPCIONAL — PIEZA 07
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-07.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>07</span>
+        <h3>VESTIDO AMALIA</h3>
+        <p>
+          Confeccionado en lino tono café,
+          el Vestido Amalia combina un pechero con alforzas y pinzas de entalle
+          con un cuello camisero entretelado en una silueta sin mangas.
+
+          Exhibe una cartera de botones en madera artesanal
+          y una falda de tablones amplios que enmarcan dos columnas de bordado:
+          una en bordado siciliano con la simbología mítica del Yuruparí,
+          y otra en deshilado y calado Cartago inspirada en las constelaciones.
+
+          Cuenta con bolsillos invisibles en las costuras laterales,
+          forro interior y acabados impecables en costura francesa.
+        </p>
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 107 cm</p>
+
+        <small>Disponible talla 10 | Disponible por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 420.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2007%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 08 -->
+    <article class="look reverse">
+      <div class="photo gallery" data-gallery="pieza08">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-08-1.webp" alt="Pieza 08 — vista frontal">
+          <img src="pieza-08-2.webp" alt="Pieza 08 — vista posterior">
+          <img src="pieza-08-3.webp" alt="Pieza 08 — vista lateral">
+          <img src="pieza-08-4.webp" alt="Pieza 08 — detalle">
+          <img src="pieza-08-5.webp" alt="Pieza 08 — bordado">
+          <img src="pieza-08-6.webp" alt="Pieza 08 — detalle de bordado">
+          <img src="pieza-08-7.webp" alt="Pieza 08 — detalle de bordado">
+          
+<- VIDEO OPCIONAL — PIEZA 08
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-08.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>08</span>
+        <h3>CAMISA HELENA</h3>
+        <p>
+          Confeccionada en tul negro de alta costura,
+          la Camisa Helena equilibra la transparencia
+          con la estructura en lino negro en su cuello camisero, perilla y puños.
+
+          Destaca por un minucioso bordado a mano en técnica Lunéville,
+          donde símbolos Quimbaya se entrelazan como una red cósmica
+          en hilo, mostacilla, lentejuelas y cinta de seda deshilada.
+
+          Exhibe detalles bordados en el canesú, frente, mangas y posterior,
+          e incluye botones frontales y acabados interiores en costura francesa.
+        </p>
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 60 cm</p>
+
+        <small>Disponible talla 10 | Disponible por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 560.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2008%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 09 -->
+    <article class="look">
+      <div class="photo gallery" data-gallery="pieza09">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-09-1.webp" alt="Pieza 09 — vista frontal">
+          <img src="pieza-09-2.webp" alt="Pieza 09 — vista posterior">
+          <img src="pieza-09-3.webp" alt="Pieza 09 — vista lateral">
+          <img src="pieza-09-4.webp" alt="Pieza 09 — detalle">
+          <img src="pieza-09-5.webp" alt="Pieza 09 — bordado">
+          <img src="pieza-08-7.webp" alt="Pieza 09 — detalle de bordado">
+          
+<- VIDEO OPCIONAL — PIEZA 09
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-09.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>09</span>
+        <h3>PANTALÓN ALANA</h3>
+        <p>
+          Confeccionado en sarga de peso y caída impecable,
+          el Pantalón Alana se inspira en la silueta Hakama
+          con una pretina Gurkha que abraza y enmarca la cintura.
+
+          Sus pinzas y tablones profundos aportan volumen fluido a la pierna,
+          integrando bolsillos ocultos sobre la costura lateral.
+
+          Exhibe en la bota derecha una cenefa asimétrica bordada a mano:
+          una franja horizontal en deshilado motivo conchas
+          y una columna vertical en malla siciliana con iconografía Quimbaya.
+
+          Cuenta con acabados de alta sastrería y terminaciones en costura francesa.
+        </p>
+
+        <p>Talla de la pieza: 10</p>
+        <p>Largo total: 107 cm</p>
+
+        <small>Disponible talla 10 | Disponible por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="mujer">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 460.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2009%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- HOMBRE -->
+    <div class="collection-section-title collection-section-men">
+      <p class="eyebrow">MEN</p>
+      <h2>Hombre</h2>
+    </div>
+
+    <!-- PIEZA 10 -->
+    <article class="look reverse">
+      <div class="photo gallery" data-gallery="pieza10">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-10-1.webp" alt="Pieza 10 — vista frontal">
+          <img src="pieza-10-2.webp" alt="Pieza 10 — vista posterior">
+          <img src="pieza-10-3.webp" alt="Pieza 10 — vista lateral">
+          <img src="pieza-10-4.webp" alt="Pieza 10 — detalle">
+          
+<!-- VIDEO OPCIONAL — PIEZA 10
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-10.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>10</span>
+        <h3>CAMISA DAMIÁN</h3>
+        <p>
+          Confeccionada en sarga negra de manga larga,
+          la Camisa Damián combina la estructura de la sastrería masculina
+          con el detalle artesanal del bordado en tono borgoña.
+
+          Su frente exhibe alforzas finas y dos columnas bordadas:
+          una en malla siciliana alusiva al mito del Yuruparí
+          y otra en deshilado inspirada en la cosmología.
+
+          En la espalda, incorpora cuatro franjas de deshilado vertical
+          y un bordado central en espina de pescado.
+
+          Incluye botones frontales y acabados impecables en costura francesa.
+        </p>
+
+        <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 460.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2010%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 11 -->
+    <article class="look">
+      <div class="photo gallery" data-gallery="pieza11">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-11-1.webp" alt="Pieza 11 — vista frontal">
+          <img src="pieza-11-2.webp" alt="Pieza 11 — vista posterior">
+          <img src="pieza-11-3.webp" alt="Pieza 11 — vista lateral">
+          <img src="pieza-11-4.webp" alt="Pieza 11 — detalle">
+          <img src="pieza-11-5.webp" alt="Pieza 11 — bordado">
+          <img src="pieza-11-6.webp" alt="Pieza 11 — detalle de bordado">
+          <img src="pieza-11-7.webp" alt="Pieza 11 — detalle de bordado">
+          
+<!-- VIDEO OPCIONAL — PIEZA 11
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-11.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>11</span>
+        <h3>CAMISA LUCA</h3>
+        <p>
+          Confeccionada en lino negro de manga larga,
+          la Camisa Luca fusiona la sastrería clásica
+          con destellos textiles inspirados en la orfebrería ancestral.
+
+          Su pechero destaca por una cuidada combinación de alforzas,
+          líneas deshiladas y dos franjas bordadas a mano en hilo color cobre:
+          una con motivo ondulado de conchas y otra en bordado siciliano
+          con iconografía antropomórfica Quimbaya.
+
+          Cuenta con cuello camisero, cartera con botones al tono
+          y acabados impecables en costura francesa.
+        </p>
+
+        <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 350.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2011%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 12 -->
+    <article class="look reverse">
+      <div class="photo gallery" data-gallery="pieza12">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-12-1.webp" alt="Pieza 12 — vista frontal">
+          <img src="pieza-12-2.webp" alt="Pieza 12 — vista posterior">
+          <img src="pieza-12-3.webp" alt="Pieza 12 — vista lateral">
+          <img src="pieza-12-4.webp" alt="Pieza 12 — detalle">
+          
+<- VIDEO OPCIONAL — PIEZA 12
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-12.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>12</span>
+        <h3>CAMISA ADRIANO</h3>
+        <p>
+          Confeccionada en lino negro de manga larga,
+          la Camisa Adriano destaca por su sastrería de autor
+          y el brillo metálico de su trabajo artesanal.
+
+          Su pechero combina alforzas verticales con una columna
+          en bordado siciliano de hilo plateado,
+          inspirada en el mito Quimbaya del hombre murciélago.
+
+          Sus mangas exhiben brazaletes horizontales que combinan malla siciliana,
+          deshilado de hilos encontrados y delicadas rosetas en hilo negro.
+
+          Incluye cuello camisero, botones al tono
+          y acabados impecables en costura francesa.
+        </p>
+
+        <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 380.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2012%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 13 -->
+    <article class="look">
+      <div class="photo gallery" data-gallery="pieza13">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-13-1.webp" alt="Pieza 13 — vista frontal">
+          <img src="pieza-13-2.webp" alt="Pieza 13 — vista posterior">
+          <img src="pieza-13-3.webp" alt="Pieza 13 — vista lateral">
+          
+<!-- VIDEO OPCIONAL — PIEZA 13
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-13.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>13</span>
+        <h3>CAMISA JULIÁN</h3>
+        <p>
+          Confeccionada en lino tono aguamarina de manga larga,
+          la Camisa Julián reinterpreta la camisa tradicional
+          a través de una paleta fresca y un detallado trabajo manual.
+
+          Su pechero destaca por alforzas verticales que enmarcan
+          dos franjas en deshilado Cartago y calado en espina de pescado,
+          elaboradas a mano en un sutil hilo marrón verdoso.
+
+          Incluye cuello camisero, botones al tono aguamarina
+          y acabados impecables en costura francesa.
+        </p>
+
+        <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 320.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2013%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 14 -->
+    <article class="look reverse">
+      <div class="photo gallery" data-gallery="pieza14">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-14-1.webp" alt="Pieza 14 — vista frontal">
+          <img src="pieza-14-2.webp" alt="Pieza 14 — vista posterior">
+          <img src="pieza-14-3.webp" alt="Pieza 14 — vista lateral">
+          
+<!-- VIDEO OPCIONAL — PIEZA 14
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-14.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>14</span>
+        <h3>CAMISA SANTIAGO</h3>
+        <p>
+          Confeccionada en lino verde oliva de manga corta,
+          la Camisa Santiago destaca por un pechero enmarcado en alforzas
+          con dos guías de bordado artesanal en hilo verde botella.
+
+          Su lado derecho exhibe un calado en deshilado y espina de pescado,
+          mientras que el lado izquierdo despliega en malla siciliana
+          una figura antropomórfica inspirada en la leyenda del Yuruparí.
+
+          Sus mangas cortas integran una franja de deshilado al tono,
+          complementada con botones en acento verde oliva y acabados en costura francesa.
+        </p>
+
+        <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 310.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2014%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 15 -->
+    <article class="look">
+      <div class="photo gallery" data-gallery="pieza15">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-15-1.webp" alt="Pieza 15 — vista frontal">
+          <img src="pieza-15-2.webp" alt="Pieza 15 — vista posterior">
+          <img src="pieza-15-3.webp" alt="Pieza 15 — vista lateral">
+          <img src="pieza-15-4.webp" alt="Pieza 15 — detalle">
+          <img src="pieza-15-5.webp" alt="Pieza 15 — detalle">
+
+          
+<!-- VIDEO OPCIONAL — PIEZA 15
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-15.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>15</span>
+        <h3>CAMISA LUCIANO</h3>
+        <p>
+          Confeccionada en lino tono menta de manga larga,
+          la Camisa Luciano destaca por un pechero enmarcado en alforzas
+          con guías de bordado en un menta de sutil contraste.
+
+          Su lado derecho presenta un calado en deshilado y espina de pescado,
+          mientras que el lado izquierdo despliega en malla siciliana
+          motivos del Yuruparí junto a elementos del paisaje y la fauna.
+
+          Su posterior exhibe franjas deshiladas verticales,
+          complementadas con botones en menta perlado y acabados en costura francesa.
+        </p>
+
+        <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 360.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2015%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZA 16 -->
+    <article class="look reverse">
+      <div class="photo gallery" data-gallery="pieza16">
+        <button class="gallery-arrow prev" type="button" aria-label="Imagen anterior">‹</button>
+
+        <div class="gallery-track">
+          <img src="pieza-16-1.webp" alt="Pieza 16 — vista frontal">
+          <img src="pieza-16-2.webp" alt="Pieza 16 — vista posterior">
+          <img src="pieza-16-3.webp" alt="Pieza 16 — vista lateral">
+          
+<- VIDEO OPCIONAL — PIEZA 16
+     Para activarlo: elimina los comentarios HTML
+     y sustituye el nombre del archivo por el video real.
+
+<div class="gallery-video-slide">
+  <video
+    class="gallery-optional-video"
+    playsinline
+    preload="metadata"
+  >
+    <source src="video-pieza-16.mp4" type="video/mp4">
+  </video>
+  <button
+    class="gallery-video-play"
+    type="button"
+    aria-label="Abrir video ampliado"
+  >▶</button>
+</div>
+-->
+
+        </div>
+
+        <button class="gallery-arrow next" type="button" aria-label="Siguiente imagen">›</button>
+      </div>
+
+      <div class="copy">
+        <span>16</span>
+        <h3>PANTALÓN HIRO</h3>
+        <p>
+          Confeccionado en sarga negra de estructura fluida,
+          el Pantalón Hiro reinterpreta la sastrería unisex
+          a través de una imponente silueta estilo hakama.
+
+          Destaca por su pretina gurkha cruzada
+          y tablones profundos que caen holgados desde la cadera,
+          enmarcados por pinzas y bolsillos laterales sastres.
+
+          Su posterior incorpora pinzas de entalle y bolsillos tipo ojal,
+          completado con acabados limpios en costura francesa.
+        </p>
+        
+        <small>Disponible solo por encargo.</small>
+
+        <button class="size-guide-link" type="button" data-size-guide data-size-category="hombre">
+          Consultar guía de tallas ↗
+        </button>
+
+        <strong class="price">$ 340.000 COP</strong>
+
+        <a class="request" href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Estoy%20interesado%2Fa%20en%20solicitar%20la%20Pieza%2016%20de%20Vestigios." target="_blank" rel="noopener">Solicitar pieza</a>
+      </div>
+    </article>
+
+    <!-- PIEZAS INDEPENDIENTES -->
+    <div class="independent-section-title">
+      <h2>Piezas independientes</h2>
+    </div>
+
+    <div class="details independent-pieces">
+      <button class="detail-media" type="button" data-independent-piece="0" aria-label="Ver información de la pieza Alba">
+        <img src="detalle-01.webp" alt="Pieza independiente — imagen provisional 1">
+      </button>
+      <button class="detail-media" type="button" data-independent-piece="1" aria-label="Ver información de la pieza Umbral">
+        <img src="detalle-02.webp" alt="Pieza independiente — imagen provisional 2">
+      </button>
+      <button class="detail-media" type="button" data-independent-piece="2" aria-label="Ver información de la pieza Niebla">
+        <img src="detalle-01.webp" alt="Pieza independiente — imagen provisional 3">
+      </button>
+      <button class="detail-media" type="button" data-independent-piece="3" aria-label="Ver información de la pieza Origen">
+        <img src="detalle-02.webp" alt="Pieza independiente — imagen provisional 4">
+      </button>
+    </div>
+
+  </section>
+
+  <!-- PROCESO -->
+  <section class="process" id="proceso">
+    <div class="process-photo">
+      <video
+        id="process-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        webkit-playsinline
+        preload="metadata"
+        disablepictureinpicture
+        controlslist="nodownload noplaybackrate noremoteplayback"
+        src="proceso.mp4"
+      ></video>
+    </div>
+
+    <div class="process-copy">
+      <p class="eyebrow">PROCESO</p>
+
+      <h2>
+        Del patrón<br>
+        <i>a la pieza.</i>
+      </h2>
+
+      <p>
+        Patronaje, pruebas, bordado, deshilado y confección
+        forman parte de la obra final. Cada pieza conserva
+        las huellas de su construcción.
+      </p>
+    </div>
+  </section>
+
+  <!-- FORMACIÓN -->
+  <section class="education" id="formacion">
+
+    <div class="education-heading">
+      <p class="eyebrow">DAVE KOLMAN · FORMACIÓN</p>
+
+      <h2>
+        El oficio<br>
+        <i>se aprende haciendo.</i>
+      </h2>
+
+      <p class="education-intro">
+        Patronaje, confección y bordado desde el conocimiento
+        de la estructura, la técnica y la construcción de la prenda.
+      </p>
+    </div>
+
+    <div class="education-options">
+
+      <article class="education-option">
+        <span class="education-number">01</span>
+        <p class="eyebrow">FORMACIÓN PERSONALIZADA</p>
+        <h3>Clases privadas</h3>
+
+        <p>
+          Clases personalizadas de patronaje, confección y bordado,
+          adaptadas a tus conocimientos, tus objetivos y los proyectos
+          que quieras desarrollar.
+        </p>
+
+        <a
+          class="education-link"
+          href="https://wa.me/573234338305?text=Hola%2C%20Dave.%20Quisiera%20informaci%C3%B3n%20sobre%20las%20clases%20privadas%20de%20patronaje%2C%20confecci%C3%B3n%20y%20bordado."
+          target="_blank"
+          rel="noopener"
+        >
+          Consultar clases <span aria-hidden="true">↗</span>
+        </a>
+      </article>
+
+      <article class="education-option">
+        <span class="education-number">02</span>
+        <p class="eyebrow">APRENDIZAJE DIGITAL</p>
+        <h3>Tutoriales básicos</h3>
+
+        <p>
+          Contenido introductorio en YouTube para aprender y explorar
+          fundamentos de patronaje, confección y técnicas textiles.
+        </p>
+
+        <a
+          class="education-link"
+          href="https://youtube.com/@dave.kolman?si=okgz0FrjuR3IrULF"
+          aria-label="Enlace a los tutoriales básicos de YouTube pendiente de configurar"  
+        >
+          Explorar tutoriales <span aria-hidden="true">↗</span>
+        </a>
+      </article>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- GUÍA DE TALLAS -->
+<div
+  class="size-guide-overlay"
+  id="size-guide"
+  aria-hidden="true"
+>
+  <section
+    class="size-guide-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="size-guide-title"
+    aria-describedby="size-guide-description"
+    tabindex="-1"
+  >
+    <button
+      class="size-guide-close"
+      type="button"
+      aria-label="Cerrar guía de tallas"
+      data-size-guide-close
+    >×</button>
+
+    <p class="size-guide-eyebrow">DAVE KOLMAN · VESTIGIOS</p>
+
+    <h2 class="size-guide-title" id="size-guide-title">
+      Guía de tallas
+    </h2>
+
+    <p class="size-guide-intro" id="size-guide-description">
+      Consulta las medidas de referencia de cada línea. Si tienes dudas
+      sobre la talla de una pieza, puedes contactarme antes de realizar tu pedido.
+    </p>
+
+    <!-- PESTAÑAS PRINCIPALES -->
+    <div class="size-guide-tabs" role="tablist" aria-label="Línea de tallas">
+      <button
+        class="size-guide-tab"
+        id="tab-mujer"
+        type="button"
+        role="tab"
+        aria-selected="true"
+        aria-controls="panel-mujer"
+        tabindex="0"
+        data-size-tab="mujer"
+      >MUJER</button>
+
+      <button
+        class="size-guide-tab"
+        id="tab-hombre"
+        type="button"
+        role="tab"
+        aria-selected="false"
+        aria-controls="panel-hombre"
+        tabindex="-1"
+        data-size-tab="hombre"
+      >HOMBRE</button>
+    </div>
+
+    <!-- GUÍA FEMENINA: SE CONSERVA LA TABLA ORIGINAL -->
+    <div
+      class="size-guide-panel"
+      id="panel-mujer"
+      role="tabpanel"
+      aria-labelledby="tab-mujer"
+      data-size-panel="mujer"
+    >
+      <h3>Tallas numéricas</h3>
+      <p>
+        Medidas corporales en centímetros. 
+      </p>
+
+      <div class="size-guide-table-wrap">
+        <table class="size-guide-table">
+          <thead>
+            <tr>
+              <th scope="col">Talla</th>
+              <th scope="col">Busto</th>
+              <th scope="col">Cintura</th>
+              <th scope="col">Cadera</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <th scope="row">6</th>
+              <td>84</td><td>62</td><td>92</td>
+            </tr>
+            <tr>
+              <th scope="row">8</th>
+              <td>88</td><td>66</td><td>96</td>
+            </tr>
+            <tr>
+              <th scope="row">10</th>
+              <td>92</td><td>70</td><td>100</td>
+            </tr>
+            <tr>
+              <th scope="row">12</th>
+              <td>96</td><td>74</td><td>104</td>
+            </tr>
+            <tr>
+              <th scope="row">14</th>
+              <td>100</td><td>78</td><td>108</td>
+            </tr>
+            <tr>
+              <th scope="row">16</th>
+              <td>106</td><td>84</td><td>114</td>
+            </tr>
+            <tr>
+              <th scope="row">18</th>
+              <td>112</td><td>90</td><td>120</td>
+            </tr>
+            <tr>
+              <th scope="row">20</th>
+              <td>118</td><td>96</td><td>126</td>
+            </tr>
+            <tr>
+              <th scope="row">22</th>
+              <td>124</td><td>102</td><td>132</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- GUÍA MASCULINA -->
+    <div
+      class="size-guide-panel"
+      id="panel-hombre"
+      role="tabpanel"
+      aria-labelledby="tab-hombre"
+      data-size-panel="hombre"
+      hidden
+    >
+      <h3>Tallas masculinas</h3>
+
+      <p>
+        Las tallas de camisa y pantalón se consultan por separado.
+        Elige la prenda para ver las medidas principales de referencia.
+        Todas las medidas se expresan en centímetros.
+      </p>
+
+      <!-- SUBPESTAÑAS: CAMISA Y PANTALÓN -->
+      <div
+        class="size-guide-tabs size-guide-subtabs"
+        role="tablist"
+        aria-label="Tipo de prenda masculina"
+      >
+        <button
+          class="size-guide-tab"
+          id="tab-camisa-hombre"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-camisa-hombre"
+          tabindex="0"
+          data-size-subtab="camisa-hombre"
+        >CAMISA</button>
+
+        <button
+          class="size-guide-tab"
+          id="tab-pantalon-hombre"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-pantalon-hombre"
+          tabindex="-1"
+          data-size-subtab="pantalon-hombre"
+        >PANTALÓN</button>
+      </div>
+
+      <!-- CAMISA: PECHO Y CUELLO -->
+      <div
+        class="size-guide-subpanel"
+        id="panel-camisa-hombre"
+        role="tabpanel"
+        aria-labelledby="tab-camisa-hombre"
+        data-size-subpanel="camisa-hombre"
+      >
+        <h3>Camisa</h3>
+
+        <p>
+          La equivalencia internacional es orientativa.
+        </p>
+
+        <div class="size-guide-table-wrap">
+          <table class="size-guide-table">
+            <thead>
+              <tr>
+                <th scope="col">Talla</th>
+                <th scope="col">Equivalencia</th>
+                <th scope="col">Pecho</th>
+                <th scope="col">Cuello</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <th scope="row">34</th>
+                <td>XS</td>
+                <td>92</td>
+                <td>34</td>
+              </tr>
+              <tr>
+                <th scope="row">36</th>
+                <td>S</td>
+                <td>96</td>
+                <td>36</td>
+              </tr>
+              <tr>
+                <th scope="row">38</th>
+                <td>M</td>
+                <td>100</td>
+                <td>38</td>
+              </tr>
+              <tr>
+                <th scope="row">40</th>
+                <td>L</td>
+                <td>104</td>
+                <td>40</td>
+              </tr>
+              <tr>
+                <th scope="row">42</th>
+                <td>XL</td>
+                <td>108</td>
+                <td>42</td>
+              </tr>
+              <tr>
+                <th scope="row">44</th>
+                <td>XXL</td>
+                <td>112</td>
+                <td>44</td>
+              </tr>
+              <tr>
+                <th scope="row">46</th>
+                <td>XXXL</td>
+                <td>116</td>
+                <td>46</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="size-guide-note">
+          Pecho y cuello se expresan como contornos corporales.
+          El ajuste final depende del diseño de cada camisa.
+        </p>
+      </div>
+
+      <!-- PANTALÓN: CINTURA Y CADERA -->
+      <div
+        class="size-guide-subpanel"
+        id="panel-pantalon-hombre"
+        role="tabpanel"
+        aria-labelledby="tab-pantalon-hombre"
+        data-size-subpanel="pantalon-hombre"
+        hidden
+      >
+        <h3>Pantalón</h3>
+
+        <p>
+          Las tallas de pantalón son independientes de las tallas de camisa.
+        </p>
+
+        <div class="size-guide-table-wrap">
+          <table class="size-guide-table">
+            <thead>
+              <tr>
+                <th scope="col">Talla</th>
+                <th scope="col">Cintura</th>
+                <th scope="col">Cadera</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <th scope="row">26</th>
+                <td>70</td>
+                <td>88</td>
+              </tr>
+              <tr>
+                <th scope="row">28</th>
+                <td>74</td>
+                <td>92</td>
+              </tr>
+              <tr>
+                <th scope="row">30</th>
+                <td>78</td>
+                <td>96</td>
+              </tr>
+              <tr>
+                <th scope="row">32</th>
+                <td>82</td>
+                <td>100</td>
+              </tr>
+              <tr>
+                <th scope="row">34</th>
+                <td>86</td>
+                <td>104</td>
+              </tr>
+              <tr>
+                <th scope="row">36</th>
+                <td>90</td>
+                <td>108</td>
+              </tr>
+              <tr>
+                <th scope="row">38</th>
+                <td>94</td>
+                <td>112</td>
+              </tr>
+              <tr>
+                <th scope="row">40</th>
+                <td>98</td>
+                <td>116</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="size-guide-note">
+          Cintura y cadera se expresan como contornos corporales.
+          El ajuste final depende del diseño de cada pantalón.
+        </p>
+      </div>
+    </div>
+
+    <p class="size-guide-note">
+      Estas tablas son orientativas. El corte, la holgura y la silueta
+      pueden modificar el ajuste de una prenda. Para confirmar la talla
+      adecuada de una pieza, puedes consultarme antes de realizar tu pedido.
+    </p>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer id="contacto">
+  <div>
+    <p class="eyebrow">DAVE KOLMAN</p>
+    <strong>Moda de autor · Patronaje · Bordado</strong>
+  </div>
+
+  <div style="grid-auto-flow: column; grid-template-rows: repeat(3, auto);">
+    <a href="https://www.instagram.com/davekolman?rpxt=MW45c3J4aXkyMzFwNA==" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.tiktok.com/@dave.kolman?_r=1&_t=ZS-9ATvtaPEhtf" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.facebook.com/share/19bd2AqAxx/" target="_blank" rel="noopener">Facebook</a>
+    <a href="https://wa.me/573234338305" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="mailto:davekolmanmoda@gmail.com">Email</a>
+    <a href="#size-guide" data-size-guide data-size-category="mujer">Guía de tallas</a>
+  </div>
+
+  <small>© 2026 Dave Kolman</small>
+</footer>
+
+<!-- BOTÓN VOLVER ARRIBA -->
+<button
+  id="back-to-top"
+  type="button"
+  aria-label="Volver al inicio"
+  title="Volver al inicio"
+>
+  ↑
+</button>
+
+<!-- JAVASCRIPT PRINCIPAL EXISTENTE -->
+<script src="script.js?v=4"></script>
+
+  
+<!-- CONTROL DEL BOTÓN PLAY EN VIDEOS DE LAS PIEZAS -->
+<script>
+  document.querySelectorAll(".gallery-video-slide").forEach((slide) => {
+    const video = slide.querySelector(".gallery-optional-video");
+    const playButton = slide.querySelector(".gallery-video-play");
+
+    if (!video || !playButton) return;
+
+    video.addEventListener("play", () => {
+      playButton.style.display = "none";
+    });
+
+    video.addEventListener("pause", () => {
+      playButton.style.display = "";
+    });
+
+    video.addEventListener("ended", () => {
+      playButton.style.display = "";
+    });
+  });
+</script>
+
+<!-- FUNCIONAMIENTO DE LA GUÍA DE TALLAS -->
+<script>
+  (() => {
+    const overlay = document.getElementById("size-guide");
+
+    if (!overlay) return;
+
+    const dialog = overlay.querySelector(".size-guide-dialog");
+    const closeButton = overlay.querySelector("[data-size-guide-close]");
+    const openButtons = document.querySelectorAll("[data-size-guide]");
+
+    const mainTabs = Array.from(
+      overlay.querySelectorAll("[data-size-tab]")
+    );
+
+    const mainPanels = Array.from(
+      overlay.querySelectorAll("[data-size-panel]")
+    );
+
+    const subTabs = Array.from(
+      overlay.querySelectorAll("[data-size-subtab]")
+    );
+
+    const subPanels = Array.from(
+      overlay.querySelectorAll("[data-size-subpanel]")
+    );
+
+    let lastFocusedElement = null;
+
+    function selectSubTab(category, moveFocus = false) {
+      subTabs.forEach((tab) => {
+        const selected = tab.dataset.sizeSubtab === category;
+
+        tab.setAttribute("aria-selected", String(selected));
+        tab.setAttribute("tabindex", selected ? "0" : "-1");
+
+        if (selected && moveFocus) {
+          tab.focus();
+        }
+      });
+
+      subPanels.forEach((panel) => {
+        panel.hidden = panel.dataset.sizeSubpanel !== category;
+      });
+    }
+
+    function selectMainTab(category, moveFocus = false) {
+      mainTabs.forEach((tab) => {
+        const selected = tab.dataset.sizeTab === category;
+
+        tab.setAttribute("aria-selected", String(selected));
+        tab.setAttribute("tabindex", selected ? "0" : "-1");
+
+        if (selected && moveFocus) {
+          tab.focus();
+        }
+      });
+
+      mainPanels.forEach((panel) => {
+        panel.hidden = panel.dataset.sizePanel !== category;
+      });
+
+      if (category === "hombre") {
+        selectSubTab("camisa-hombre");
+      }
+    }
+
+    function openSizeGuide(category = "mujer") {
+      lastFocusedElement = document.activeElement;
+
+      selectMainTab(category);
+
+      overlay.classList.add("is-open");
+      overlay.setAttribute("aria-hidden", "false");
+      document.body.classList.add("size-guide-open");
+
+      closeButton.focus();
+    }
+
+    function closeSizeGuide() {
+      if (!overlay.classList.contains("is-open")) return;
+
+      overlay.classList.remove("is-open");
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("size-guide-open");
+
+      if (lastFocusedElement) {
+        lastFocusedElement.focus();
+      }
+    }
+
+    function addTabKeyboardNavigation(tabs, selectFunction, dataKey) {
+      tabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => {
+          selectFunction(tab.dataset[dataKey]);
+        });
+
+        tab.addEventListener("keydown", (event) => {
+          let nextIndex = index;
+
+          if (event.key === "ArrowRight") {
+            nextIndex = (index + 1) % tabs.length;
+          } else if (event.key === "ArrowLeft") {
+            nextIndex = (index - 1 + tabs.length) % tabs.length;
+          } else if (event.key === "Home") {
+            nextIndex = 0;
+          } else if (event.key === "End") {
+            nextIndex = tabs.length - 1;
+          } else {
+            return;
+          }
+
+          event.preventDefault();
+          selectFunction(tabs[nextIndex].dataset[dataKey], true);
+        });
+      });
+    }
+
+    openButtons.forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        openSizeGuide(button.dataset.sizeCategory || "mujer");
+      });
+    });
+
+    addTabKeyboardNavigation(
+      mainTabs,
+      selectMainTab,
+      "sizeTab"
+    );
+
+    addTabKeyboardNavigation(
+      subTabs,
+      selectSubTab,
+      "sizeSubtab"
+    );
+
+    closeButton.addEventListener("click", closeSizeGuide);
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) {
+        closeSizeGuide();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (!overlay.classList.contains("is-open")) return;
+
+      if (event.key === "Escape") {
+        closeSizeGuide();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        const focusableElements = Array.from(
+          dialog.querySelectorAll(
+            'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((element) => {
+          return !element.closest("[hidden]");
+        });
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (!firstElement || !lastElement) return;
+
+        if (
+          event.shiftKey &&
+          document.activeElement === firstElement
+        ) {
+          event.preventDefault();
+          lastElement.focus();
+        } else if (
+          !event.shiftKey &&
+          document.activeElement === lastElement
+        ) {
+          event.preventDefault();
+          firstElement.focus();
+        }
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
+
