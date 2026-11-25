@@ -1099,9 +1099,10 @@ INDEPENDIENTES
   left: 12px;
 }
 
+/* Flecha siguiente: permanece dentro del área de imagen (58%) */
 .independent-gallery-next {
-  right: auto;
-  left: calc(58% - 54px);
+  left: auto;
+  right: calc(42% + 8px);
 }
 
 .independent-modal-kicker {
@@ -2049,6 +2050,7 @@ MÓVIL
     left: 5px;
   }
 
+  /* En móvil la flecha queda dentro del borde derecho de la imagen */
   .independent-gallery-next {
     right: 5px;
     left: auto;
