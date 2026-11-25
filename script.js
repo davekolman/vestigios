@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================================================
@@ -140,15 +139,17 @@ document.querySelectorAll("video").forEach(prepareVideo);
 /* =========================================================
    VÍDEOS PRINCIPALES
    ESCRITORIO: COMPORTAMIENTO ORIGINAL
-   MÓVILES: AUTOPLAY CON CONTROL DE CARGA
+   MÓVILES: AUTOPLAY Y REINTENTOS DE CARGA
 ========================================================= */
 
 const heroVideo = document.getElementById("hero-video");
 const processVideo = document.getElementById("process-video");
 
-const mobileVideoMode = window.matchMedia(
-  "(max-width: 700px), (pointer: coarse)"
-);
+/* DETECCIÓN EXCLUSIVA DEL BREAKPOINT MÓVIL */
+
+const mobileVideoMode = window.matchMedia("(max-width: 700px)");
+
+/* EVITAR INTENTOS SIMULTÁNEOS */
 
 const mobilePlayPending = new WeakSet();
 
@@ -156,8 +157,6 @@ function playMainVideoOnMobile(video) {
   if (!video || document.hidden) return;
 
   if (!video.paused && !video.ended) return;
-
-  if (video.readyState < 2) return;
 
   if (mobilePlayPending.has(video)) return;
 
@@ -171,7 +170,24 @@ function playMainVideoOnMobile(video) {
 
   mobilePlayPending.add(video);
 
-  const promise = video.play();
+  let promise;
+
+  try {
+    promise = video.play();
+  } catch (error) {
+    mobilePlayPending.delete(video);
+
+    console.error("ERROR DE AUTOPLAY:", {
+      video: video.id,
+      nombre: error.name,
+      mensaje: error.message,
+      muted: video.muted,
+      readyState: video.readyState,
+      networkState: video.networkState
+    });
+
+    return;
+  }
 
   if (promise && typeof promise.then === "function") {
     promise
@@ -181,11 +197,14 @@ function playMainVideoOnMobile(video) {
       .catch((error) => {
         mobilePlayPending.delete(video);
 
-        console.warn(
-          "No se pudo iniciar el autoplay de " + video.id,
-          error.name,
-          error.message
-        );
+        console.error("ERROR DE AUTOPLAY:", {
+          video: video.id,
+          nombre: error.name,
+          mensaje: error.message,
+          muted: video.muted,
+          readyState: video.readyState,
+          networkState: video.networkState
+        });
       });
   } else {
     mobilePlayPending.delete(video);
@@ -202,7 +221,7 @@ function startMainVideo(video) {
     return;
   }
 
-  /* MÓVILES: INTENTAR CUANDO EL VÍDEO ESTÉ PREPARADO */
+  /* MÓVILES: PREPARAR E INTENTAR REPRODUCIR */
 
   prepareVideo(video);
 
@@ -212,9 +231,7 @@ function startMainVideo(video) {
   video.setAttribute("autoplay", "");
   video.setAttribute("loop", "");
 
-  if (video.readyState >= 2) {
-    playMainVideoOnMobile(video);
-  }
+  playMainVideoOnMobile(video);
 }
 
 /* =========================================================
@@ -234,14 +251,9 @@ if (heroVideo) {
   heroVideo.setAttribute("autoplay", "");
   heroVideo.setAttribute("loop", "");
 
-  if (mobileVideoMode.matches) {
-    heroVideo.addEventListener("loadedmetadata", startHeroVideo);
-    heroVideo.addEventListener("loadeddata", startHeroVideo);
-    heroVideo.addEventListener("canplay", startHeroVideo);
-  } else {
-    heroVideo.addEventListener("loadeddata", startHeroVideo);
-    heroVideo.addEventListener("canplay", startHeroVideo);
-  }
+  heroVideo.addEventListener("loadedmetadata", startHeroVideo);
+  heroVideo.addEventListener("loadeddata", startHeroVideo);
+  heroVideo.addEventListener("canplay", startHeroVideo);
 
   startHeroVideo();
 
@@ -265,14 +277,9 @@ if (processVideo) {
   processVideo.setAttribute("autoplay", "");
   processVideo.setAttribute("loop", "");
 
-  if (mobileVideoMode.matches) {
-    processVideo.addEventListener("loadedmetadata", startProcessVideo);
-    processVideo.addEventListener("loadeddata", startProcessVideo);
-    processVideo.addEventListener("canplay", startProcessVideo);
-  } else {
-    processVideo.addEventListener("loadeddata", startProcessVideo);
-    processVideo.addEventListener("canplay", startProcessVideo);
-  }
+  processVideo.addEventListener("loadedmetadata", startProcessVideo);
+  processVideo.addEventListener("loadeddata", startProcessVideo);
+  processVideo.addEventListener("canplay", startProcessVideo);
 
   startProcessVideo();
 }
