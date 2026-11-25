@@ -1112,62 +1112,167 @@ window.addEventListener("pageshow", () => {
 
   const image = modal.querySelector(".independent-modal-image img");
   const closeButton = modal.querySelector(".independent-modal-close");
+
+(() => {
+  const cards = document.querySelectorAll(
+    ".independent-pieces [data-independent-piece]"
+  );
+
+  if (!cards.length) return;
+
+  let currentPiece = null;
+  let currentImage = 0;
+
+  const modal = document.createElement("div");
+
+  modal.className = "independent-modal";
+  modal.setAttribute("aria-hidden", "true");
+
+  modal.innerHTML = `
+    <section class="independent-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="independent-modal-title">
+
+      <button class="independent-modal-close"
+        type="button" aria-label="Cerrar">×</button>
+
+      <div class="independent-modal-image">
+        <img alt="">
+      </div>
+
+      <button class="lightbox-arrow lightbox-prev independent-gallery-arrow independent-gallery-prev"
+        type="button" aria-label="Fotografía anterior">‹</button>
+
+      <button class="lightbox-arrow lightbox-next independent-gallery-arrow independent-gallery-next"
+        type="button" aria-label="Fotografía siguiente">›</button>
+
+      <div class="independent-modal-copy">
+        <p class="independent-modal-kicker">DAVE KOLMAN · PIEZA INDEPENDIENTE</p>
+        <h2 class="independent-modal-title" id="independent-modal-title"></h2>
+        <p class="independent-modal-description"></p>
+        <strong class="independent-modal-price"></strong>
+        <dl class="independent-modal-meta"></dl>
+
+        <button class="independent-size-link" type="button">
+          Consultar guía de tallas ↗
+        </button>
+
+        <h3 class="independent-measure-title">Medidas de la prenda</h3>
+        <table class="independent-measure-table">
+          <tbody></tbody>
+        </table>
+
+        <p class="independent-modal-note">
+          Datos ficticios de demostración. Se reemplazarán por la información definitiva.
+        </p>
+      </div>
+    </section>
+  `;
+
+  document.body.appendChild(modal);
+
+  const image = modal.querySelector(".independent-modal-image img");
+  const closeButton = modal.querySelector(".independent-modal-close");
   const previousButton = modal.querySelector(".independent-gallery-prev");
   const nextButton = modal.querySelector(".independent-gallery-next");
 
+  const title = modal.querySelector(".independent-modal-title");
+  const description = modal.querySelector(".independent-modal-description");
+  const price = modal.querySelector(".independent-modal-price");
+  const meta = modal.querySelector(".independent-modal-meta");
+  const measureBody = modal.querySelector(
+    ".independent-measure-table tbody"
+  );
+
+  function readPiece(card) {
+    const measureTemplate = card.querySelector(
+      "template[data-independent-measures]"
+    );
+
+    return {
+      name: card.dataset.name || "",
+      description: card.dataset.description || "",
+      price: card.dataset.price || "",
+      size: card.dataset.size || "",
+      fabric: card.dataset.fabric || "",
+      length: card.dataset.length || "",
+      images: (card.dataset.images || "")
+        .split("|")
+        .map(src => src.trim())
+        .filter(Boolean),
+      measures: measureTemplate
+        ? measureTemplate.innerHTML
+        : ""
+    };
+  }
+
   function updateImage() {
-    if (!currentPiece) return;
+    if (!currentPiece || !currentPiece.images.length) return;
 
     const images = currentPiece.images;
-    currentImage = (currentImage + images.length) % images.length;
+
+    currentImage =
+      (currentImage + images.length) % images.length;
 
     image.src = images[currentImage];
-    image.alt = currentPiece.name + " — fotografía " + (currentImage + 1);
+    image.alt =
+      currentPiece.name + " — fotografía " + (currentImage + 1);
   }
 
   function previousImage() {
     if (!currentPiece) return;
+
     currentImage--;
     updateImage();
   }
 
   function nextImage() {
     if (!currentPiece) return;
+
     currentImage++;
     updateImage();
   }
 
-  function openPiece(index) {
-    currentPiece = pieces[index];
-    if (!currentPiece) return;
+  function openPiece(card) {
+    currentPiece = readPiece(card);
+
+    if (!currentPiece.images.length) return;
 
     currentImage = 0;
     updateImage();
 
-    modal.querySelector(".independent-modal-title").textContent =
-      currentPiece.name;
+    title.textContent = currentPiece.name;
+    description.textContent = currentPiece.description;
+    price.textContent = currentPiece.price;
 
-    modal.querySelector(".independent-modal-description").textContent =
-      currentPiece.description;
+    meta.innerHTML = "";
 
-    modal.querySelector(".independent-modal-price").textContent =
-      currentPiece.price;
+    const metadata = [
+      ["Talla", currentPiece.size],
+      ["Material", currentPiece.fabric],
+      ["Largo total", currentPiece.length],
+      ["Disponibilidad", "Por encargo"]
+    ];
 
-    modal.querySelector(".independent-modal-meta").innerHTML = `
-      <div><dt>Talla</dt><dd>${currentPiece.size}</dd></div>
-      <div><dt>Material</dt><dd>${currentPiece.fabric}</dd></div>
-      <div><dt>Largo total</dt><dd>${currentPiece.length}</dd></div>
-      <div><dt>Disponibilidad</dt><dd>Por encargo</dd></div>
-    `;
+    metadata.forEach(([label, value]) => {
+      const wrapper = document.createElement("div");
+      const dt = document.createElement("dt");
+      const dd = document.createElement("dd");
 
-    modal.querySelector(".independent-measure-table tbody").innerHTML =
-      currentPiece.measures.map(row =>
-        `<tr><th scope="row">${row[0]}</th><td>${row[1]}</td></tr>`
-      ).join("");
+      dt.textContent = label;
+      dd.textContent = value;
+
+      wrapper.append(dt, dd);
+      meta.appendChild(wrapper);
+    });
+
+    measureBody.innerHTML = currentPiece.measures;
 
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
     document.body.classList.add("independent-modal-open");
+
     closeButton.focus();
   }
 
@@ -1175,11 +1280,13 @@ window.addEventListener("pageshow", () => {
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("independent-modal-open");
+
+    currentPiece = null;
   }
 
   cards.forEach(card => {
     card.addEventListener("click", () => {
-      openPiece(Number(card.dataset.independentPiece));
+      openPiece(card);
     });
   });
 
@@ -1188,15 +1295,25 @@ window.addEventListener("pageshow", () => {
   closeButton.addEventListener("click", closePiece);
 
   modal.addEventListener("click", event => {
-    if (event.target === modal) closePiece();
+    if (event.target === modal) {
+      closePiece();
+    }
   });
 
   document.addEventListener("keydown", event => {
     if (!modal.classList.contains("is-open")) return;
 
-    if (event.key === "Escape") closePiece();
-    if (event.key === "ArrowLeft") previousImage();
-    if (event.key === "ArrowRight") nextImage();
+    if (event.key === "Escape") {
+      closePiece();
+    }
+
+    if (event.key === "ArrowLeft") {
+      previousImage();
+    }
+
+    if (event.key === "ArrowRight") {
+      nextImage();
+    }
   });
 
   modal.querySelector(".independent-size-link")
@@ -1207,6 +1324,8 @@ window.addEventListener("pageshow", () => {
         '.size-guide-link[data-size-category="mujer"]'
       );
 
-      if (guideButton) guideButton.click();
+      if (guideButton) {
+        guideButton.click();
+      }
     });
 })();
