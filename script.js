@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================================================
@@ -138,14 +137,62 @@ function toggleOptionalVideo(slide) {
 document.querySelectorAll("video").forEach(prepareVideo);
 
 /* =========================================================
-   VIDEO DE PORTADA
+   REPRODUCCIÓN DE VÍDEOS PRINCIPALES
+   ESCRITORIO: COMPORTAMIENTO ORIGINAL
+   MÓVILES: INICIO CONTROLADO
 ========================================================= */
 
 const heroVideo = document.getElementById("hero-video");
+const processVideo = document.getElementById("process-video");
+
+const mobileVideoMode = window.matchMedia(
+  "(max-width: 700px), (pointer: coarse)"
+);
+
+const waitingMobileVideos = new WeakSet();
+
+function startMainVideo(video) {
+  if (!video || document.hidden) return;
+
+  /* ESCRITORIO: conservar comportamiento original */
+
+  if (!mobileVideoMode.matches) {
+    playVideo(video);
+    return;
+  }
+
+  /* MÓVILES: esperar a que el vídeo esté preparado */
+
+  prepareVideo(video);
+
+  if (!video.paused && !video.ended) return;
+
+  if (video.readyState >= 2) {
+    playVideo(video);
+    return;
+  }
+
+  /* Evitar registrar varios eventos mientras carga */
+
+  if (waitingMobileVideos.has(video)) return;
+
+  waitingMobileVideos.add(video);
+
+  video.addEventListener("canplay", () => {
+    waitingMobileVideos.delete(video);
+
+    if (!document.hidden) {
+      playVideo(video);
+    }
+  }, { once: true });
+}
+
+/* =========================================================
+   VIDEO DE PORTADA
+========================================================= */
 
 function startHeroVideo() {
-  if (!heroVideo || document.hidden) return;
-  playVideo(heroVideo);
+  startMainVideo(heroVideo);
 }
 
 if (heroVideo) {
@@ -157,8 +204,12 @@ if (heroVideo) {
   heroVideo.setAttribute("autoplay", "");
   heroVideo.setAttribute("loop", "");
 
-  heroVideo.addEventListener("loadeddata", startHeroVideo);
-  heroVideo.addEventListener("canplay", startHeroVideo);
+  /* Eventos originales exclusivamente en escritorio */
+
+  if (!mobileVideoMode.matches) {
+    heroVideo.addEventListener("loadeddata", startHeroVideo);
+    heroVideo.addEventListener("canplay", startHeroVideo);
+  }
 
   startHeroVideo();
 
@@ -169,11 +220,8 @@ if (heroVideo) {
    VIDEO DE PROCESO
 ========================================================= */
 
-const processVideo = document.getElementById("process-video");
-
 function startProcessVideo() {
-  if (!processVideo || document.hidden) return;
-  playVideo(processVideo);
+  startMainVideo(processVideo);
 }
 
 if (processVideo) {
@@ -185,8 +233,12 @@ if (processVideo) {
   processVideo.setAttribute("autoplay", "");
   processVideo.setAttribute("loop", "");
 
-  processVideo.addEventListener("loadeddata", startProcessVideo);
-  processVideo.addEventListener("canplay", startProcessVideo);
+  /* Eventos originales exclusivamente en escritorio */
+
+  if (!mobileVideoMode.matches) {
+    processVideo.addEventListener("loadeddata", startProcessVideo);
+    processVideo.addEventListener("canplay", startProcessVideo);
+  }
 
   startProcessVideo();
 }
