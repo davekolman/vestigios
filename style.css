@@ -2112,8 +2112,8 @@ ACCESIBILIDAD
 /* Flecha siguiente: límite derecho de la fotografía */
 
 .independent-dialog > .independent-gallery-next {
-  left: auto;
-  right: calc(42% + 8px);
+  left: calc(58% - 48px);
+  right: auto;
 }
 
 /* Respetar el atributo hidden */
