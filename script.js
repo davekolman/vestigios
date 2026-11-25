@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================================================
@@ -137,9 +138,9 @@ function toggleOptionalVideo(slide) {
 document.querySelectorAll("video").forEach(prepareVideo);
 
 /* =========================================================
-   REPRODUCCIÓN DE VÍDEOS PRINCIPALES
+   VÍDEOS PRINCIPALES
    ESCRITORIO: COMPORTAMIENTO ORIGINAL
-   MÓVILES: INICIO CONTROLADO
+   MÓVILES: AUTOPLAY CON CONTROL DE CARGA
 ========================================================= */
 
 const heroVideo = document.getElementById("hero-video");
@@ -149,42 +150,71 @@ const mobileVideoMode = window.matchMedia(
   "(max-width: 700px), (pointer: coarse)"
 );
 
-const waitingMobileVideos = new WeakSet();
+const mobilePlayPending = new WeakSet();
+
+function playMainVideoOnMobile(video) {
+  if (!video || document.hidden) return;
+
+  if (!video.paused && !video.ended) return;
+
+  if (video.readyState < 2) return;
+
+  if (mobilePlayPending.has(video)) return;
+
+  prepareVideo(video);
+
+  video.autoplay = true;
+  video.loop = true;
+
+  video.setAttribute("autoplay", "");
+  video.setAttribute("loop", "");
+
+  mobilePlayPending.add(video);
+
+  const promise = video.play();
+
+  if (promise && typeof promise.then === "function") {
+    promise
+      .then(() => {
+        mobilePlayPending.delete(video);
+      })
+      .catch((error) => {
+        mobilePlayPending.delete(video);
+
+        console.warn(
+          "No se pudo iniciar el autoplay de " + video.id,
+          error.name,
+          error.message
+        );
+      });
+  } else {
+    mobilePlayPending.delete(video);
+  }
+}
 
 function startMainVideo(video) {
   if (!video || document.hidden) return;
 
-  /* ESCRITORIO: conservar comportamiento original */
+  /* ESCRITORIO: COMPORTAMIENTO ORIGINAL */
 
   if (!mobileVideoMode.matches) {
     playVideo(video);
     return;
   }
 
-  /* MÓVILES: esperar a que el vídeo esté preparado */
+  /* MÓVILES: INTENTAR CUANDO EL VÍDEO ESTÉ PREPARADO */
 
   prepareVideo(video);
 
-  if (!video.paused && !video.ended) return;
+  video.autoplay = true;
+  video.loop = true;
+
+  video.setAttribute("autoplay", "");
+  video.setAttribute("loop", "");
 
   if (video.readyState >= 2) {
-    playVideo(video);
-    return;
+    playMainVideoOnMobile(video);
   }
-
-  /* Evitar registrar varios eventos mientras carga */
-
-  if (waitingMobileVideos.has(video)) return;
-
-  waitingMobileVideos.add(video);
-
-  video.addEventListener("canplay", () => {
-    waitingMobileVideos.delete(video);
-
-    if (!document.hidden) {
-      playVideo(video);
-    }
-  }, { once: true });
 }
 
 /* =========================================================
@@ -204,9 +234,11 @@ if (heroVideo) {
   heroVideo.setAttribute("autoplay", "");
   heroVideo.setAttribute("loop", "");
 
-  /* Eventos originales exclusivamente en escritorio */
-
-  if (!mobileVideoMode.matches) {
+  if (mobileVideoMode.matches) {
+    heroVideo.addEventListener("loadedmetadata", startHeroVideo);
+    heroVideo.addEventListener("loadeddata", startHeroVideo);
+    heroVideo.addEventListener("canplay", startHeroVideo);
+  } else {
     heroVideo.addEventListener("loadeddata", startHeroVideo);
     heroVideo.addEventListener("canplay", startHeroVideo);
   }
@@ -233,9 +265,11 @@ if (processVideo) {
   processVideo.setAttribute("autoplay", "");
   processVideo.setAttribute("loop", "");
 
-  /* Eventos originales exclusivamente en escritorio */
-
-  if (!mobileVideoMode.matches) {
+  if (mobileVideoMode.matches) {
+    processVideo.addEventListener("loadedmetadata", startProcessVideo);
+    processVideo.addEventListener("loadeddata", startProcessVideo);
+    processVideo.addEventListener("canplay", startProcessVideo);
+  } else {
     processVideo.addEventListener("loadeddata", startProcessVideo);
     processVideo.addEventListener("canplay", startProcessVideo);
   }
