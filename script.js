@@ -776,25 +776,28 @@ window.addEventListener("pageshow", () => {
   });
 });
 
+
 /* =========================================================
    PIEZAS INDEPENDIENTES — VISOR Y CARRUSEL
-   INTEGRADO DENTRO DE DOMCONTENTLOADED
 ========================================================= */
 
 (() => {
   const cards = document.querySelectorAll(
-    "[data-independent-piece]"
+    ".independent-pieces [data-independent-piece]"
   );
 
-  if (!cards.length) {
-    console.warn("Visor independiente: no se encontraron tarjetas.");
-    return;
-  }
+  if (!cards.length) return;
 
   let currentPiece = null;
   let currentImage = 0;
+  let lastFocusedElement = null;
+
+  /* =====================================================
+     CREAR MODAL
+  ===================================================== */
 
   const modal = document.createElement("div");
+
   modal.className = "independent-modal";
   modal.setAttribute("aria-hidden", "true");
 
@@ -804,31 +807,53 @@ window.addEventListener("pageshow", () => {
       aria-modal="true"
       aria-labelledby="independent-modal-title">
 
-      <button class="independent-modal-close"
-        type="button" aria-label="Cerrar">×</button>
+      <button
+        class="independent-modal-close"
+        type="button"
+        aria-label="Cerrar"
+      >×</button>
 
       <div class="independent-modal-image">
         <img alt="">
       </div>
 
-      <button class="lightbox-arrow lightbox-prev independent-gallery-arrow independent-gallery-prev"
-        type="button" aria-label="Fotografía anterior">‹</button>
+      <button
+        class="lightbox-arrow lightbox-prev independent-gallery-arrow independent-gallery-prev"
+        type="button"
+        aria-label="Fotografía anterior"
+      >‹</button>
 
-      <button class="lightbox-arrow lightbox-next independent-gallery-arrow independent-gallery-next"
-        type="button" aria-label="Fotografía siguiente">›</button>
+      <button
+        class="lightbox-arrow lightbox-next independent-gallery-arrow independent-gallery-next"
+        type="button"
+        aria-label="Fotografía siguiente"
+      >›</button>
 
       <div class="independent-modal-copy">
-        <p class="independent-modal-kicker">DAVE KOLMAN · PIEZA INDEPENDIENTE</p>
-        <h2 class="independent-modal-title" id="independent-modal-title"></h2>
+
+        <p class="independent-modal-kicker">
+          DAVE KOLMAN · PIEZA INDEPENDIENTE
+        </p>
+
+        <h2
+          class="independent-modal-title"
+          id="independent-modal-title"
+        ></h2>
+
         <p class="independent-modal-description"></p>
+
         <strong class="independent-modal-price"></strong>
+
         <dl class="independent-modal-meta"></dl>
 
         <button class="independent-size-link" type="button">
           Consultar guía de tallas ↗
         </button>
 
-        <h3 class="independent-measure-title">Medidas de la prenda</h3>
+        <h3 class="independent-measure-title">
+          Medidas de la prenda
+        </h3>
+
         <table class="independent-measure-table">
           <tbody></tbody>
         </table>
@@ -836,25 +861,60 @@ window.addEventListener("pageshow", () => {
         <p class="independent-modal-note">
           Datos ficticios de demostración. Se reemplazarán por la información definitiva.
         </p>
+
       </div>
     </section>
   `;
 
   document.body.appendChild(modal);
 
-  const image = modal.querySelector(".independent-modal-image img");
-  const closeButton = modal.querySelector(".independent-modal-close");
-  const previousButton = modal.querySelector(".independent-gallery-prev");
-  const nextButton = modal.querySelector(".independent-gallery-next");
+  /* =====================================================
+     ELEMENTOS DEL MODAL
+  ===================================================== */
 
-  const title = modal.querySelector(".independent-modal-title");
-  const description = modal.querySelector(".independent-modal-description");
-  const price = modal.querySelector(".independent-modal-price");
-  const meta = modal.querySelector(".independent-modal-meta");
+  const image = modal.querySelector(
+    ".independent-modal-image img"
+  );
+
+  const closeButton = modal.querySelector(
+    ".independent-modal-close"
+  );
+
+  const previousButton = modal.querySelector(
+    ".independent-gallery-prev"
+  );
+
+  const nextButton = modal.querySelector(
+    ".independent-gallery-next"
+  );
+
+  const title = modal.querySelector(
+    ".independent-modal-title"
+  );
+
+  const description = modal.querySelector(
+    ".independent-modal-description"
+  );
+
+  const price = modal.querySelector(
+    ".independent-modal-price"
+  );
+
+  const meta = modal.querySelector(
+    ".independent-modal-meta"
+  );
 
   const measureBody = modal.querySelector(
     ".independent-measure-table tbody"
   );
+
+  const imageContainer = modal.querySelector(
+    ".independent-modal-image"
+  );
+
+  /* =====================================================
+     LEER DATOS DESDE EL HTML
+  ===================================================== */
 
   function readPiece(card) {
     const measureTemplate = card.querySelector(
@@ -868,53 +928,81 @@ window.addEventListener("pageshow", () => {
       size: card.dataset.size || "",
       fabric: card.dataset.fabric || "",
       length: card.dataset.length || "",
+
       images: (card.dataset.images || "")
         .split("|")
         .map(src => src.trim())
         .filter(Boolean),
-      measures: measureTemplate ? measureTemplate.innerHTML : ""
+
+      measures: measureTemplate
+        ? measureTemplate.innerHTML
+        : ""
     };
   }
 
+  /* =====================================================
+     ACTUALIZAR IMAGEN
+  ===================================================== */
+
   function updateImage() {
-    if (!currentPiece || !currentPiece.images.length) return;
+    if (!currentPiece) return;
+
+    const images = currentPiece.images;
+
+    if (!images.length) {
+      image.removeAttribute("src");
+      image.alt = "";
+      previousButton.hidden = true;
+      nextButton.hidden = true;
+      imageContainer.hidden = true;
+      return;
+    }
+
+    imageContainer.hidden = false;
 
     currentImage =
-      (currentImage + currentPiece.images.length) %
-      currentPiece.images.length;
+      (currentImage + images.length) % images.length;
 
-    image.src = currentPiece.images[currentImage];
+    image.src = images[currentImage];
+
     image.alt =
-      currentPiece.name + " — fotografía " + (currentImage + 1);
+      currentPiece.name +
+      " — fotografía " +
+      (currentImage + 1);
+
+    const showArrows = images.length > 1;
+
+    previousButton.hidden = !showArrows;
+    nextButton.hidden = !showArrows;
   }
 
+  /* =====================================================
+     NAVEGACIÓN DE IMÁGENES
+  ===================================================== */
+
   function previousImage() {
-    if (!currentPiece) return;
+    if (!currentPiece || !currentPiece.images.length) return;
 
     currentImage--;
     updateImage();
   }
 
   function nextImage() {
-    if (!currentPiece) return;
+    if (!currentPiece || !currentPiece.images.length) return;
 
     currentImage++;
     updateImage();
   }
 
+  /* =====================================================
+     ABRIR PIEZA
+  ===================================================== */
+
   function openPiece(card) {
-    const piece = readPiece(card);
-
-    if (!piece.images.length) {
-      console.error(
-        "La pieza no tiene imágenes en data-images:",
-        card
-      );
-      return;
-    }
-
-    currentPiece = piece;
+    currentPiece = readPiece(card);
     currentImage = 0;
+
+    lastFocusedElement = card;
 
     updateImage();
 
@@ -932,6 +1020,8 @@ window.addEventListener("pageshow", () => {
     ];
 
     metadata.forEach(([label, value]) => {
+      if (!value) return;
+
       const wrapper = document.createElement("div");
       const dt = document.createElement("dt");
       const dd = document.createElement("dd");
@@ -947,78 +1037,125 @@ window.addEventListener("pageshow", () => {
 
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("independent-modal-open");
+
+    document.body.classList.add(
+      "independent-modal-open"
+    );
 
     closeButton.focus();
   }
 
+  /* =====================================================
+     CERRAR PIEZA
+  ===================================================== */
+
   function closePiece() {
+    if (!modal.classList.contains("is-open")) return;
+
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("independent-modal-open");
+
+    document.body.classList.remove(
+      "independent-modal-open"
+    );
 
     image.removeAttribute("src");
+
     currentPiece = null;
+    currentImage = 0;
+
+    if (
+      lastFocusedElement &&
+      document.contains(lastFocusedElement)
+    ) {
+      lastFocusedElement.focus();
+    }
   }
 
+  /* =====================================================
+     CLIC EN LAS TARJETAS
+  ===================================================== */
+
   cards.forEach(card => {
-    card.addEventListener("click", (event) => {
+    card.addEventListener("click", event => {
       event.preventDefault();
       event.stopPropagation();
+
       openPiece(card);
     });
   });
 
-  previousButton.addEventListener("click", (event) => {
+  /* =====================================================
+     BOTONES DEL CARRUSEL
+  ===================================================== */
+
+  previousButton.addEventListener("click", event => {
     event.preventDefault();
     event.stopPropagation();
+
     previousImage();
   });
 
-  nextButton.addEventListener("click", (event) => {
+  nextButton.addEventListener("click", event => {
     event.preventDefault();
     event.stopPropagation();
+
     nextImage();
   });
 
-  closeButton.addEventListener("click", (event) => {
+  closeButton.addEventListener("click", event => {
     event.preventDefault();
     event.stopPropagation();
+
     closePiece();
   });
 
+  /* =====================================================
+     CERRAR AL TOCAR EL FONDO
+  ===================================================== */
+
   modal.addEventListener("click", event => {
-    if (event.target === modal) closePiece();
+    if (event.target === modal) {
+      closePiece();
+    }
   });
+
+  /* =====================================================
+     TECLADO
+  ===================================================== */
 
   document.addEventListener("keydown", event => {
     if (!modal.classList.contains("is-open")) return;
 
-    if (event.key === "Escape") closePiece();
-    if (event.key === "ArrowLeft") previousImage();
-    if (event.key === "ArrowRight") nextImage();
+    if (event.key === "Escape") {
+      closePiece();
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      previousImage();
+    }
+
+    if (event.key === "ArrowRight") {
+      nextImage();
+    }
   });
 
-  const sizeLink = modal.querySelector(".independent-size-link");
+  /* =====================================================
+     ENLACE A LA GUÍA DE TALLAS
+  ===================================================== */
 
-  if (sizeLink) {
-    sizeLink.addEventListener("click", () => {
+  modal.querySelector(".independent-size-link")
+    .addEventListener("click", () => {
       closePiece();
 
       const guideButton = document.querySelector(
         '.size-guide-link[data-size-category="mujer"]'
       );
 
-      if (guideButton) guideButton.click();
+      if (guideButton) {
+        guideButton.click();
+      }
     });
-  }
-
-  console.log(
-    "Visor de piezas independientes inicializado:",
-    cards.length,
-    "tarjetas."
-  );
 
 })();
-
-});
