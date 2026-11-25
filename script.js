@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================================================
@@ -29,9 +30,7 @@ function playVideo(video) {
   const promise = video.play();
 
   if (promise && typeof promise.catch === "function") {
-    promise.catch(() => {
-      // El navegador puede bloquear el autoplay.
-    });
+    promise.catch(() => {});
   }
 }
 
@@ -43,9 +42,7 @@ function pauseVideo(video, reset = false) {
   if (reset) {
     try {
       video.currentTime = 0;
-    } catch (error) {
-      // El vídeo puede no haber terminado de cargar.
-    }
+    } catch (error) {}
   }
 }
 
@@ -63,13 +60,11 @@ function isOptionalVideoSlide(slide) {
 
 function getOptionalVideo(slide) {
   if (!slide) return null;
-
   return slide.querySelector("video.gallery-optional-video");
 }
 
 /* =========================================================
-   MOSTRAR EL BOTÓN CUANDO EL VÍDEO ESTÁ PAUSADO
-   O HA TERMINADO
+   BOTONES DE VÍDEOS OPCIONALES
 ========================================================= */
 
 function showOptionalPlayButton(slide) {
@@ -83,15 +78,9 @@ function showOptionalPlayButton(slide) {
 
   if (button) {
     button.style.removeProperty("display");
-
     button.setAttribute("aria-label", "Reproducir video");
   }
 }
-
-/* =========================================================
-   OCULTAR EL BOTÓN MIENTRAS SE REPRODUCE EL VÍDEO
-   SOLO AFECTA AL VÍDEO OPCIONAL DE LA GALERÍA
-========================================================= */
 
 function hideOptionalPlayButton(slide) {
   if (!slide) return;
@@ -104,14 +93,9 @@ function hideOptionalPlayButton(slide) {
 
   if (button) {
     button.style.setProperty("display", "none", "important");
-
     button.setAttribute("aria-label", "Vídeo en reproducción");
   }
 }
-
-/* =========================================================
-   REPRODUCIR O PAUSAR VÍDEO OPCIONAL
-========================================================= */
 
 function toggleOptionalVideo(slide) {
   const video = getOptionalVideo(slide);
@@ -137,9 +121,7 @@ function toggleOptionalVideo(slide) {
           showOptionalPlayButton(slide);
         }
       })
-      .catch(() => {
-        showOptionalPlayButton(slide);
-      });
+      .catch(() => showOptionalPlayButton(slide));
   } else {
     if (!video.paused && !video.ended) {
       hideOptionalPlayButton(slide);
@@ -153,13 +135,10 @@ function toggleOptionalVideo(slide) {
    PREPARAR TODOS LOS VÍDEOS
 ========================================================= */
 
-document.querySelectorAll("video").forEach((video) => {
-  prepareVideo(video);
-});
+document.querySelectorAll("video").forEach(prepareVideo);
 
 /* =========================================================
    VIDEO DE PORTADA
-   SE CONSERVA SU COMPORTAMIENTO ORIGINAL
 ========================================================= */
 
 const heroVideo = document.getElementById("hero-video");
@@ -199,7 +178,6 @@ if (heroVideo) {
 
 /* =========================================================
    VIDEO DE PROCESO
-   SE CONSERVA SU COMPORTAMIENTO ORIGINAL
 ========================================================= */
 
 const processVideo = document.getElementById("process-video");
@@ -268,10 +246,7 @@ if (menuToggle && mainNav) {
     event.preventDefault();
     event.stopPropagation();
 
-    const isExpanded =
-      menuToggle.getAttribute("aria-expanded") === "true";
-
-    if (isExpanded) {
+    if (menuToggle.getAttribute("aria-expanded") === "true") {
       closeMenu();
     } else {
       openMenu();
@@ -293,15 +268,11 @@ if (menuToggle && mainNav) {
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMenu();
-    }
+    if (event.key === "Escape") closeMenu();
   });
 
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 700) {
-      closeMenu();
-    }
+    if (window.innerWidth > 700) closeMenu();
   });
 }
 
@@ -318,10 +289,7 @@ if (backToTop) {
       document.documentElement.scrollTop ||
       0;
 
-    backToTop.classList.toggle(
-      "visible",
-      scrollPosition > 120
-    );
+    backToTop.classList.toggle("visible", scrollPosition > 120);
   };
 
   window.addEventListener("scroll", updateBackToTop, {
@@ -368,27 +336,18 @@ function createLightbox() {
   lightbox.className = "lightbox";
 
   lightbox.innerHTML = `
-    <button
-      class="lightbox-close"
-      type="button"
-      aria-label="Cerrar visor"
-    >×</button>
+    <button class="lightbox-close" type="button"
+      aria-label="Cerrar visor">×</button>
 
-    <button
-      class="lightbox-arrow lightbox-prev"
-      type="button"
-      aria-label="Imagen anterior"
-    >‹</button>
+    <button class="lightbox-arrow lightbox-prev" type="button"
+      aria-label="Imagen anterior">‹</button>
 
     <div class="lightbox-window">
       <div class="lightbox-track"></div>
     </div>
 
-    <button
-      class="lightbox-arrow lightbox-next"
-      type="button"
-      aria-label="Siguiente imagen"
-    >›</button>
+    <button class="lightbox-arrow lightbox-next" type="button"
+      aria-label="Siguiente imagen">›</button>
   `;
 
   document.body.appendChild(lightbox);
@@ -412,11 +371,9 @@ function createLightbox() {
 
     if (!lightboxSlides.length) return;
 
-    lightboxCurrent--;
-
-    if (lightboxCurrent < 0) {
-      lightboxCurrent = lightboxSlides.length - 1;
-    }
+    lightboxCurrent =
+      (lightboxCurrent - 1 + lightboxSlides.length) %
+      lightboxSlides.length;
 
     updateLightbox();
   });
@@ -427,11 +384,8 @@ function createLightbox() {
 
     if (!lightboxSlides.length) return;
 
-    lightboxCurrent++;
-
-    if (lightboxCurrent >= lightboxSlides.length) {
-      lightboxCurrent = 0;
-    }
+    lightboxCurrent =
+      (lightboxCurrent + 1) % lightboxSlides.length;
 
     updateLightbox();
   });
@@ -456,37 +410,22 @@ function createLightbox() {
     if (!lightboxSlides.length) return;
 
     if (event.key === "ArrowRight") {
-      lightboxCurrent++;
-
-      if (lightboxCurrent >= lightboxSlides.length) {
-        lightboxCurrent = 0;
-      }
-
+      lightboxCurrent =
+        (lightboxCurrent + 1) % lightboxSlides.length;
       updateLightbox();
     }
 
     if (event.key === "ArrowLeft") {
-      lightboxCurrent--;
-
-      if (lightboxCurrent < 0) {
-        lightboxCurrent = lightboxSlides.length - 1;
-      }
-
+      lightboxCurrent =
+        (lightboxCurrent - 1 + lightboxSlides.length) %
+        lightboxSlides.length;
       updateLightbox();
     }
   });
 }
 
 /* =========================================================
-   PREPARAR VÍDEO OPCIONAL EN EL LIGHTBOX
-
-   CORRECCIÓN:
-   - El botón ▶ desaparece al empezar la reproducción.
-   - El botón ▶ reaparece al pausar.
-   - El botón ▶ reaparece cuando termina el vídeo.
-   - Si el navegador bloquea la reproducción, el botón
-     permanece visible.
-   - No modifica el vídeo de portada ni el de proceso.
+   PREPARAR VÍDEO OPCIONAL EN LIGHTBOX
 ========================================================= */
 
 function setupOptionalLightboxSlide(slide) {
@@ -499,11 +438,6 @@ function setupOptionalLightboxSlide(slide) {
   );
 
   if (!video) return;
-
-  /*
-    El vídeo opcional comienza pausado y no se repite.
-    No se activan controles nativos.
-  */
 
   prepareVideo(video);
 
@@ -527,54 +461,20 @@ function setupOptionalLightboxSlide(slide) {
     button.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-
       toggleOptionalVideo(slide);
     });
   }
 
-  /*
-    Al comenzar la reproducción, ocultar el botón.
-  */
-
-  video.addEventListener("play", () => {
-    hideOptionalPlayButton(slide);
-  });
-
-  video.addEventListener("playing", () => {
-    hideOptionalPlayButton(slide);
-  });
-
-  /*
-    Al pausar, volver a mostrar el botón.
-  */
-
-  video.addEventListener("pause", () => {
-    showOptionalPlayButton(slide);
-  });
-
-  /*
-    Al terminar el vídeo, volver a mostrar el botón.
-  */
-
-  video.addEventListener("ended", () => {
-    showOptionalPlayButton(slide);
-  });
-
-  /*
-    El clic directo sobre el vídeo permite pausar
-    o reanudar su reproducción.
-  */
+  video.addEventListener("play", () => hideOptionalPlayButton(slide));
+  video.addEventListener("playing", () => hideOptionalPlayButton(slide));
+  video.addEventListener("pause", () => showOptionalPlayButton(slide));
+  video.addEventListener("ended", () => showOptionalPlayButton(slide));
 
   video.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
-
     toggleOptionalVideo(slide);
   });
-
-  /*
-    Estado inicial: vídeo pausado y botón visible.
-  */
 
   showOptionalPlayButton(slide);
 }
@@ -586,19 +486,12 @@ function setupOptionalLightboxSlide(slide) {
 function openLightbox(slides, startIndex) {
   createLightbox();
 
-  /*
-    Detener los vídeos de las galerías al abrir el visor.
-    Los opcionales también se reinician.
-  */
-
   document.querySelectorAll(".gallery video").forEach((video) => {
     const optionalSlide = video.closest(".gallery-video-slide");
 
     pauseVideo(video, Boolean(optionalSlide));
 
-    if (optionalSlide) {
-      showOptionalPlayButton(optionalSlide);
-    }
+    if (optionalSlide) showOptionalPlayButton(optionalSlide);
   });
 
   lightboxSlides = Array.from(slides);
@@ -614,11 +507,6 @@ function openLightbox(slides, startIndex) {
     if (isOptionalVideoSlide(clone)) {
       setupOptionalLightboxSlide(clone);
     } else if (clone.tagName === "VIDEO") {
-      /*
-        Conservar el comportamiento original de los vídeos
-        que estén directamente dentro de una galería.
-      */
-
       prepareVideo(clone);
 
       clone.controls = false;
@@ -628,11 +516,6 @@ function openLightbox(slides, startIndex) {
       clone.removeAttribute("controls");
       clone.removeAttribute("autoplay");
     }
-
-    /*
-      Mantener la prevención de clics sobre las diapositivas.
-      Los controles del vídeo opcional detienen su propagación.
-    */
 
     clone.addEventListener("click", (event) => {
       event.preventDefault();
@@ -655,13 +538,9 @@ function openLightbox(slides, startIndex) {
 function updateLightbox() {
   if (!lightboxTrack || !lightboxSlides.length) return;
 
-  if (lightboxCurrent < 0) {
-    lightboxCurrent = lightboxSlides.length - 1;
-  }
-
-  if (lightboxCurrent >= lightboxSlides.length) {
-    lightboxCurrent = 0;
-  }
+  lightboxCurrent =
+    (lightboxCurrent + lightboxSlides.length) %
+    lightboxSlides.length;
 
   lightboxTrack.style.transform =
     `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
@@ -669,24 +548,11 @@ function updateLightbox() {
   const slides = Array.from(lightboxTrack.children);
 
   slides.forEach((slide, index) => {
-    /*
-      Los vídeos opcionales nunca se reproducen automáticamente.
-      Al cambiar de diapositiva se pausan y reinician.
-    */
-
     if (isOptionalVideoSlide(slide)) {
-      const video = getOptionalVideo(slide);
-
-      pauseVideo(video, true);
+      pauseVideo(getOptionalVideo(slide), true);
       showOptionalPlayButton(slide);
-
       return;
     }
-
-    /*
-      Mantener el comportamiento original para los vídeos
-      colocados directamente como diapositivas.
-    */
 
     if (slide.tagName !== "VIDEO") return;
 
@@ -728,18 +594,10 @@ const galleries = document.querySelectorAll(".gallery");
 galleries.forEach((gallery) => {
   const track = gallery.querySelector(".gallery-track");
 
-  const prevButton =
-    gallery.querySelector(".gallery-arrow.prev");
-
-  const nextButton =
-    gallery.querySelector(".gallery-arrow.next");
+  const prevButton = gallery.querySelector(".gallery-arrow.prev");
+  const nextButton = gallery.querySelector(".gallery-arrow.next");
 
   if (!track) return;
-
-  /*
-    Contar cada elemento directo de la pista como una diapositiva.
-    Así, el contenedor del vídeo opcional cuenta una sola vez.
-  */
 
   const slides = Array.from(track.children).filter((slide) => {
     return slide.matches("img, video, .gallery-video-slide");
@@ -752,10 +610,6 @@ galleries.forEach((gallery) => {
   let current = 0;
   let suppressClickUntil = 0;
 
-  /* =====================================================
-     ACTUALIZAR CARRUSEL
-  ===================================================== */
-
   function updateGallery() {
     const activeSlide = slides[current];
 
@@ -765,17 +619,9 @@ galleries.forEach((gallery) => {
     }
 
     slides.forEach((slide, index) => {
-      /*
-        El vídeo opcional de la galería permanece pausado.
-        Solo se reproduce dentro del lightbox.
-      */
-
       if (isOptionalVideoSlide(slide)) {
-        const video = getOptionalVideo(slide);
-
-        pauseVideo(video, true);
+        pauseVideo(getOptionalVideo(slide), true);
         showOptionalPlayButton(slide);
-
         return;
       }
 
@@ -791,47 +637,25 @@ galleries.forEach((gallery) => {
     });
   }
 
-  /* =====================================================
-     SIGUIENTE
-  ===================================================== */
-
   if (nextButton) {
     nextButton.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
 
-      current++;
-
-      if (current >= total) {
-        current = 0;
-      }
-
+      current = (current + 1) % total;
       updateGallery();
     });
   }
-
-  /* =====================================================
-     ANTERIOR
-  ===================================================== */
 
   if (prevButton) {
     prevButton.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
 
-      current--;
-
-      if (current < 0) {
-        current = total - 1;
-      }
-
+      current = (current - 1 + total) % total;
       updateGallery();
     });
   }
-
-  /* =====================================================
-     GESTOS TÁCTILES
-  ===================================================== */
 
   let touchStartX = 0;
   let touchStartY = 0;
@@ -846,7 +670,6 @@ galleries.forEach((gallery) => {
 
     touchStartX = touch.clientX;
     touchStartY = touch.clientY;
-
     touchCurrentX = touchStartX;
     touchCurrentY = touchStartY;
 
@@ -870,12 +693,7 @@ galleries.forEach((gallery) => {
 
       if (absX < 8 && absY < 8) return;
 
-      if (absY > absX) {
-        gestureDirection = "vertical";
-        return;
-      }
-
-      gestureDirection = "horizontal";
+      gestureDirection = absY > absX ? "vertical" : "horizontal";
     }
 
     if (gestureDirection === "horizontal") {
@@ -897,33 +715,20 @@ galleries.forEach((gallery) => {
     }
 
     if (difference > 0) {
-      current++;
-
-      if (current >= total) {
-        current = 0;
-      }
+      current = (current + 1) % total;
     } else {
-      current--;
-
-      if (current < 0) {
-        current = total - 1;
-      }
+      current = (current - 1 + total) % total;
     }
 
     suppressClickUntil = Date.now() + 500;
 
     updateGallery();
-
     gestureDirection = null;
   }, { passive: true });
 
   gallery.addEventListener("touchcancel", () => {
     gestureDirection = null;
   }, { passive: true });
-
-  /* =====================================================
-     ABRIR VISOR AL TOCAR UNA IMAGEN O VÍDEO
-  ===================================================== */
 
   slides.forEach((slide, index) => {
     slide.style.cursor = "pointer";
@@ -942,10 +747,6 @@ galleries.forEach((gallery) => {
     });
   });
 
-  /* =====================================================
-     INICIALIZAR Y REAJUSTAR
-  ===================================================== */
-
   updateGallery();
 
   window.addEventListener("resize", updateGallery);
@@ -960,21 +761,12 @@ galleries.forEach((gallery) => {
 ========================================================= */
 
 window.addEventListener("pageshow", () => {
-  if (!document.hidden && heroVideo) {
-    playVideo(heroVideo);
-  }
-
-  if (!document.hidden && processVideo) {
-    playVideo(processVideo);
-  }
+  if (!document.hidden && heroVideo) playVideo(heroVideo);
+  if (!document.hidden && processVideo) playVideo(processVideo);
 
   document.querySelectorAll(".gallery").forEach((gallery) => {
     const track = gallery.querySelector(".gallery-track");
     if (!track) return;
-
-    /*
-      No iniciar vídeos opcionales automáticamente.
-    */
 
     const activeVideo = track.querySelector("video");
 
@@ -984,12 +776,9 @@ window.addEventListener("pageshow", () => {
   });
 });
 
-});
-
-
-
 /* =========================================================
    PIEZAS INDEPENDIENTES — VISOR Y CARRUSEL
+   INTEGRADO DENTRO DE DOMCONTENTLOADED
 ========================================================= */
 
 (() => {
@@ -997,7 +786,10 @@ window.addEventListener("pageshow", () => {
     "[data-independent-piece]"
   );
 
-  if (!cards.length) return;
+  if (!cards.length) {
+    console.warn("Visor independiente: no se encontraron tarjetas.");
+    return;
+  }
 
   let currentPiece = null;
   let currentImage = 0;
@@ -1080,21 +872,18 @@ window.addEventListener("pageshow", () => {
         .split("|")
         .map(src => src.trim())
         .filter(Boolean),
-      measures: measureTemplate
-        ? measureTemplate.innerHTML
-        : ""
+      measures: measureTemplate ? measureTemplate.innerHTML : ""
     };
   }
 
   function updateImage() {
     if (!currentPiece || !currentPiece.images.length) return;
 
-    const images = currentPiece.images;
-
     currentImage =
-      (currentImage + images.length) % images.length;
+      (currentImage + currentPiece.images.length) %
+      currentPiece.images.length;
 
-    image.src = images[currentImage];
+    image.src = currentPiece.images[currentImage];
     image.alt =
       currentPiece.name + " — fotografía " + (currentImage + 1);
   }
@@ -1114,11 +903,19 @@ window.addEventListener("pageshow", () => {
   }
 
   function openPiece(card) {
-    currentPiece = readPiece(card);
+    const piece = readPiece(card);
 
-    if (!currentPiece.images.length) return;
+    if (!piece.images.length) {
+      console.error(
+        "La pieza no tiene imágenes en data-images:",
+        card
+      );
+      return;
+    }
 
+    currentPiece = piece;
     currentImage = 0;
+
     updateImage();
 
     title.textContent = currentPiece.name;
@@ -1160,23 +957,38 @@ window.addEventListener("pageshow", () => {
     modal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("independent-modal-open");
 
+    image.removeAttribute("src");
     currentPiece = null;
   }
 
   cards.forEach(card => {
-    card.addEventListener("click", () => {
+    card.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
       openPiece(card);
     });
   });
 
-  previousButton.addEventListener("click", previousImage);
-  nextButton.addEventListener("click", nextImage);
-  closeButton.addEventListener("click", closePiece);
+  previousButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    previousImage();
+  });
+
+  nextButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    nextImage();
+  });
+
+  closeButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    closePiece();
+  });
 
   modal.addEventListener("click", event => {
-    if (event.target === modal) {
-      closePiece();
-    }
+    if (event.target === modal) closePiece();
   });
 
   document.addEventListener("keydown", event => {
@@ -1200,4 +1012,13 @@ window.addEventListener("pageshow", () => {
       if (guideButton) guideButton.click();
     });
   }
+
+  console.log(
+    "Visor de piezas independientes inicializado:",
+    cards.length,
+    "tarjetas."
+  );
+
 })();
+
+});
