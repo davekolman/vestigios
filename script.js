@@ -143,6 +143,11 @@ document.querySelectorAll("video").forEach(prepareVideo);
 
 const heroVideo = document.getElementById("hero-video");
 
+function startHeroVideo() {
+  if (!heroVideo || document.hidden) return;
+  playVideo(heroVideo);
+}
+
 if (heroVideo) {
   prepareVideo(heroVideo);
 
@@ -152,28 +157,12 @@ if (heroVideo) {
   heroVideo.setAttribute("autoplay", "");
   heroVideo.setAttribute("loop", "");
 
-  const startHeroVideo = () => {
-    if (document.hidden) return;
-    playVideo(heroVideo);
-  };
+  heroVideo.addEventListener("loadeddata", startHeroVideo);
+  heroVideo.addEventListener("canplay", startHeroVideo);
 
-  if (heroVideo.readyState >= 2) {
-    startHeroVideo();
-  } else {
-    heroVideo.addEventListener("canplay", startHeroVideo, {
-      once: true
-    });
-  }
+  startHeroVideo();
 
   window.addEventListener("pageshow", startHeroVideo);
-
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-      startHeroVideo();
-    } else {
-      pauseVideo(heroVideo);
-    }
-  });
 }
 
 /* =========================================================
@@ -181,6 +170,11 @@ if (heroVideo) {
 ========================================================= */
 
 const processVideo = document.getElementById("process-video");
+
+function startProcessVideo() {
+  if (!processVideo || document.hidden) return;
+  playVideo(processVideo);
+}
 
 if (processVideo) {
   prepareVideo(processVideo);
@@ -191,27 +185,25 @@ if (processVideo) {
   processVideo.setAttribute("autoplay", "");
   processVideo.setAttribute("loop", "");
 
-  const startProcessVideo = () => {
-    if (document.hidden) return;
-    playVideo(processVideo);
-  };
+  processVideo.addEventListener("loadeddata", startProcessVideo);
+  processVideo.addEventListener("canplay", startProcessVideo);
 
-  if (processVideo.readyState >= 2) {
-    startProcessVideo();
-  } else {
-    processVideo.addEventListener("canplay", startProcessVideo, {
-      once: true
-    });
-  }
-
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-      startProcessVideo();
-    } else {
-      pauseVideo(processVideo);
-    }
-  });
+  startProcessVideo();
 }
+
+/* =========================================================
+   REVISAR VÍDEOS AL CAMBIAR LA VISIBILIDAD
+========================================================= */
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    pauseVideo(heroVideo);
+    pauseVideo(processVideo);
+  } else {
+    startHeroVideo();
+    startProcessVideo();
+  }
+});
 
 /* =========================================================
    MENÚ MÓVIL
@@ -761,8 +753,10 @@ galleries.forEach((gallery) => {
 ========================================================= */
 
 window.addEventListener("pageshow", () => {
-  if (!document.hidden && heroVideo) playVideo(heroVideo);
-  if (!document.hidden && processVideo) playVideo(processVideo);
+  if (!document.hidden) {
+    startHeroVideo();
+    startProcessVideo();
+  }
 
   document.querySelectorAll(".gallery").forEach((gallery) => {
     const track = gallery.querySelector(".gallery-track");
@@ -770,12 +764,14 @@ window.addEventListener("pageshow", () => {
 
     const activeVideo = track.querySelector("video");
 
-    if (activeVideo && !lightbox?.classList.contains("active")) {
+    if (
+      activeVideo &&
+      !lightbox?.classList.contains("active")
+    ) {
       prepareVideo(activeVideo);
     }
   });
 });
-
 
 /* =========================================================
    PIEZAS INDEPENDIENTES — VISOR Y CARRUSEL
@@ -792,9 +788,7 @@ window.addEventListener("pageshow", () => {
   let currentImage = 0;
   let lastFocusedElement = null;
 
-  /* =====================================================
-     CREAR MODAL
-  ===================================================== */
+  /* CREAR MODAL */
 
   const modal = document.createElement("div");
 
@@ -807,11 +801,8 @@ window.addEventListener("pageshow", () => {
       aria-modal="true"
       aria-labelledby="independent-modal-title">
 
-      <button
-        class="independent-modal-close"
-        type="button"
-        aria-label="Cerrar"
-      >×</button>
+      <button class="independent-modal-close"
+        type="button" aria-label="Cerrar">×</button>
 
       <div class="independent-modal-image">
         <img alt="">
@@ -819,15 +810,11 @@ window.addEventListener("pageshow", () => {
 
       <button
         class="lightbox-arrow lightbox-prev independent-gallery-arrow independent-gallery-prev"
-        type="button"
-        aria-label="Fotografía anterior"
-      >‹</button>
+        type="button" aria-label="Fotografía anterior">‹</button>
 
       <button
         class="lightbox-arrow lightbox-next independent-gallery-arrow independent-gallery-next"
-        type="button"
-        aria-label="Fotografía siguiente"
-      >›</button>
+        type="button" aria-label="Fotografía siguiente">›</button>
 
       <div class="independent-modal-copy">
 
@@ -835,10 +822,8 @@ window.addEventListener("pageshow", () => {
           DAVE KOLMAN · PIEZA INDEPENDIENTE
         </p>
 
-        <h2
-          class="independent-modal-title"
-          id="independent-modal-title"
-        ></h2>
+        <h2 class="independent-modal-title"
+          id="independent-modal-title"></h2>
 
         <p class="independent-modal-description"></p>
 
@@ -868,9 +853,7 @@ window.addEventListener("pageshow", () => {
 
   document.body.appendChild(modal);
 
-  /* =====================================================
-     ELEMENTOS DEL MODAL
-  ===================================================== */
+  /* ELEMENTOS DEL MODAL */
 
   const image = modal.querySelector(
     ".independent-modal-image img"
@@ -912,9 +895,7 @@ window.addEventListener("pageshow", () => {
     ".independent-modal-image"
   );
 
-  /* =====================================================
-     LEER DATOS DESDE EL HTML
-  ===================================================== */
+  /* LEER DATOS DEL HTML */
 
   function readPiece(card) {
     const measureTemplate = card.querySelector(
@@ -940,9 +921,7 @@ window.addEventListener("pageshow", () => {
     };
   }
 
-  /* =====================================================
-     ACTUALIZAR IMAGEN
-  ===================================================== */
+  /* ACTUALIZAR IMAGEN */
 
   function updateImage() {
     if (!currentPiece) return;
@@ -976,9 +955,7 @@ window.addEventListener("pageshow", () => {
     nextButton.hidden = !showArrows;
   }
 
-  /* =====================================================
-     NAVEGACIÓN DE IMÁGENES
-  ===================================================== */
+  /* NAVEGACIÓN DE IMÁGENES */
 
   function previousImage() {
     if (!currentPiece || !currentPiece.images.length) return;
@@ -994,9 +971,7 @@ window.addEventListener("pageshow", () => {
     updateImage();
   }
 
-  /* =====================================================
-     ABRIR PIEZA
-  ===================================================== */
+  /* ABRIR PIEZA */
 
   function openPiece(card) {
     currentPiece = readPiece(card);
@@ -1038,16 +1013,12 @@ window.addEventListener("pageshow", () => {
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
 
-    document.body.classList.add(
-      "independent-modal-open"
-    );
+    document.body.classList.add("independent-modal-open");
 
     closeButton.focus();
   }
 
-  /* =====================================================
-     CERRAR PIEZA
-  ===================================================== */
+  /* CERRAR PIEZA */
 
   function closePiece() {
     if (!modal.classList.contains("is-open")) return;
@@ -1055,9 +1026,7 @@ window.addEventListener("pageshow", () => {
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
 
-    document.body.classList.remove(
-      "independent-modal-open"
-    );
+    document.body.classList.remove("independent-modal-open");
 
     image.removeAttribute("src");
 
@@ -1072,9 +1041,7 @@ window.addEventListener("pageshow", () => {
     }
   }
 
-  /* =====================================================
-     CLIC EN LAS TARJETAS
-  ===================================================== */
+  /* CLIC O TOQUE EN LAS TARJETAS */
 
   cards.forEach(card => {
     card.addEventListener("click", event => {
@@ -1085,9 +1052,7 @@ window.addEventListener("pageshow", () => {
     });
   });
 
-  /* =====================================================
-     BOTONES DEL CARRUSEL
-  ===================================================== */
+  /* BOTONES DEL CARRUSEL */
 
   previousButton.addEventListener("click", event => {
     event.preventDefault();
@@ -1110,9 +1075,7 @@ window.addEventListener("pageshow", () => {
     closePiece();
   });
 
-  /* =====================================================
-     CERRAR AL TOCAR EL FONDO
-  ===================================================== */
+  /* CERRAR AL TOCAR EL FONDO */
 
   modal.addEventListener("click", event => {
     if (event.target === modal) {
@@ -1120,9 +1083,7 @@ window.addEventListener("pageshow", () => {
     }
   });
 
-  /* =====================================================
-     TECLADO
-  ===================================================== */
+  /* TECLADO */
 
   document.addEventListener("keydown", event => {
     if (!modal.classList.contains("is-open")) return;
@@ -1141,9 +1102,7 @@ window.addEventListener("pageshow", () => {
     }
   });
 
-  /* =====================================================
-     ENLACE A LA GUÍA DE TALLAS
-  ===================================================== */
+  /* GUÍA DE TALLAS */
 
   modal.querySelector(".independent-size-link")
     .addEventListener("click", () => {
@@ -1159,3 +1118,5 @@ window.addEventListener("pageshow", () => {
     });
 
 })();
+
+});
