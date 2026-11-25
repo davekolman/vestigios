@@ -2086,3 +2086,58 @@ ACCESIBILIDAD
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* =========================================
+   CORRECCIÓN DE FLECHAS
+   VISOR DE PIEZAS INDEPENDIENTES
+========================================= */
+
+/* Escritorio y tabletas */
+
+.independent-dialog > .independent-gallery-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 110;
+  transform: translateY(-50%);
+}
+
+/* Flecha anterior */
+
+.independent-dialog > .independent-gallery-prev {
+  left: 12px;
+  right: auto;
+}
+
+/* Flecha siguiente: límite derecho de la fotografía */
+
+.independent-dialog > .independent-gallery-next {
+  left: auto;
+  right: calc(42% + 8px);
+}
+
+/* Respetar el atributo hidden */
+
+.independent-dialog > .independent-gallery-arrow[hidden] {
+  display: none !important;
+}
+
+/* Móviles */
+
+@media (max-width: 700px) {
+
+  .independent-dialog > .independent-gallery-arrow {
+    top: max(150px, 26dvh);
+  }
+
+  .independent-dialog > .independent-gallery-prev {
+    left: 5px;
+    right: auto;
+  }
+
+  .independent-dialog > .independent-gallery-next {
+    left: auto;
+    right: 5px;
+  }
+
+}
