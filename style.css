@@ -2187,25 +2187,16 @@ PROPORCIÓN 1024 × 1535
 ========================================= */
 
 .independent-modal-image .independent-modal-video {
-  display: none;
-
-  /* La altura determina el tamaño del video */
-  width: auto !important;
-  height: 100% !important;
-
-  /* Proporción fija del espacio de visualización */
-  aspect-ratio: 1024 / 1535;
-
-  /* Evita que exceda el espacio disponible */
+  display: block !important;
+  width: 80% !important;
+  height: 80% !important;
   min-width: 0;
-  min-height: 0;
   max-width: 100%;
+  min-height: 0;
   max-height: 100%;
-
-  /* El contenido del video no se recorta */
-  object-fit: contain;
+  object-fit: contain !important;
   object-position: center;
-
+  margin: auto;
   background: var(--color-bg);
   pointer-events: auto;
 }
@@ -2221,16 +2212,16 @@ PROPORCIÓN 1024 × 1535
   display: none !important;
 }
 
-/* Móvil: misma proporción, adaptada al espacio disponible */
+/* Móvil */
 
 @media (max-width: 700px) {
   .independent-modal-image .independent-modal-video {
-    width: auto !important;
-    height: 100% !important;
-    aspect-ratio: 1024 / 1535;
+    display: block !important;
+    width: 80% !important;
+    height: 80% !important;
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain;
+    object-fit: contain !important;
     object-position: center;
   }
 }
