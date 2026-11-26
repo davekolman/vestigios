@@ -2185,10 +2185,15 @@ VIDEO — SOLO MODAL DE PIEZAS INDEPENDIENTES
   pointer-events: auto;
 }
 
-/* Controles visibles y utilizables */
+/* Ocultar la barra nativa de reproducción */
 
-.independent-modal-image .independent-modal-video[controls] {
-  pointer-events: auto;
+.independent-modal-image .independent-modal-video::-webkit-media-controls {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+.independent-modal-image .independent-modal-video::-webkit-media-controls-enclosure {
+  display: none !important;
 }
 
 /* Móvil */
