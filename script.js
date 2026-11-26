@@ -146,11 +146,7 @@ MÓVILES: AUTOPLAY Y REINTENTOS DE CARGA
 const heroVideo = document.getElementById("hero-video");
 const processVideo = document.getElementById("process-video");
 
-/* DETECCIÓN EXCLUSIVA DEL BREAKPOINT MÓVIL */
-
 const mobileVideoMode = window.matchMedia("(max-width: 700px)");
-
-/* EVITAR INTENTOS SIMULTÁNEOS */
 
 const mobilePlayPending = new WeakSet();
 
@@ -215,14 +211,10 @@ function playMainVideoOnMobile(video) {
 function startMainVideo(video) {
   if (!video || document.hidden) return;
 
-  /* ESCRITORIO: COMPORTAMIENTO ORIGINAL */
-
   if (!mobileVideoMode.matches) {
     playVideo(video);
     return;
   }
-
-  /* MÓVILES: PREPARAR E INTENTAR REPRODUCIR */
 
   prepareVideo(video);
 
@@ -628,8 +620,6 @@ function updateLightbox() {
     (lightboxCurrent + lightboxSlides.length) %
     lightboxSlides.length;
 
-  /* CORRECCIÓN DE SINTAXIS */
-
   lightboxTrack.style.transform =
     `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
 
@@ -902,6 +892,14 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
       <div class="independent-modal-image">
         <img alt="">
+        <video
+          class="independent-modal-video"
+          muted
+          playsinline
+          webkit-playsinline
+          preload="metadata"
+          disablepictureinpicture>
+        </video>
       </div>
 
       <button
@@ -927,25 +925,17 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
         <dl class="independent-modal-meta"></dl>
 
-        <button class="independent-size-link" type="button">
-          Consultar guía de tallas ↗
-        </button>
-
-        <table class="independent-measure-table">
-          <tbody></tbody>
-        </table>
-
         <p class="independent-modal-note">
-  ¿Deseas más información sobre esta pieza?
-  Puedes realizar tu consulta a través de WhatsApp.
-</p>
+          ¿Deseas más información sobre esta pieza?
+          Puedes realizar tu consulta a través de WhatsApp.
+        </p>
 
-<a class="independent-size-link"
-   href="https://wa.me/573234338305"
-   target="_blank"
-   rel="noopener noreferrer">
-  Solicitar información por WhatsApp ↗
-</a>
+        <a class="independent-size-link"
+           href="https://wa.me/573234338305"
+           target="_blank"
+           rel="noopener noreferrer">
+          Solicitar información por WhatsApp ↗
+        </a>
 
       </div>
     </section>
@@ -957,6 +947,10 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
   const image = modal.querySelector(
     ".independent-modal-image img"
+  );
+
+  const video = modal.querySelector(
+    ".independent-modal-video"
   );
 
   const closeButton = modal.querySelector(
@@ -987,21 +981,27 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     ".independent-modal-meta"
   );
 
-  const measureBody = modal.querySelector(
-    ".independent-measure-table tbody"
-  );
-
   const imageContainer = modal.querySelector(
     ".independent-modal-image"
   );
 
+  /* PREPARAR VIDEO DEL MODAL */
+
+  prepareVideo(video);
+
+  video.controls = false;
+  video.loop = false;
+  video.autoplay = false;
+  video.preload = "auto";
+
+  video.style.width = "100%";
+  video.style.height = "100%";
+  video.style.objectFit = "contain";
+  video.style.display = "none";
+
   /* LEER DATOS DEL HTML */
 
   function readPiece(card) {
-    const measureTemplate = card.querySelector(
-      "template[data-independent-measures]"
-    );
-
     return {
       name: card.dataset.name || "",
       description: card.dataset.description || "",
@@ -1015,24 +1015,32 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
         .map(src => src.trim())
         .filter(Boolean),
 
-      measures: measureTemplate
-        ? measureTemplate.innerHTML
-        : ""
+      video: card.dataset.video || ""
     };
   }
 
-  /* ACTUALIZAR IMAGEN */
+  /* ACTUALIZAR IMAGEN O VIDEO */
 
   function updateImage() {
     if (!currentPiece) return;
 
     const images = currentPiece.images;
+    const hasVideo = Boolean(currentPiece.video);
 
-    if (!images.length) {
+    const totalSlides = images.length + (hasVideo ? 1 : 0);
+
+    if (!totalSlides) {
+      pauseVideo(video, true);
+
       image.removeAttribute("src");
       image.alt = "";
+      image.hidden = true;
+
+      video.style.display = "none";
+
       previousButton.hidden = true;
       nextButton.hidden = true;
+
       imageContainer.hidden = true;
       return;
     }
@@ -1040,32 +1048,86 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     imageContainer.hidden = false;
 
     currentImage =
-      (currentImage + images.length) % images.length;
+      (currentImage + totalSlides) % totalSlides;
 
-    image.src = images[currentImage];
+    /* SI LA DIAPOSITIVA ACTUAL ES EL VIDEO */
 
-    image.alt =
-      currentPiece.name +
-      " — fotografía " +
-      (currentImage + 1);
+    if (hasVideo && currentImage === images.length) {
+      image.hidden = true;
+      image.removeAttribute("src");
 
-    const showArrows = images.length > 1;
+      video.style.display = "block";
+
+      /* REPRODUCIR AUTOMÁTICAMENTE AL LLEGAR */
+
+      prepareVideo(video);
+
+      video.autoplay = true;
+      video.loop = false;
+
+      video.setAttribute("autoplay", "");
+      video.removeAttribute("loop");
+
+      if (video.dataset.loadedSrc !== currentPiece.video) {
+        pauseVideo(video, true);
+
+        video.src = currentPiece.video;
+        video.dataset.loadedSrc = currentPiece.video;
+
+        video.load();
+      }
+
+      playVideo(video);
+
+    } else {
+      /* SI LA DIAPOSITIVA ACTUAL ES UNA FOTOGRAFÍA */
+
+      pauseVideo(video, true);
+
+      video.style.display = "none";
+
+      video.removeAttribute("autoplay");
+
+      image.hidden = false;
+      image.style.display = "block";
+
+      image.src = images[currentImage];
+
+      image.alt =
+        currentPiece.name +
+        " — fotografía " +
+        (currentImage + 1);
+    }
+
+    const showArrows = totalSlides > 1;
 
     previousButton.hidden = !showArrows;
     nextButton.hidden = !showArrows;
   }
 
-  /* NAVEGACIÓN DE IMÁGENES */
+  /* NAVEGACIÓN DE IMÁGENES Y VIDEO */
 
   function previousImage() {
-    if (!currentPiece || !currentPiece.images.length) return;
+    if (!currentPiece) return;
+
+    const totalSlides =
+      currentPiece.images.length +
+      (currentPiece.video ? 1 : 0);
+
+    if (!totalSlides) return;
 
     currentImage--;
     updateImage();
   }
 
   function nextImage() {
-    if (!currentPiece || !currentPiece.images.length) return;
+    if (!currentPiece) return;
+
+    const totalSlides =
+      currentPiece.images.length +
+      (currentPiece.video ? 1 : 0);
+
+    if (!totalSlides) return;
 
     currentImage++;
     updateImage();
@@ -1079,11 +1141,14 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
     lastFocusedElement = card;
 
+    pauseVideo(video, true);
+
+    video.removeAttribute("src");
+    video.dataset.loadedSrc = "";
+
     updateImage();
 
     title.textContent = currentPiece.name;
-
-    /* CORRECCIÓN: INTERPRETAR LOS PÁRRAFOS HTML */
 
     description.innerHTML = currentPiece.description;
 
@@ -1112,8 +1177,6 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
       meta.appendChild(wrapper);
     });
 
-    measureBody.innerHTML = currentPiece.measures;
-
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
 
@@ -1132,7 +1195,13 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
     document.body.classList.remove("independent-modal-open");
 
+    pauseVideo(video, true);
+
+    video.removeAttribute("src");
+    video.dataset.loadedSrc = "";
+
     image.removeAttribute("src");
+    image.alt = "";
 
     currentPiece = null;
     currentImage = 0;
@@ -1205,21 +1274,6 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
       nextImage();
     }
   });
-
-  /* GUÍA DE TALLAS */
-
-  modal.querySelector(".independent-size-link")
-    .addEventListener("click", () => {
-      closePiece();
-
-      const guideButton = document.querySelector(
-        '.size-guide-link[data-size-category="mujer"]'
-      );
-
-      if (guideButton) {
-        guideButton.click();
-      }
-    });
 
 })();
 
