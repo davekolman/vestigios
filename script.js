@@ -998,7 +998,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     ".independent-modal-image"
   );
 
-    /* =======================================================
+  /* =======================================================
   CONFIGURAR EL VIDEO DEL MODAL
   ======================================================= */
 
@@ -1014,7 +1014,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
   video.removeAttribute("autoplay");
   video.removeAttribute("loop");
 
-  /* TODOS LOS VÍDEOS DEBEN PERMANECER SIN SONIDO */
+  /* TODOS LOS VÍDEOS PERMANECEN SIN SONIDO */
 
   video.muted = true;
   video.defaultMuted = true;
@@ -1026,12 +1026,12 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
   imageContainer.style.position = "relative";
 
-  /* DIMENSIONES Y PRESENTACIÓN DEL VIDEO */
+  /* DIMENSIONES DEL VIDEO CUANDO ESTÁ ACTIVO */
 
   video.style.position = "absolute";
   video.style.inset = "0";
-  video.style.width = "80%";
-  video.style.height = "80%";
+  video.style.width = "0";
+  video.style.height = "0";
   video.style.minWidth = "0";
   video.style.minHeight = "0";
   video.style.maxWidth = "80%";
@@ -1040,6 +1040,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
   video.style.objectFit = "contain";
   video.style.objectPosition = "center";
   video.style.display = "none";
+  video.style.visibility = "hidden";
   video.style.background = "var(--color-bg)";
   video.style.zIndex = "2";
   video.style.cursor = "pointer";
@@ -1082,6 +1083,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
       currentPiece.video &&
       currentImage === currentPiece.images.length &&
       video.style.display !== "none" &&
+      video.style.visibility !== "hidden" &&
       !imageContainer.hidden &&
       modal.classList.contains("is-open")
     );
@@ -1113,9 +1115,13 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     video.controls = false;
     video.removeAttribute("controls");
 
-    video.muted = false;
-    video.defaultMuted = false;
-    video.volume = 1;
+    /* MANTENER EL VIDEO SIEMPRE SILENCIADO */
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.volume = 0;
+
+    video.setAttribute("muted", "");
 
     const promise = video.play();
 
@@ -1126,7 +1132,13 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     }
   }
 
-  video.addEventListener("play", hideModalPlayButton);
+  video.addEventListener("play", () => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.volume = 0;
+    hideModalPlayButton();
+  });
+
   video.addEventListener("playing", hideModalPlayButton);
   video.addEventListener("pause", showModalPlayButton);
   video.addEventListener("ended", showModalPlayButton);
@@ -1163,7 +1175,9 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     };
   }
 
-  /* LIBERAR VIDEO */
+  /* =======================================================
+  OCULTAR Y LIBERAR VIDEO
+  ======================================================= */
 
   function releaseModalVideo() {
     pauseVideo(video, true);
@@ -1171,13 +1185,54 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     video.controls = false;
     video.removeAttribute("controls");
 
+    video.muted = true;
+    video.defaultMuted = true;
+    video.volume = 0;
+    video.setAttribute("muted", "");
+
     video.removeAttribute("src");
     video.load();
 
     video.dataset.loadedSrc = "";
+
+    /* EL VIDEO NO DEBE OCUPAR ESPACIO SOBRE LAS FOTOGRAFÍAS */
+
     video.style.display = "none";
+    video.style.visibility = "hidden";
+    video.style.width = "0";
+    video.style.height = "0";
+    video.style.maxWidth = "80%";
+    video.style.maxHeight = "80%";
 
     hideModalPlayButton();
+  }
+
+  /* =======================================================
+  MOSTRAR VIDEO CON TAMAÑO REDUCIDO
+  ======================================================= */
+
+  function showModalVideo() {
+    video.style.display = "block";
+    video.style.visibility = "visible";
+
+    video.style.width = "80%";
+    video.style.height = "80%";
+
+    video.style.minWidth = "0";
+    video.style.minHeight = "0";
+
+    video.style.maxWidth = "80%";
+    video.style.maxHeight = "80%";
+
+    video.style.margin = "auto";
+    video.style.objectFit = "contain";
+    video.style.objectPosition = "center";
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.volume = 0;
+
+    video.setAttribute("muted", "");
   }
 
   /* =======================================================
@@ -1222,8 +1277,6 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
       image.style.display = "none";
       image.removeAttribute("src");
 
-      video.style.display = "block";
-
       const source = currentPiece.video;
 
       if (video.dataset.loadedSrc !== source) {
@@ -1233,12 +1286,10 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
         video.controls = false;
         video.removeAttribute("controls");
 
-        video.muted = false;
-        video.defaultMuted = false;
-        video.volume = 1;
-        video.removeAttribute("muted");
-
-        video.style.display = "block";
+        video.muted = true;
+        video.defaultMuted = true;
+        video.volume = 0;
+        video.setAttribute("muted", "");
 
         video.dataset.loadedSrc = source;
         video.src = source;
@@ -1246,6 +1297,9 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
         video.load();
       }
 
+      /* MOSTRAR EL VIDEO DESPUÉS DE CARGAR SU FUENTE */
+
+      showModalVideo();
       showModalPlayButton();
 
     } else {
@@ -1350,7 +1404,6 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
     closeButton.focus();
 
-    /* Actualizar el botón después de abrir el modal */
     showModalPlayButton();
   }
 
