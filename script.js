@@ -870,7 +870,7 @@ window.addEventListener("pageshow", () => {
 });
 
 /* =========================================================
-PIEZAS INDEPENDIENTES — VISOR Y CARRUSEL
+PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 ========================================================= */
 
 (() => {
@@ -915,7 +915,7 @@ PIEZAS INDEPENDIENTES — VISOR Y CARRUSEL
       <div class="independent-modal-copy">
 
         <p class="independent-modal-kicker">
-          DAVE KOLMAN · PIEZA INDEPENDIENTE
+          DAVE KOLMAN · PIEZAS SELECCIONADAS
         </p>
 
         <h2 class="independent-modal-title"
@@ -931,17 +931,21 @@ PIEZAS INDEPENDIENTES — VISOR Y CARRUSEL
           Consultar guía de tallas ↗
         </button>
 
-        <h3 class="independent-measure-title">
-          Medidas de la prenda
-        </h3>
-
         <table class="independent-measure-table">
           <tbody></tbody>
         </table>
 
         <p class="independent-modal-note">
-          Datos ficticios de demostración. Se reemplazarán por la información definitiva.
-        </p>
+  ¿Deseas más información sobre esta pieza?
+  Puedes realizar tu consulta a través de WhatsApp.
+</p>
+
+<a class="independent-size-link"
+   href="https://wa.me/573234338305"
+   target="_blank"
+   rel="noopener noreferrer">
+  Solicitar información por WhatsApp ↗
+</a>
 
       </div>
     </section>
