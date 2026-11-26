@@ -998,7 +998,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     ".independent-modal-image"
   );
 
-  /* =======================================================
+    /* =======================================================
   CONFIGURAR EL VIDEO DEL MODAL
   ======================================================= */
 
@@ -1014,26 +1014,29 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
   video.removeAttribute("autoplay");
   video.removeAttribute("loop");
 
-  /* El sonido queda disponible al reproducir manualmente */
+  /* TODOS LOS VÍDEOS DEBEN PERMANECER SIN SONIDO */
 
-  video.muted = false;
-  video.defaultMuted = false;
-  video.volume = 1;
-  video.removeAttribute("muted");
+  video.muted = true;
+  video.defaultMuted = true;
+  video.volume = 0;
 
+  video.setAttribute("muted", "");
   video.setAttribute("playsinline", "");
   video.setAttribute("webkit-playsinline", "");
 
   imageContainer.style.position = "relative";
 
+  /* DIMENSIONES Y PRESENTACIÓN DEL VIDEO */
+
   video.style.position = "absolute";
   video.style.inset = "0";
-  video.style.width = "100%";
-  video.style.height = "100%";
+  video.style.width = "80%";
+  video.style.height = "80%";
   video.style.minWidth = "0";
   video.style.minHeight = "0";
-  video.style.maxWidth = "100%";
-  video.style.maxHeight = "100%";
+  video.style.maxWidth = "80%";
+  video.style.maxHeight = "80%";
+  video.style.margin = "auto";
   video.style.objectFit = "contain";
   video.style.objectPosition = "center";
   video.style.display = "none";
