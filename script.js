@@ -989,10 +989,12 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
   prepareVideo(video);
 
   /* Reactivar controles solo para este video */
+
   video.controls = true;
   video.setAttribute("controls", "");
 
   /* No reproducir automáticamente */
+
   video.autoplay = false;
   video.loop = false;
   video.preload = "none";
@@ -1001,6 +1003,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
   video.removeAttribute("loop");
 
   /* Permitir sonido al reproducir manualmente */
+
   video.muted = false;
   video.defaultMuted = false;
   video.removeAttribute("muted");
@@ -1060,6 +1063,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
       image.removeAttribute("src");
       image.alt = "";
       image.hidden = true;
+      image.style.display = "none";
 
       previousButton.hidden = true;
       nextButton.hidden = true;
@@ -1078,6 +1082,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     if (hasVideo && currentImage === images.length) {
 
       image.hidden = true;
+      image.style.display = "none";
       image.removeAttribute("src");
 
       video.style.display = "block";
@@ -1217,6 +1222,8 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
     image.removeAttribute("src");
     image.alt = "";
+    image.hidden = false;
+    image.style.display = "";
 
     currentPiece = null;
     currentImage = 0;
@@ -1291,3 +1298,9 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
   });
 
 })();
+
+/* =========================================================
+CIERRE DEL EVENTO DOMCONTENTLOADED
+========================================================= */
+
+});
