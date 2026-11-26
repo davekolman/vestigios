@@ -1173,7 +1173,8 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     video.dataset.loadedSrc = "";
     video.style.display = "none";
 
-    showModalPlayButton();
+    /* Ocultar el botón cuando se muestran fotografías */
+    playButton.style.display = "none";
   }
 
   /* =======================================================
@@ -1242,6 +1243,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
         video.load();
       }
 
+      /* El botón solo aparece en la diapositiva del video */
       showModalPlayButton();
 
     } else {
