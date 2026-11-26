@@ -893,6 +893,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
       <div class="independent-modal-image">
         <img alt="">
+
         <video
           class="independent-modal-video"
           playsinline
@@ -900,6 +901,13 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
           preload="none"
           disablepictureinpicture>
         </video>
+
+        <button
+          class="independent-modal-play"
+          type="button"
+          aria-label="Reproducir video">
+          ▶
+        </button>
       </div>
 
       <button
@@ -953,6 +961,10 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     ".independent-modal-video"
   );
 
+  const playButton = modal.querySelector(
+    ".independent-modal-play"
+  );
+
   const closeButton = modal.querySelector(
     ".independent-modal-close"
   );
@@ -985,16 +997,14 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     ".independent-modal-image"
   );
 
-  /* PREPARAR VIDEO DEL MODAL */
+  /* =======================================================
+  CONFIGURAR EL VIDEO DEL MODAL
+  ======================================================= */
 
   prepareVideo(video);
 
-  /* Reactivar controles solo para este video */
-
-  video.controls = true;
-  video.setAttribute("controls", "");
-
-  /* No reproducir automáticamente */
+  video.controls = false;
+  video.removeAttribute("controls");
 
   video.autoplay = false;
   video.loop = false;
@@ -1003,17 +1013,131 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
   video.removeAttribute("autoplay");
   video.removeAttribute("loop");
 
-  /* Permitir sonido al reproducir manualmente */
+  /* El sonido queda disponible al reproducir manualmente */
 
   video.muted = false;
   video.defaultMuted = false;
+  video.volume = 1;
   video.removeAttribute("muted");
 
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+
+  /*
+  El contenedor conserva las dimensiones del área
+  donde aparecen las fotografías.
+  */
+
+  imageContainer.style.position = "relative";
+
+  /*
+  El video ocupa todo el espacio del contenedor,
+  pero contain evita recortes y deformaciones.
+  */
+
+  video.style.position = "absolute";
+  video.style.inset = "0";
   video.style.width = "100%";
   video.style.height = "100%";
+  video.style.minWidth = "0";
+  video.style.minHeight = "0";
+  video.style.maxWidth = "100%";
+  video.style.maxHeight = "100%";
   video.style.objectFit = "contain";
   video.style.objectPosition = "center";
   video.style.display = "none";
+  video.style.background = "var(--color-bg)";
+  video.style.zIndex = "2";
+  video.style.cursor = "pointer";
+
+  /*
+  Botón central de reproducción.
+  No utiliza los controles nativos del navegador.
+  */
+
+  playButton.style.position = "absolute";
+  playButton.style.left = "50%";
+  playButton.style.top = "50%";
+  playButton.style.transform = "translate(-50%, -50%)";
+  playButton.style.zIndex = "3";
+  playButton.style.width = "58px";
+  playButton.style.height = "58px";
+  playButton.style.border = "1px solid rgba(255,255,255,0.8)";
+  playButton.style.borderRadius = "50%";
+  playButton.style.background = "rgba(0,0,0,0.55)";
+  playButton.style.color = "#ffffff";
+  playButton.style.fontSize = "22px";
+  playButton.style.lineHeight = "1";
+  playButton.style.display = "none";
+  playButton.style.alignItems = "center";
+  playButton.style.justifyContent = "center";
+  playButton.style.padding = "0";
+  playButton.style.cursor = "pointer";
+  playButton.style.webkitTapHighlightColor = "transparent";
+
+  /* =======================================================
+  ESTADO DEL BOTÓN CENTRAL
+  ======================================================= */
+
+  function showModalPlayButton() {
+    playButton.style.display = "flex";
+    playButton.textContent = "▶";
+    playButton.setAttribute("aria-label", "Reproducir video");
+  }
+
+  function hideModalPlayButton() {
+    playButton.style.display = "none";
+  }
+
+  /* =======================================================
+  REPRODUCIR Y PAUSAR VIDEO DEL MODAL
+  ======================================================= */
+
+  function toggleModalVideo() {
+    if (!video.src) return;
+
+    if (!video.paused && !video.ended) {
+      video.pause();
+      return;
+    }
+
+    /*
+    No llamar prepareVideo() aquí porque volvería
+    a silenciar el video.
+    */
+
+    video.controls = false;
+    video.removeAttribute("controls");
+
+    video.muted = false;
+    video.defaultMuted = false;
+    video.volume = 1;
+
+    const promise = video.play();
+
+    if (promise && typeof promise.catch === "function") {
+      promise.catch(() => {
+        showModalPlayButton();
+      });
+    }
+  }
+
+  video.addEventListener("play", hideModalPlayButton);
+  video.addEventListener("playing", hideModalPlayButton);
+  video.addEventListener("pause", showModalPlayButton);
+  video.addEventListener("ended", showModalPlayButton);
+
+  video.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleModalVideo();
+  });
+
+  playButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleModalVideo();
+  });
 
   /* LEER DATOS DEL HTML */
 
@@ -1040,14 +1164,21 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
   function releaseModalVideo() {
     pauseVideo(video, true);
 
+    video.controls = false;
+    video.removeAttribute("controls");
+
     video.removeAttribute("src");
     video.load();
 
     video.dataset.loadedSrc = "";
     video.style.display = "none";
+
+    showModalPlayButton();
   }
 
-  /* ACTUALIZAR IMAGEN O VIDEO */
+  /* =======================================================
+  ACTUALIZAR IMAGEN O VIDEO
+  ======================================================= */
 
   function updateImage() {
     if (!currentPiece) return;
@@ -1095,12 +1226,23 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
         releaseModalVideo();
 
+        video.controls = false;
+        video.removeAttribute("controls");
+
+        video.muted = false;
+        video.defaultMuted = false;
+        video.volume = 1;
+        video.removeAttribute("muted");
+
         video.style.display = "block";
+
         video.dataset.loadedSrc = source;
         video.src = source;
 
         video.load();
       }
+
+      showModalPlayButton();
 
     } else {
 
