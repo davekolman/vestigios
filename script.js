@@ -852,7 +852,7 @@ window.addEventListener("pageshow", () => {
 
     if (
       activeVideo &&
-      !lightbox?.classList.contains("active")
+      !(lightbox && lightbox.classList.contains("active"))
     ) {
       prepareVideo(activeVideo);
     }
@@ -864,9 +864,10 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 ========================================================= */
 
 (() => {
-  const cards = document.querySelectorAll(
-    ".independent-pieces [data-independent-piece]"
-  );
+  const cardSelector =
+    ".independent-pieces [data-independent-piece]";
+
+  const cards = document.querySelectorAll(cardSelector);
 
   if (!cards.length) return;
 
@@ -918,7 +919,7 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
         <h2 class="independent-modal-title"
           id="independent-modal-title"></h2>
 
-        <p class="independent-modal-description"></p>
+        <div class="independent-modal-description"></div>
 
         <strong class="independent-modal-price"></strong>
 
@@ -1075,7 +1076,8 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     imageContainer.hidden = false;
 
     currentImage =
-      (currentImage + totalSlides) % totalSlides;
+      ((currentImage % totalSlides) + totalSlides) %
+      totalSlides;
 
     /* SI LA DIAPOSITIVA ACTUAL ES EL VIDEO */
 
@@ -1088,11 +1090,6 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
       video.style.display = "block";
 
       const source = currentPiece.video;
-
-      /*
-      Cargar el archivo únicamente cuando
-      se llega a la diapositiva del video.
-      */
 
       if (video.dataset.loadedSrc !== source) {
 
@@ -1238,14 +1235,20 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
   /* CLIC O TOQUE EN LAS TARJETAS */
 
-  cards.forEach(card => {
-    card.addEventListener("click", event => {
-      event.preventDefault();
-      event.stopPropagation();
+  document.addEventListener("click", (event) => {
+    const target = event.target;
 
-      openPiece(card);
-    });
-  });
+    if (!target || typeof target.closest !== "function") return;
+
+    const card = target.closest(cardSelector);
+
+    if (!card) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    openPiece(card);
+  }, true);
 
   /* BOTONES DEL CARRUSEL */
 
