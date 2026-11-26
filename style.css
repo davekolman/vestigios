@@ -2154,3 +2154,16 @@ VISOR DE PIEZAS INDEPENDIENTES
   }
 
 }
+/* PRUEBA TEMPORAL DEL MODAL */
+
+.independent-modal.is-open {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 999999 !important;
+}
+
+.independent-modal.is-open .independent-dialog {
+  display: grid !important;
+}
