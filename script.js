@@ -997,7 +997,10 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
   const imageContainer = modal.querySelector(
     ".independent-modal-image"
   );
-
+  
+/* Las flechas quedan dentro del área de imagen */
+imageContainer.append(previousButton, nextButton);
+  
   /* =======================================================
   CONFIGURAR EL VIDEO DEL MODAL
   ======================================================= */
