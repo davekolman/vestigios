@@ -1,145 +1,145 @@
 document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================================================
-   CONFIGURACIÓN GENERAL DE LOS VÍDEOS
+CONFIGURACIÓN GENERAL DE LOS VÍDEOS
 ========================================================= */
 
 function prepareVideo(video) {
-  if (!video) return;
+if (!video) return;
 
-  video.muted = true;
-  video.defaultMuted = true;
-  video.volume = 0;
-  video.controls = false;
-  video.playsInline = true;
+video.muted = true;
+video.defaultMuted = true;
+video.volume = 0;
+video.controls = false;
+video.playsInline = true;
 
-  video.setAttribute("muted", "");
-  video.setAttribute("playsinline", "");
-  video.setAttribute("webkit-playsinline", "");
-  video.setAttribute("disablepictureinpicture", "");
-  video.setAttribute("controlslist", "nodownload noplaybackrate");
-  video.removeAttribute("controls");
+video.setAttribute("muted", "");
+video.setAttribute("playsinline", "");
+video.setAttribute("webkit-playsinline", "");
+video.setAttribute("disablepictureinpicture", "");
+video.setAttribute("controlslist", "nodownload noplaybackrate");
+video.removeAttribute("controls");
 }
 
 function playVideo(video) {
-  if (!video) return;
+if (!video) return;
 
-  prepareVideo(video);
+prepareVideo(video);
 
-  const promise = video.play();
+const promise = video.play();
 
-  if (promise && typeof promise.catch === "function") {
-    promise.catch(() => {});
-  }
+if (promise && typeof promise.catch === "function") {
+promise.catch(() => {});
+}
 }
 
 function pauseVideo(video, reset = false) {
-  if (!video) return;
+if (!video) return;
 
-  video.pause();
+video.pause();
 
-  if (reset) {
-    try {
-      video.currentTime = 0;
-    } catch (error) {}
-  }
+if (reset) {
+try {
+video.currentTime = 0;
+} catch (error) {}
+}
 }
 
 /* =========================================================
-   IDENTIFICAR VÍDEOS OPCIONALES
+IDENTIFICAR VÍDEOS OPCIONALES
 ========================================================= */
 
 function isOptionalVideoSlide(slide) {
-  return Boolean(
-    slide &&
-    slide.classList &&
-    slide.classList.contains("gallery-video-slide")
-  );
+return Boolean(
+slide &&
+slide.classList &&
+slide.classList.contains("gallery-video-slide")
+);
 }
 
 function getOptionalVideo(slide) {
-  if (!slide) return null;
-  return slide.querySelector("video.gallery-optional-video");
+if (!slide) return null;
+return slide.querySelector("video.gallery-optional-video");
 }
 
 /* =========================================================
-   BOTONES DE VÍDEOS OPCIONALES
+BOTONES DE VÍDEOS OPCIONALES
 ========================================================= */
 
 function showOptionalPlayButton(slide) {
-  if (!slide) return;
+if (!slide) return;
 
-  slide.classList.remove("is-playing");
+slide.classList.remove("is-playing");
 
-  const button = slide.querySelector(
-    ".gallery-video-play, .lightbox-video-toggle"
-  );
+const button = slide.querySelector(
+".gallery-video-play, .lightbox-video-toggle"
+);
 
-  if (button) {
-    button.style.removeProperty("display");
-    button.setAttribute("aria-label", "Reproducir video");
-  }
+if (button) {
+button.style.removeProperty("display");
+button.setAttribute("aria-label", "Reproducir video");
+}
 }
 
 function hideOptionalPlayButton(slide) {
-  if (!slide) return;
+if (!slide) return;
 
-  slide.classList.add("is-playing");
+slide.classList.add("is-playing");
 
-  const button = slide.querySelector(
-    ".gallery-video-play, .lightbox-video-toggle"
-  );
+const button = slide.querySelector(
+".gallery-video-play, .lightbox-video-toggle"
+);
 
-  if (button) {
-    button.style.setProperty("display", "none", "important");
-    button.setAttribute("aria-label", "Vídeo en reproducción");
-  }
+if (button) {
+button.style.setProperty("display", "none", "important");
+button.setAttribute("aria-label", "Vídeo en reproducción");
+}
 }
 
 function toggleOptionalVideo(slide) {
-  const video = getOptionalVideo(slide);
+const video = getOptionalVideo(slide);
 
-  if (!video) return;
+if (!video) return;
 
-  if (!video.paused && !video.ended) {
-    pauseVideo(video);
-    showOptionalPlayButton(slide);
-    return;
-  }
+if (!video.paused && !video.ended) {
+pauseVideo(video);
+showOptionalPlayButton(slide);
+return;
+}
 
-  prepareVideo(video);
+prepareVideo(video);
 
-  const promise = video.play();
+const promise = video.play();
 
-  if (promise && typeof promise.then === "function") {
-    promise
-      .then(() => {
-        if (!video.paused && !video.ended) {
-          hideOptionalPlayButton(slide);
-        } else {
-          showOptionalPlayButton(slide);
-        }
-      })
-      .catch(() => showOptionalPlayButton(slide));
-  } else {
-    if (!video.paused && !video.ended) {
-      hideOptionalPlayButton(slide);
-    } else {
-      showOptionalPlayButton(slide);
-    }
-  }
+if (promise && typeof promise.then === "function") {
+promise
+.then(() => {
+if (!video.paused && !video.ended) {
+hideOptionalPlayButton(slide);
+} else {
+showOptionalPlayButton(slide);
+}
+})
+.catch(() => showOptionalPlayButton(slide));
+} else {
+if (!video.paused && !video.ended) {
+hideOptionalPlayButton(slide);
+} else {
+showOptionalPlayButton(slide);
+}
+}
 }
 
 /* =========================================================
-   PREPARAR TODOS LOS VÍDEOS
+PREPARAR TODOS LOS VÍDEOS
 ========================================================= */
 
 document.querySelectorAll("video").forEach(prepareVideo);
 
 /* =========================================================
-   VÍDEOS PRINCIPALES
-   ESCRITORIO: COMPORTAMIENTO ORIGINAL
-   MÓVILES: AUTOPLAY Y REINTENTOS DE CARGA
+VÍDEOS PRINCIPALES
+ESCRITORIO: COMPORTAMIENTO ORIGINAL
+MÓVILES: AUTOPLAY Y REINTENTOS DE CARGA
 ========================================================= */
 
 const heroVideo = document.getElementById("hero-video");
@@ -154,152 +154,154 @@ const mobileVideoMode = window.matchMedia("(max-width: 700px)");
 const mobilePlayPending = new WeakSet();
 
 function playMainVideoOnMobile(video) {
-  if (!video || document.hidden) return;
+if (!video || document.hidden) return;
 
-  if (!video.paused && !video.ended) return;
+if (!video.paused && !video.ended) return;
 
-  if (mobilePlayPending.has(video)) return;
+if (mobilePlayPending.has(video)) return;
 
-  prepareVideo(video);
+prepareVideo(video);
 
-  video.autoplay = true;
-  video.loop = true;
+video.autoplay = true;
+video.loop = true;
 
-  video.setAttribute("autoplay", "");
-  video.setAttribute("loop", "");
+video.setAttribute("autoplay", "");
+video.setAttribute("loop", "");
 
-  mobilePlayPending.add(video);
+mobilePlayPending.add(video);
 
-  let promise;
+let promise;
 
-  try {
-    promise = video.play();
-  } catch (error) {
-    mobilePlayPending.delete(video);
+try {
+promise = video.play();
+} catch (error) {
+mobilePlayPending.delete(video);
 
-    console.error("ERROR DE AUTOPLAY:", {
-      video: video.id,
-      nombre: error.name,
-      mensaje: error.message,
-      muted: video.muted,
-      readyState: video.readyState,
-      networkState: video.networkState
-    });
+console.error("ERROR DE AUTOPLAY:", {  
+  video: video.id,  
+  nombre: error.name,  
+  mensaje: error.message,  
+  muted: video.muted,  
+  readyState: video.readyState,  
+  networkState: video.networkState  
+});  
 
-    return;
-  }
+return;
 
-  if (promise && typeof promise.then === "function") {
-    promise
-      .then(() => {
-        mobilePlayPending.delete(video);
-      })
-      .catch((error) => {
-        mobilePlayPending.delete(video);
+}
 
-        console.error("ERROR DE AUTOPLAY:", {
-          video: video.id,
-          nombre: error.name,
-          mensaje: error.message,
-          muted: video.muted,
-          readyState: video.readyState,
-          networkState: video.networkState
-        });
-      });
-  } else {
-    mobilePlayPending.delete(video);
-  }
+if (promise && typeof promise.then === "function") {
+promise
+.then(() => {
+mobilePlayPending.delete(video);
+})
+.catch((error) => {
+mobilePlayPending.delete(video);
+
+console.error("ERROR DE AUTOPLAY:", {  
+      video: video.id,  
+      nombre: error.name,  
+      mensaje: error.message,  
+      muted: video.muted,  
+      readyState: video.readyState,  
+      networkState: video.networkState  
+    });  
+  });
+
+} else {
+mobilePlayPending.delete(video);
+}
 }
 
 function startMainVideo(video) {
-  if (!video || document.hidden) return;
+if (!video || document.hidden) return;
 
-  /* ESCRITORIO: COMPORTAMIENTO ORIGINAL */
+/* ESCRITORIO: COMPORTAMIENTO ORIGINAL */
 
-  if (!mobileVideoMode.matches) {
-    playVideo(video);
-    return;
-  }
+if (!mobileVideoMode.matches) {
+playVideo(video);
+return;
+}
 
-  /* MÓVILES: PREPARAR E INTENTAR REPRODUCIR */
+/* MÓVILES: PREPARAR E INTENTAR REPRODUCIR */
 
-  prepareVideo(video);
+prepareVideo(video);
 
-  video.autoplay = true;
-  video.loop = true;
+video.autoplay = true;
+video.loop = true;
 
-  video.setAttribute("autoplay", "");
-  video.setAttribute("loop", "");
+video.setAttribute("autoplay", "");
+video.setAttribute("loop", "");
 
-  playMainVideoOnMobile(video);
+playMainVideoOnMobile(video);
 }
 
 /* =========================================================
-   VIDEO DE PORTADA
+VIDEO DE PORTADA
 ========================================================= */
 
 function startHeroVideo() {
-  startMainVideo(heroVideo);
+startMainVideo(heroVideo);
 }
 
 if (heroVideo) {
-  prepareVideo(heroVideo);
+prepareVideo(heroVideo);
 
-  heroVideo.loop = true;
-  heroVideo.autoplay = true;
+heroVideo.loop = true;
+heroVideo.autoplay = true;
 
-  heroVideo.setAttribute("autoplay", "");
-  heroVideo.setAttribute("loop", "");
+heroVideo.setAttribute("autoplay", "");
+heroVideo.setAttribute("loop", "");
 
-  heroVideo.addEventListener("loadedmetadata", startHeroVideo);
-  heroVideo.addEventListener("loadeddata", startHeroVideo);
-  heroVideo.addEventListener("canplay", startHeroVideo);
+heroVideo.addEventListener("loadedmetadata", startHeroVideo);
+heroVideo.addEventListener("loadeddata", startHeroVideo);
+heroVideo.addEventListener("canplay", startHeroVideo);
 
-  startHeroVideo();
+startHeroVideo();
 
-  window.addEventListener("pageshow", startHeroVideo);
+window.addEventListener("pageshow", startHeroVideo);
 }
 
 /* =========================================================
-   VIDEO DE PROCESO
+VIDEO DE PROCESO
 ========================================================= */
 
 function startProcessVideo() {
-  startMainVideo(processVideo);
+startMainVideo(processVideo);
 }
 
 if (processVideo) {
-  prepareVideo(processVideo);
+prepareVideo(processVideo);
 
-  processVideo.loop = true;
-  processVideo.autoplay = true;
+processVideo.loop = true;
+processVideo.autoplay = true;
 
-  processVideo.setAttribute("autoplay", "");
-  processVideo.setAttribute("loop", "");
+processVideo.setAttribute("autoplay", "");
+processVideo.setAttribute("loop", "");
 
-  processVideo.addEventListener("loadedmetadata", startProcessVideo);
-  processVideo.addEventListener("loadeddata", startProcessVideo);
-  processVideo.addEventListener("canplay", startProcessVideo);
+processVideo.addEventListener("loadedmetadata", startProcessVideo);
+processVideo.addEventListener("loadeddata", startProcessVideo);
+processVideo.addEventListener("canplay", startProcessVideo);
 
-  startProcessVideo();
+startProcessVideo();
 }
 
 /* =========================================================
-   REVISAR VÍDEOS AL CAMBIAR LA VISIBILIDAD
+REVISAR VÍDEOS AL CAMBIAR LA VISIBILIDAD
 ========================================================= */
 
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    pauseVideo(heroVideo);
-    pauseVideo(processVideo);
-  } else {
-    startHeroVideo();
-    startProcessVideo();
-  }
+if (document.hidden) {
+pauseVideo(heroVideo);
+pauseVideo(processVideo);
+} else {
+startHeroVideo();
+startProcessVideo();
+}
 });
 
 /* =========================================================
-   MENÚ MÓVIL
+MENÚ MÓVIL
 ========================================================= */
 
 const menuToggle = document.querySelector(".menu-toggle");
@@ -307,102 +309,105 @@ const mainNav = document.getElementById("main-nav");
 const siteHeader = document.querySelector(".site-header");
 
 function closeMenu() {
-  if (!menuToggle || !mainNav) return;
+if (!menuToggle || !mainNav) return;
 
-  menuToggle.setAttribute("aria-expanded", "false");
-  menuToggle.setAttribute("aria-label", "Abrir menú");
+menuToggle.setAttribute("aria-expanded", "false");
+menuToggle.setAttribute("aria-label", "Abrir menú");
 
-  mainNav.classList.remove("open");
-  document.body.classList.remove("menu-open");
+mainNav.classList.remove("open");
+document.body.classList.remove("menu-open");
 }
 
 function openMenu() {
-  if (!menuToggle || !mainNav) return;
+if (!menuToggle || !mainNav) return;
 
-  menuToggle.setAttribute("aria-expanded", "true");
-  menuToggle.setAttribute("aria-label", "Cerrar menú");
+menuToggle.setAttribute("aria-expanded", "true");
+menuToggle.setAttribute("aria-label", "Cerrar menú");
 
-  mainNav.classList.add("open");
-  document.body.classList.add("menu-open");
+mainNav.classList.add("open");
+document.body.classList.add("menu-open");
 }
 
 if (menuToggle && mainNav) {
-  menuToggle.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
+menuToggle.addEventListener("click", (event) => {
+event.preventDefault();
+event.stopPropagation();
 
-    if (menuToggle.getAttribute("aria-expanded") === "true") {
-      closeMenu();
-    } else {
-      openMenu();
-    }
-  });
+if (menuToggle.getAttribute("aria-expanded") === "true") {  
+  closeMenu();  
+} else {  
+  openMenu();  
+}
 
-  mainNav.querySelectorAll('a[href^="#"]').forEach((link) => {
-    link.addEventListener("click", closeMenu);
-  });
+});
 
-  document.addEventListener("click", (event) => {
-    if (
-      mainNav.classList.contains("open") &&
-      siteHeader &&
-      !siteHeader.contains(event.target)
-    ) {
-      closeMenu();
-    }
-  });
+mainNav.querySelectorAll('a[href^="#"]').forEach((link) => {
+link.addEventListener("click", closeMenu);
+});
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMenu();
-  });
+document.addEventListener("click", (event) => {
+if (
+mainNav.classList.contains("open") &&
+siteHeader &&
+!siteHeader.contains(event.target)
+) {
+closeMenu();
+}
+});
 
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 700) closeMenu();
-  });
+document.addEventListener("keydown", (event) => {
+if (event.key === "Escape") closeMenu();
+});
+
+window.addEventListener("resize", () => {
+if (window.innerWidth > 700) closeMenu();
+});
 }
 
 /* =========================================================
-   BOTÓN VOLVER ARRIBA
+BOTÓN VOLVER ARRIBA
 ========================================================= */
 
 const backToTop = document.getElementById("back-to-top");
 
 if (backToTop) {
-  const updateBackToTop = () => {
-    const scrollPosition =
-      window.scrollY ||
-      document.documentElement.scrollTop ||
-      0;
+const updateBackToTop = () => {
+const scrollPosition =
+window.scrollY ||
+document.documentElement.scrollTop ||
+0;
 
-    backToTop.classList.toggle("visible", scrollPosition > 120);
-  };
+backToTop.classList.toggle("visible", scrollPosition > 120);
 
-  window.addEventListener("scroll", updateBackToTop, {
-    passive: true
-  });
+};
 
-  window.addEventListener("resize", updateBackToTop, {
-    passive: true
-  });
+window.addEventListener("scroll", updateBackToTop, {
+passive: true
+});
 
-  window.addEventListener("pageshow", updateBackToTop);
+window.addEventListener("resize", updateBackToTop, {
+passive: true
+});
 
-  updateBackToTop();
+window.addEventListener("pageshow", updateBackToTop);
 
-  backToTop.addEventListener("click", () => {
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+updateBackToTop();
 
-    window.scrollTo({
-      top: 0,
-      behavior: reduceMotion ? "auto" : "smooth"
-    });
-  });
+backToTop.addEventListener("click", () => {
+const reduceMotion = window.matchMedia(
+"(prefers-reduced-motion: reduce)"
+).matches;
+
+window.scrollTo({  
+  top: 0,  
+  behavior: reduceMotion ? "auto" : "smooth"  
+});
+
+});
 }
 
 /* =========================================================
-   VARIABLES DEL LIGHTBOX
+VARIABLES DEL LIGHTBOX
 ========================================================= */
 
 let lightbox = null;
@@ -411,804 +416,832 @@ let lightboxSlides = [];
 let lightboxCurrent = 0;
 
 /* =========================================================
-   CREAR LIGHTBOX
+CREAR LIGHTBOX
 ========================================================= */
 
 function createLightbox() {
-  if (lightbox) return;
+if (lightbox) return;
 
-  lightbox = document.createElement("div");
-  lightbox.className = "lightbox";
+lightbox = document.createElement("div");
+lightbox.className = "lightbox";
 
-  lightbox.innerHTML = `
-    <button class="lightbox-close" type="button"
-      aria-label="Cerrar visor">×</button>
+lightbox.innerHTML = `
+<button class="lightbox-close" type="button"  
+aria-label="Cerrar visor">×</button>
 
-    <button class="lightbox-arrow lightbox-prev" type="button"
-      aria-label="Imagen anterior">‹</button>
+<button class="lightbox-arrow lightbox-prev" type="button"  
+  aria-label="Imagen anterior">‹</button>  
 
-    <div class="lightbox-window">
-      <div class="lightbox-track"></div>
-    </div>
+<div class="lightbox-window">  
+  <div class="lightbox-track"></div>  
+</div>  
 
-    <button class="lightbox-arrow lightbox-next" type="button"
-      aria-label="Siguiente imagen">›</button>
-  `;
+<button class="lightbox-arrow lightbox-next" type="button"  
+  aria-label="Siguiente imagen">›</button>
 
-  document.body.appendChild(lightbox);
+`;
 
-  lightboxTrack = lightbox.querySelector(".lightbox-track");
+document.body.appendChild(lightbox);
 
-  const closeButton = lightbox.querySelector(".lightbox-close");
-  const prevButton = lightbox.querySelector(".lightbox-prev");
-  const nextButton = lightbox.querySelector(".lightbox-next");
-  const lightboxWindow = lightbox.querySelector(".lightbox-window");
+lightboxTrack = lightbox.querySelector(".lightbox-track");
 
-  closeButton.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    closeLightbox();
-  });
+const closeButton = lightbox.querySelector(".lightbox-close");
+const prevButton = lightbox.querySelector(".lightbox-prev");
+const nextButton = lightbox.querySelector(".lightbox-next");
+const lightboxWindow = lightbox.querySelector(".lightbox-window");
 
-  prevButton.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
+closeButton.addEventListener("click", (event) => {
+event.preventDefault();
+event.stopPropagation();
+closeLightbox();
+});
 
-    if (!lightboxSlides.length) return;
+prevButton.addEventListener("click", (event) => {
+event.preventDefault();
+event.stopPropagation();
 
-    lightboxCurrent =
-      (lightboxCurrent - 1 + lightboxSlides.length) %
-      lightboxSlides.length;
+if (!lightboxSlides.length) return;  
 
-    updateLightbox();
-  });
+lightboxCurrent =  
+  (lightboxCurrent - 1 + lightboxSlides.length) %  
+  lightboxSlides.length;  
 
-  nextButton.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
+updateLightbox();
 
-    if (!lightboxSlides.length) return;
+});
 
-    lightboxCurrent =
-      (lightboxCurrent + 1) % lightboxSlides.length;
+nextButton.addEventListener("click", (event) => {
+event.preventDefault();
+event.stopPropagation();
 
-    updateLightbox();
-  });
+if (!lightboxSlides.length) return;  
 
-  lightbox.addEventListener("click", (event) => {
-    if (
-      event.target === lightbox ||
-      event.target === lightboxWindow
-    ) {
-      closeLightbox();
-    }
-  });
+lightboxCurrent =  
+  (lightboxCurrent + 1) % lightboxSlides.length;  
 
-  document.addEventListener("keydown", (event) => {
-    if (!lightbox.classList.contains("active")) return;
+updateLightbox();
 
-    if (event.key === "Escape") {
-      closeLightbox();
-      return;
-    }
+});
 
-    if (!lightboxSlides.length) return;
+lightbox.addEventListener("click", (event) => {
+if (
+event.target === lightbox ||
+event.target === lightboxWindow
+) {
+closeLightbox();
+}
+});
 
-    if (event.key === "ArrowRight") {
-      lightboxCurrent =
-        (lightboxCurrent + 1) % lightboxSlides.length;
-      updateLightbox();
-    }
+document.addEventListener("keydown", (event) => {
+if (!lightbox.classList.contains("active")) return;
 
-    if (event.key === "ArrowLeft") {
-      lightboxCurrent =
-        (lightboxCurrent - 1 + lightboxSlides.length) %
-        lightboxSlides.length;
-      updateLightbox();
-    }
-  });
+if (event.key === "Escape") {  
+  closeLightbox();  
+  return;  
+}  
+
+if (!lightboxSlides.length) return;  
+
+if (event.key === "ArrowRight") {  
+  lightboxCurrent =  
+    (lightboxCurrent + 1) % lightboxSlides.length;  
+  updateLightbox();  
+}  
+
+if (event.key === "ArrowLeft") {  
+  lightboxCurrent =  
+    (lightboxCurrent - 1 + lightboxSlides.length) %  
+    lightboxSlides.length;  
+  updateLightbox();  
+}
+
+});
 }
 
 /* =========================================================
-   PREPARAR VÍDEO OPCIONAL EN LIGHTBOX
+PREPARAR VÍDEO OPCIONAL EN LIGHTBOX
 ========================================================= */
 
 function setupOptionalLightboxSlide(slide) {
-  if (!isOptionalVideoSlide(slide)) return;
+if (!isOptionalVideoSlide(slide)) return;
 
-  const video = getOptionalVideo(slide);
+const video = getOptionalVideo(slide);
 
-  const button = slide.querySelector(
-    ".gallery-video-play, .lightbox-video-toggle"
-  );
+const button = slide.querySelector(
+".gallery-video-play, .lightbox-video-toggle"
+);
 
-  if (!video) return;
+if (!video) return;
 
-  prepareVideo(video);
+prepareVideo(video);
 
-  video.controls = false;
-  video.autoplay = false;
-  video.loop = false;
-  video.preload = "metadata";
+video.controls = false;
+video.autoplay = false;
+video.loop = false;
+video.preload = "metadata";
 
-  video.removeAttribute("controls");
-  video.removeAttribute("autoplay");
-  video.removeAttribute("loop");
+video.removeAttribute("controls");
+video.removeAttribute("autoplay");
+video.removeAttribute("loop");
 
-  if (button) {
-    button.classList.remove("gallery-video-play");
-    button.classList.add("lightbox-video-toggle");
+if (button) {
+button.classList.remove("gallery-video-play");
+button.classList.add("lightbox-video-toggle");
 
-    button.textContent = "▶";
-    button.setAttribute("type", "button");
-    button.setAttribute("aria-label", "Reproducir video");
+button.textContent = "▶";  
+button.setAttribute("type", "button");  
+button.setAttribute("aria-label", "Reproducir video");  
 
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      toggleOptionalVideo(slide);
-    });
-  }
+button.addEventListener("click", (event) => {  
+  event.preventDefault();  
+  event.stopPropagation();  
+  toggleOptionalVideo(slide);  
+});
 
-  video.addEventListener("play", () => hideOptionalPlayButton(slide));
-  video.addEventListener("playing", () => hideOptionalPlayButton(slide));
-  video.addEventListener("pause", () => showOptionalPlayButton(slide));
-  video.addEventListener("ended", () => showOptionalPlayButton(slide));
+}
 
-  video.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    toggleOptionalVideo(slide);
-  });
+video.addEventListener("play", () => hideOptionalPlayButton(slide));
+video.addEventListener("playing", () => hideOptionalPlayButton(slide));
+video.addEventListener("pause", () => showOptionalPlayButton(slide));
+video.addEventListener("ended", () => showOptionalPlayButton(slide));
 
-  showOptionalPlayButton(slide);
+video.addEventListener("click", (event) => {
+event.preventDefault();
+event.stopPropagation();
+toggleOptionalVideo(slide);
+});
+
+showOptionalPlayButton(slide);
 }
 
 /* =========================================================
-   ABRIR LIGHTBOX
+ABRIR LIGHTBOX
 ========================================================= */
 
 function openLightbox(slides, startIndex) {
-  createLightbox();
+createLightbox();
 
-  document.querySelectorAll(".gallery video").forEach((video) => {
-    const optionalSlide = video.closest(".gallery-video-slide");
+document.querySelectorAll(".gallery video").forEach((video) => {
+const optionalSlide = video.closest(".gallery-video-slide");
 
-    pauseVideo(video, Boolean(optionalSlide));
+pauseVideo(video, Boolean(optionalSlide));  
 
-    if (optionalSlide) showOptionalPlayButton(optionalSlide);
-  });
+if (optionalSlide) showOptionalPlayButton(optionalSlide);
 
-  lightboxSlides = Array.from(slides);
-  lightboxCurrent = Number(startIndex) || 0;
+});
 
-  lightboxTrack.innerHTML = "";
+lightboxSlides = Array.from(slides);
+lightboxCurrent = Number(startIndex) || 0;
 
-  lightboxSlides.forEach((slide) => {
-    const clone = slide.cloneNode(true);
+lightboxTrack.innerHTML = "";
 
-    clone.removeAttribute("style");
+lightboxSlides.forEach((slide) => {
+const clone = slide.cloneNode(true);
 
-    if (isOptionalVideoSlide(clone)) {
-      setupOptionalLightboxSlide(clone);
-    } else if (clone.tagName === "VIDEO") {
-      prepareVideo(clone);
+clone.removeAttribute("style");  
 
-      clone.controls = false;
-      clone.loop = true;
-      clone.autoplay = false;
+if (isOptionalVideoSlide(clone)) {  
+  setupOptionalLightboxSlide(clone);  
+} else if (clone.tagName === "VIDEO") {  
+  prepareVideo(clone);  
 
-      clone.removeAttribute("controls");
-      clone.removeAttribute("autoplay");
-    }
+  clone.controls = false;  
+  clone.loop = true;  
+  clone.autoplay = false;  
 
-    clone.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-    });
+  clone.removeAttribute("controls");  
+  clone.removeAttribute("autoplay");  
+}  
 
-    lightboxTrack.appendChild(clone);
-  });
+clone.addEventListener("click", (event) => {  
+  event.preventDefault();  
+  event.stopPropagation();  
+});  
 
-  lightbox.classList.add("active");
-  document.body.classList.add("lightbox-open");
+lightboxTrack.appendChild(clone);
 
-  updateLightbox();
+});
+
+lightbox.classList.add("active");
+document.body.classList.add("lightbox-open");
+
+updateLightbox();
 }
 
 /* =========================================================
-   ACTUALIZAR LIGHTBOX
+ACTUALIZAR LIGHTBOX
 ========================================================= */
 
 function updateLightbox() {
-  if (!lightboxTrack || !lightboxSlides.length) return;
+if (!lightboxTrack || !lightboxSlides.length) return;
 
-  lightboxCurrent =
-    (lightboxCurrent + lightboxSlides.length) %
-    lightboxSlides.length;
+lightboxCurrent =
+(lightboxCurrent + lightboxSlides.length) %
+lightboxSlides.length;
 
-  lightboxTrack.style.transform =
-    `translate3d(-${lightboxCurrent * 100}%, 0, 0)`;
+lightboxTrack.style.transform =
+translate3d(-${lightboxCurrent * 100}%, 0, 0);
 
-  const slides = Array.from(lightboxTrack.children);
+const slides = Array.from(lightboxTrack.children);
 
-  slides.forEach((slide, index) => {
-    if (isOptionalVideoSlide(slide)) {
-      pauseVideo(getOptionalVideo(slide), true);
-      showOptionalPlayButton(slide);
-      return;
-    }
+slides.forEach((slide, index) => {
+if (isOptionalVideoSlide(slide)) {
+pauseVideo(getOptionalVideo(slide), true);
+showOptionalPlayButton(slide);
+return;
+}
 
-    if (slide.tagName !== "VIDEO") return;
+if (slide.tagName !== "VIDEO") return;  
 
-    prepareVideo(slide);
+prepareVideo(slide);  
 
-    if (index === lightboxCurrent) {
-      playVideo(slide);
-    } else {
-      pauseVideo(slide, true);
-    }
-  });
+if (index === lightboxCurrent) {  
+  playVideo(slide);  
+} else {  
+  pauseVideo(slide, true);  
+}
+
+});
 }
 
 /* =========================================================
-   CERRAR LIGHTBOX
+CERRAR LIGHTBOX
 ========================================================= */
 
 function closeLightbox() {
-  if (!lightbox) return;
+if (!lightbox) return;
 
-  lightbox.classList.remove("active");
-  document.body.classList.remove("lightbox-open");
+lightbox.classList.remove("active");
+document.body.classList.remove("lightbox-open");
 
-  lightbox.querySelectorAll("video").forEach((video) => {
-    pauseVideo(video, true);
-  });
+lightbox.querySelectorAll("video").forEach((video) => {
+pauseVideo(video, true);
+});
 
-  lightbox.querySelectorAll(".gallery-video-slide").forEach((slide) => {
-    showOptionalPlayButton(slide);
-  });
+lightbox.querySelectorAll(".gallery-video-slide").forEach((slide) => {
+showOptionalPlayButton(slide);
+});
 }
 
 /* =========================================================
-   INICIALIZAR GALERÍAS
+INICIALIZAR GALERÍAS
 ========================================================= */
 
 const galleries = document.querySelectorAll(".gallery");
 
 galleries.forEach((gallery) => {
-  const track = gallery.querySelector(".gallery-track");
+const track = gallery.querySelector(".gallery-track");
 
-  const prevButton = gallery.querySelector(".gallery-arrow.prev");
-  const nextButton = gallery.querySelector(".gallery-arrow.next");
+const prevButton = gallery.querySelector(".gallery-arrow.prev");
+const nextButton = gallery.querySelector(".gallery-arrow.next");
 
-  if (!track) return;
+if (!track) return;
 
-  const slides = Array.from(track.children).filter((slide) => {
-    return slide.matches("img, video, .gallery-video-slide");
-  });
+const slides = Array.from(track.children).filter((slide) => {
+return slide.matches("img, video, .gallery-video-slide");
+});
 
-  const total = slides.length;
+const total = slides.length;
 
-  if (!total) return;
+if (!total) return;
 
-  let current = 0;
-  let suppressClickUntil = 0;
+let current = 0;
+let suppressClickUntil = 0;
 
-  function updateGallery() {
-    const activeSlide = slides[current];
+function updateGallery() {
+const activeSlide = slides[current];
 
-    if (activeSlide) {
-      track.style.transform =
-        `translate3d(-${activeSlide.offsetLeft}px, 0, 0)`;
-    }
+if (activeSlide) {  
+  track.style.transform =  
+    `translate3d(-${activeSlide.offsetLeft}px, 0, 0)`;  
+}  
 
-    slides.forEach((slide, index) => {
-      if (isOptionalVideoSlide(slide)) {
-        pauseVideo(getOptionalVideo(slide), true);
-        showOptionalPlayButton(slide);
-        return;
-      }
+slides.forEach((slide, index) => {  
+  if (isOptionalVideoSlide(slide)) {  
+    pauseVideo(getOptionalVideo(slide), true);  
+    showOptionalPlayButton(slide);  
+    return;  
+  }  
 
-      if (slide.tagName !== "VIDEO") return;
+  if (slide.tagName !== "VIDEO") return;  
 
-      prepareVideo(slide);
+  prepareVideo(slide);  
 
-      if (index === current) {
-        playVideo(slide);
-      } else {
-        pauseVideo(slide, true);
-      }
-    });
-  }
+  if (index === current) {  
+    playVideo(slide);  
+  } else {  
+    pauseVideo(slide, true);  
+  }  
+});
 
-  if (nextButton) {
-    nextButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+}
 
-      current = (current + 1) % total;
-      updateGallery();
-    });
-  }
+if (nextButton) {
+nextButton.addEventListener("click", (event) => {
+event.preventDefault();
+event.stopPropagation();
 
-  if (prevButton) {
-    prevButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+current = (current + 1) % total;  
+  updateGallery();  
+});
 
-      current = (current - 1 + total) % total;
-      updateGallery();
-    });
-  }
+}
 
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let touchCurrentX = 0;
-  let touchCurrentY = 0;
-  let gestureDirection = null;
+if (prevButton) {
+prevButton.addEventListener("click", (event) => {
+event.preventDefault();
+event.stopPropagation();
 
-  gallery.addEventListener("touchstart", (event) => {
-    if (!event.touches || !event.touches.length) return;
+current = (current - 1 + total) % total;  
+  updateGallery();  
+});
 
-    const touch = event.touches[0];
+}
 
-    touchStartX = touch.clientX;
-    touchStartY = touch.clientY;
-    touchCurrentX = touchStartX;
-    touchCurrentY = touchStartY;
+let touchStartX = 0;
+let touchStartY = 0;
+let touchCurrentX = 0;
+let touchCurrentY = 0;
+let gestureDirection = null;
 
-    gestureDirection = null;
-  }, { passive: true });
+gallery.addEventListener("touchstart", (event) => {
+if (!event.touches || !event.touches.length) return;
 
-  gallery.addEventListener("touchmove", (event) => {
-    if (!event.touches || !event.touches.length) return;
+const touch = event.touches[0];  
 
-    const touch = event.touches[0];
+touchStartX = touch.clientX;  
+touchStartY = touch.clientY;  
+touchCurrentX = touchStartX;  
+touchCurrentY = touchStartY;  
 
-    touchCurrentX = touch.clientX;
-    touchCurrentY = touch.clientY;
+gestureDirection = null;
 
-    const differenceX = touchCurrentX - touchStartX;
-    const differenceY = touchCurrentY - touchStartY;
+}, { passive: true });
 
-    if (gestureDirection === null) {
-      const absX = Math.abs(differenceX);
-      const absY = Math.abs(differenceY);
+gallery.addEventListener("touchmove", (event) => {
+if (!event.touches || !event.touches.length) return;
 
-      if (absX < 8 && absY < 8) return;
+const touch = event.touches[0];  
 
-      gestureDirection = absY > absX ? "vertical" : "horizontal";
-    }
+touchCurrentX = touch.clientX;  
+touchCurrentY = touch.clientY;  
 
-    if (gestureDirection === "horizontal") {
-      event.preventDefault();
-    }
-  }, { passive: false });
+const differenceX = touchCurrentX - touchStartX;  
+const differenceY = touchCurrentY - touchStartY;  
 
-  gallery.addEventListener("touchend", () => {
-    if (gestureDirection !== "horizontal") {
-      gestureDirection = null;
-      return;
-    }
+if (gestureDirection === null) {  
+  const absX = Math.abs(differenceX);  
+  const absY = Math.abs(differenceY);  
 
-    const difference = touchStartX - touchCurrentX;
+  if (absX < 8 && absY < 8) return;  
 
-    if (Math.abs(difference) < 50) {
-      gestureDirection = null;
-      return;
-    }
+  gestureDirection = absY > absX ? "vertical" : "horizontal";  
+}  
 
-    if (difference > 0) {
-      current = (current + 1) % total;
-    } else {
-      current = (current - 1 + total) % total;
-    }
+if (gestureDirection === "horizontal") {  
+  event.preventDefault();  
+}
 
-    suppressClickUntil = Date.now() + 500;
+}, { passive: false });
 
-    updateGallery();
-    gestureDirection = null;
-  }, { passive: true });
+gallery.addEventListener("touchend", () => {
+if (gestureDirection !== "horizontal") {
+gestureDirection = null;
+return;
+}
 
-  gallery.addEventListener("touchcancel", () => {
-    gestureDirection = null;
-  }, { passive: true });
+const difference = touchStartX - touchCurrentX;  
 
-  slides.forEach((slide, index) => {
-    slide.style.cursor = "pointer";
+if (Math.abs(difference) < 50) {  
+  gestureDirection = null;  
+  return;  
+}  
 
-    slide.addEventListener("click", (event) => {
-      if (Date.now() < suppressClickUntil) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
+if (difference > 0) {  
+  current = (current + 1) % total;  
+} else {  
+  current = (current - 1 + total) % total;  
+}  
 
-      event.preventDefault();
-      event.stopPropagation();
+suppressClickUntil = Date.now() + 500;  
 
-      openLightbox(slides, index);
-    });
-  });
+updateGallery();  
+gestureDirection = null;
 
-  updateGallery();
+}, { passive: true });
 
-  window.addEventListener("resize", updateGallery);
+gallery.addEventListener("touchcancel", () => {
+gestureDirection = null;
+}, { passive: true });
 
-  window.addEventListener("orientationchange", () => {
-    requestAnimationFrame(updateGallery);
-  });
+slides.forEach((slide, index) => {
+slide.style.cursor = "pointer";
+
+slide.addEventListener("click", (event) => {  
+  if (Date.now() < suppressClickUntil) {  
+    event.preventDefault();  
+    event.stopPropagation();  
+    return;  
+  }  
+
+  event.preventDefault();  
+  event.stopPropagation();  
+
+  openLightbox(slides, index);  
+});
+
+});
+
+updateGallery();
+
+window.addEventListener("resize", updateGallery);
+
+window.addEventListener("orientationchange", () => {
+requestAnimationFrame(updateGallery);
+});
 });
 
 /* =========================================================
-   REVISAR VÍDEOS AL VOLVER A LA PÁGINA
+REVISAR VÍDEOS AL VOLVER A LA PÁGINA
 ========================================================= */
 
 window.addEventListener("pageshow", () => {
-  if (!document.hidden) {
-    startHeroVideo();
-    startProcessVideo();
-  }
+if (!document.hidden) {
+startHeroVideo();
+startProcessVideo();
+}
 
-  document.querySelectorAll(".gallery").forEach((gallery) => {
-    const track = gallery.querySelector(".gallery-track");
-    if (!track) return;
+document.querySelectorAll(".gallery").forEach((gallery) => {
+const track = gallery.querySelector(".gallery-track");
+if (!track) return;
 
-    const activeVideo = track.querySelector("video");
+const activeVideo = track.querySelector("video");  
 
-    if (
-      activeVideo &&
-      !lightbox?.classList.contains("active")
-    ) {
-      prepareVideo(activeVideo);
-    }
-  });
+if (  
+  activeVideo &&  
+  !lightbox?.classList.contains("active")  
+) {  
+  prepareVideo(activeVideo);  
+}
+
+});
 });
 
 /* =========================================================
-   PIEZAS INDEPENDIENTES — VISOR Y CARRUSEL
+PIEZAS INDEPENDIENTES — VISOR Y CARRUSEL
 ========================================================= */
 
 (() => {
-  const cards = document.querySelectorAll(
-    ".independent-pieces [data-independent-piece]"
-  );
+const cards = document.querySelectorAll(
+".independent-pieces [data-independent-piece]"
+);
 
-  if (!cards.length) return;
+if (!cards.length) return;
 
-  let currentPiece = null;
-  let currentImage = 0;
-  let lastFocusedElement = null;
+let currentPiece = null;
+let currentImage = 0;
+let lastFocusedElement = null;
 
-  /* CREAR MODAL */
+/* CREAR MODAL */
 
-  const modal = document.createElement("div");
+const modal = document.createElement("div");
 
-  modal.className = "independent-modal";
-  modal.setAttribute("aria-hidden", "true");
+modal.className = "independent-modal";
+modal.setAttribute("aria-hidden", "true");
 
-  modal.innerHTML = `
-    <section class="independent-dialog"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="independent-modal-title">
+modal.innerHTML = `
+<section class="independent-dialog"  
+role="dialog"  
+aria-modal="true"  
+aria-labelledby="independent-modal-title">
 
-      <button class="independent-modal-close"
-        type="button" aria-label="Cerrar">×</button>
+<button class="independent-modal-close"  
+    type="button" aria-label="Cerrar">×</button>  
 
-      <div class="independent-modal-image">
-        <img alt="">
-      </div>
+  <div class="independent-modal-image">  
+    <img alt="">  
+  </div>  
 
-      <button
-        class="lightbox-arrow lightbox-prev independent-gallery-arrow independent-gallery-prev"
-        type="button" aria-label="Fotografía anterior">‹</button>
+  <button  
+    class="lightbox-arrow lightbox-prev independent-gallery-arrow independent-gallery-prev"  
+    type="button" aria-label="Fotografía anterior">‹</button>  
 
-      <button
-        class="lightbox-arrow lightbox-next independent-gallery-arrow independent-gallery-next"
-        type="button" aria-label="Fotografía siguiente">›</button>
+  <button  
+    class="lightbox-arrow lightbox-next independent-gallery-arrow independent-gallery-next"  
+    type="button" aria-label="Fotografía siguiente">›</button>  
 
-      <div class="independent-modal-copy">
+  <div class="independent-modal-copy">  
 
-        <p class="independent-modal-kicker">
-          DAVE KOLMAN · PIEZA INDEPENDIENTE
-        </p>
+    <p class="independent-modal-kicker">  
+      DAVE KOLMAN · PIEZA INDEPENDIENTE  
+    </p>  
 
-        <h2 class="independent-modal-title"
-          id="independent-modal-title"></h2>
+    <h2 class="independent-modal-title"  
+      id="independent-modal-title"></h2>  
 
-        <p class="independent-modal-description"></p>
+    <p class="independent-modal-description"></p>  
 
-        <strong class="independent-modal-price"></strong>
+    <strong class="independent-modal-price"></strong>  
 
-        <dl class="independent-modal-meta"></dl>
+    <dl class="independent-modal-meta"></dl>  
 
-        <button class="independent-size-link" type="button">
-          Consultar guía de tallas ↗
-        </button>
+    <button class="independent-size-link" type="button">  
+      Consultar guía de tallas ↗  
+    </button>  
 
-        <h3 class="independent-measure-title">
-          Medidas de la prenda
-        </h3>
+    <h3 class="independent-measure-title">  
+      Medidas de la prenda  
+    </h3>  
 
-        <table class="independent-measure-table">
-          <tbody></tbody>
-        </table>
+    <table class="independent-measure-table">  
+      <tbody></tbody>  
+    </table>  
 
-        <p class="independent-modal-note">
-          Datos ficticios de demostración. Se reemplazarán por la información definitiva.
-        </p>
+    <p class="independent-modal-note">  
+      Datos ficticios de demostración. Se reemplazarán por la información definitiva.  
+    </p>  
 
-      </div>
-    </section>
-  `;
+  </div>  
+</section>
 
-  document.body.appendChild(modal);
+`;
 
-  /* ELEMENTOS DEL MODAL */
+document.body.appendChild(modal);
 
-  const image = modal.querySelector(
-    ".independent-modal-image img"
-  );
+/* ELEMENTOS DEL MODAL */
 
-  const closeButton = modal.querySelector(
-    ".independent-modal-close"
-  );
+const image = modal.querySelector(
+".independent-modal-image img"
+);
 
-  const previousButton = modal.querySelector(
-    ".independent-gallery-prev"
-  );
+const closeButton = modal.querySelector(
+".independent-modal-close"
+);
 
-  const nextButton = modal.querySelector(
-    ".independent-gallery-next"
-  );
+const previousButton = modal.querySelector(
+".independent-gallery-prev"
+);
 
-  const title = modal.querySelector(
-    ".independent-modal-title"
-  );
+const nextButton = modal.querySelector(
+".independent-gallery-next"
+);
 
-  const description = modal.querySelector(
-    ".independent-modal-description"
-  );
+const title = modal.querySelector(
+".independent-modal-title"
+);
 
-  const price = modal.querySelector(
-    ".independent-modal-price"
-  );
+const description = modal.querySelector(
+".independent-modal-description"
+);
 
-  const meta = modal.querySelector(
-    ".independent-modal-meta"
-  );
+const price = modal.querySelector(
+".independent-modal-price"
+);
 
-  const measureBody = modal.querySelector(
-    ".independent-measure-table tbody"
-  );
+const meta = modal.querySelector(
+".independent-modal-meta"
+);
 
-  const imageContainer = modal.querySelector(
-    ".independent-modal-image"
-  );
+const measureBody = modal.querySelector(
+".independent-measure-table tbody"
+);
 
-  /* LEER DATOS DEL HTML */
+const imageContainer = modal.querySelector(
+".independent-modal-image"
+);
 
-  function readPiece(card) {
-    const measureTemplate = card.querySelector(
-      "template[data-independent-measures]"
-    );
+/* LEER DATOS DEL HTML */
 
-    return {
-      name: card.dataset.name || "",
-      description: card.dataset.description || "",
-      price: card.dataset.price || "",
-      size: card.dataset.size || "",
-      fabric: card.dataset.fabric || "",
-      length: card.dataset.length || "",
+function readPiece(card) {
+const measureTemplate = card.querySelector(
+"template[data-independent-measures]"
+);
 
-      images: (card.dataset.images || "")
-        .split("|")
-        .map(src => src.trim())
-        .filter(Boolean),
+return {  
+  name: card.dataset.name || "",  
+  description: card.dataset.description || "",  
+  price: card.dataset.price || "",  
+  size: card.dataset.size || "",  
+  fabric: card.dataset.fabric || "",  
+  length: card.dataset.length || "",  
 
-      measures: measureTemplate
-        ? measureTemplate.innerHTML
-        : ""
-    };
-  }
+  images: (card.dataset.images || "")  
+    .split("|")  
+    .map(src => src.trim())  
+    .filter(Boolean),  
 
-  /* ACTUALIZAR IMAGEN */
+  measures: measureTemplate  
+    ? measureTemplate.innerHTML  
+    : ""  
+};
 
-  function updateImage() {
-    if (!currentPiece) return;
+}
 
-    const images = currentPiece.images;
+/* ACTUALIZAR IMAGEN */
 
-    if (!images.length) {
-      image.removeAttribute("src");
-      image.alt = "";
-      previousButton.hidden = true;
-      nextButton.hidden = true;
-      imageContainer.hidden = true;
-      return;
-    }
+function updateImage() {
+if (!currentPiece) return;
 
-    imageContainer.hidden = false;
+const images = currentPiece.images;  
 
-    currentImage =
-      (currentImage + images.length) % images.length;
+if (!images.length) {  
+  image.removeAttribute("src");  
+  image.alt = "";  
+  previousButton.hidden = true;  
+  nextButton.hidden = true;  
+  imageContainer.hidden = true;  
+  return;  
+}  
 
-    image.src = images[currentImage];
+imageContainer.hidden = false;  
 
-    image.alt =
-      currentPiece.name +
-      " — fotografía " +
-      (currentImage + 1);
+currentImage =  
+  (currentImage + images.length) % images.length;  
 
-    const showArrows = images.length > 1;
+image.src = images[currentImage];  
 
-    previousButton.hidden = !showArrows;
-    nextButton.hidden = !showArrows;
-  }
+image.alt =  
+  currentPiece.name +  
+  " — fotografía " +  
+  (currentImage + 1);  
 
-  /* NAVEGACIÓN DE IMÁGENES */
+const showArrows = images.length > 1;  
 
-  function previousImage() {
-    if (!currentPiece || !currentPiece.images.length) return;
+previousButton.hidden = !showArrows;  
+nextButton.hidden = !showArrows;
 
-    currentImage--;
-    updateImage();
-  }
+}
 
-  function nextImage() {
-    if (!currentPiece || !currentPiece.images.length) return;
+/* NAVEGACIÓN DE IMÁGENES */
 
-    currentImage++;
-    updateImage();
-  }
+function previousImage() {
+if (!currentPiece || !currentPiece.images.length) return;
 
-  /* ABRIR PIEZA */
+currentImage--;  
+updateImage();
 
-  function openPiece(card) {
-    currentPiece = readPiece(card);
-    currentImage = 0;
+}
 
-    lastFocusedElement = card;
+function nextImage() {
+if (!currentPiece || !currentPiece.images.length) return;
 
-    updateImage();
+currentImage++;  
+updateImage();
 
-    title.textContent = currentPiece.name;
-    description.textContent = currentPiece.description;
-    price.textContent = currentPiece.price;
+}
 
-    meta.innerHTML = "";
+/* ABRIR PIEZA */
 
-    const metadata = [
-      ["Talla", currentPiece.size],
-      ["Material", currentPiece.fabric],
-      ["Largo total", currentPiece.length],
-      ["Disponibilidad", "Por encargo"]
-    ];
+function openPiece(card) {
+currentPiece = readPiece(card);
+currentImage = 0;
 
-    metadata.forEach(([label, value]) => {
-      if (!value) return;
+lastFocusedElement = card;  
 
-      const wrapper = document.createElement("div");
-      const dt = document.createElement("dt");
-      const dd = document.createElement("dd");
+updateImage();  
 
-      dt.textContent = label;
-      dd.textContent = value;
+title.textContent = currentPiece.name;  
+description.textContent = currentPiece.description;  
+price.textContent = currentPiece.price;  
 
-      wrapper.append(dt, dd);
-      meta.appendChild(wrapper);
-    });
+meta.innerHTML = "";  
 
-    measureBody.innerHTML = currentPiece.measures;
+const metadata = [  
+  ["Talla", currentPiece.size],  
+  ["Material", currentPiece.fabric],  
+  ["Largo total", currentPiece.length],  
+  ["Disponibilidad", "Por encargo"]  
+];  
 
-    modal.classList.add("is-open");
-    modal.setAttribute("aria-hidden", "false");
+metadata.forEach(([label, value]) => {  
+  if (!value) return;  
 
-    document.body.classList.add("independent-modal-open");
+  const wrapper = document.createElement("div");  
+  const dt = document.createElement("dt");  
+  const dd = document.createElement("dd");  
 
-    closeButton.focus();
-  }
+  dt.textContent = label;  
+  dd.textContent = value;  
 
-  /* CERRAR PIEZA */
+  wrapper.append(dt, dd);  
+  meta.appendChild(wrapper);  
+});  
 
-  function closePiece() {
-    if (!modal.classList.contains("is-open")) return;
+measureBody.innerHTML = currentPiece.measures;  
 
-    modal.classList.remove("is-open");
-    modal.setAttribute("aria-hidden", "true");
+modal.classList.add("is-open");  
+modal.setAttribute("aria-hidden", "false");  
 
-    document.body.classList.remove("independent-modal-open");
+document.body.classList.add("independent-modal-open");  
 
-    image.removeAttribute("src");
+closeButton.focus();
 
-    currentPiece = null;
-    currentImage = 0;
+}
 
-    if (
-      lastFocusedElement &&
-      document.contains(lastFocusedElement)
-    ) {
-      lastFocusedElement.focus();
-    }
-  }
+/* CERRAR PIEZA */
 
-  /* CLIC O TOQUE EN LAS TARJETAS */
+function closePiece() {
+if (!modal.classList.contains("is-open")) return;
 
-  cards.forEach(card => {
-    card.addEventListener("click", event => {
-      event.preventDefault();
-      event.stopPropagation();
+modal.classList.remove("is-open");  
+modal.setAttribute("aria-hidden", "true");  
 
-      openPiece(card);
-    });
-  });
+document.body.classList.remove("independent-modal-open");  
 
-  /* BOTONES DEL CARRUSEL */
+image.removeAttribute("src");  
 
-  previousButton.addEventListener("click", event => {
-    event.preventDefault();
-    event.stopPropagation();
+currentPiece = null;  
+currentImage = 0;  
 
-    previousImage();
-  });
+if (  
+  lastFocusedElement &&  
+  document.contains(lastFocusedElement)  
+) {  
+  lastFocusedElement.focus();  
+}
 
-  nextButton.addEventListener("click", event => {
-    event.preventDefault();
-    event.stopPropagation();
+}
 
-    nextImage();
-  });
+/* CLIC O TOQUE EN LAS TARJETAS */
 
-  closeButton.addEventListener("click", event => {
-    event.preventDefault();
-    event.stopPropagation();
+cards.forEach(card => {
+card.addEventListener("click", event => {
+event.preventDefault();
+event.stopPropagation();
 
-    closePiece();
-  });
+openPiece(card);  
+});
 
-  /* CERRAR AL TOCAR EL FONDO */
+});
 
-  modal.addEventListener("click", event => {
-    if (event.target === modal) {
-      closePiece();
-    }
-  });
+/* BOTONES DEL CARRUSEL */
 
-  /* TECLADO */
+previousButton.addEventListener("click", event => {
+event.preventDefault();
+event.stopPropagation();
 
-  document.addEventListener("keydown", event => {
-    if (!modal.classList.contains("is-open")) return;
+previousImage();
 
-    if (event.key === "Escape") {
-      closePiece();
-      return;
-    }
+});
 
-    if (event.key === "ArrowLeft") {
-      previousImage();
-    }
+nextButton.addEventListener("click", event => {
+event.preventDefault();
+event.stopPropagation();
 
-    if (event.key === "ArrowRight") {
-      nextImage();
-    }
-  });
+nextImage();
 
-  /* GUÍA DE TALLAS */
+});
 
-  modal.querySelector(".independent-size-link")
-    .addEventListener("click", () => {
-      closePiece();
+closeButton.addEventListener("click", event => {
+event.preventDefault();
+event.stopPropagation();
 
-      const guideButton = document.querySelector(
-        '.size-guide-link[data-size-category="mujer"]'
-      );
+closePiece();
 
-      if (guideButton) {
-        guideButton.click();
-      }
-    });
+});
+
+/* CERRAR AL TOCAR EL FONDO */
+
+modal.addEventListener("click", event => {
+if (event.target === modal) {
+closePiece();
+}
+});
+
+/* TECLADO */
+
+document.addEventListener("keydown", event => {
+if (!modal.classList.contains("is-open")) return;
+
+if (event.key === "Escape") {  
+  closePiece();  
+  return;  
+}  
+
+if (event.key === "ArrowLeft") {  
+  previousImage();  
+}  
+
+if (event.key === "ArrowRight") {  
+  nextImage();  
+}
+
+});
+
+/* GUÍA DE TALLAS */
+
+modal.querySelector(".independent-size-link")
+.addEventListener("click", () => {
+closePiece();
+
+const guideButton = document.querySelector(  
+    '.size-guide-link[data-size-category="mujer"]'  
+  );  
+
+  if (guideButton) {  
+    guideButton.click();  
+  }  
+});
 
 })();
 
