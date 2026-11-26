@@ -894,10 +894,9 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
         <img alt="">
         <video
           class="independent-modal-video"
-          muted
           playsinline
           webkit-playsinline
-          preload="metadata"
+          preload="none"
           disablepictureinpicture>
         </video>
       </div>
@@ -989,14 +988,27 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
 
   prepareVideo(video);
 
-  video.controls = false;
-  video.loop = false;
+  /* Reactivar controles solo para este video */
+  video.controls = true;
+  video.setAttribute("controls", "");
+
+  /* No reproducir automáticamente */
   video.autoplay = false;
-  video.preload = "auto";
+  video.loop = false;
+  video.preload = "none";
+
+  video.removeAttribute("autoplay");
+  video.removeAttribute("loop");
+
+  /* Permitir sonido al reproducir manualmente */
+  video.muted = false;
+  video.defaultMuted = false;
+  video.removeAttribute("muted");
 
   video.style.width = "100%";
   video.style.height = "100%";
   video.style.objectFit = "contain";
+  video.style.objectPosition = "center";
   video.style.display = "none";
 
   /* LEER DATOS DEL HTML */
@@ -1019,6 +1031,18 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     };
   }
 
+  /* LIBERAR VIDEO */
+
+  function releaseModalVideo() {
+    pauseVideo(video, true);
+
+    video.removeAttribute("src");
+    video.load();
+
+    video.dataset.loadedSrc = "";
+    video.style.display = "none";
+  }
+
   /* ACTUALIZAR IMAGEN O VIDEO */
 
   function updateImage() {
@@ -1027,16 +1051,15 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     const images = currentPiece.images;
     const hasVideo = Boolean(currentPiece.video);
 
-    const totalSlides = images.length + (hasVideo ? 1 : 0);
+    const totalSlides =
+      images.length + (hasVideo ? 1 : 0);
 
     if (!totalSlides) {
-      pauseVideo(video, true);
+      releaseModalVideo();
 
       image.removeAttribute("src");
       image.alt = "";
       image.hidden = true;
-
-      video.style.display = "none";
 
       previousButton.hidden = true;
       nextButton.hidden = true;
@@ -1050,80 +1073,38 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     currentImage =
       (currentImage + totalSlides) % totalSlides;
 
-    
-/* SI LA DIAPOSITIVA ACTUAL ES EL VIDEO */
+    /* SI LA DIAPOSITIVA ACTUAL ES EL VIDEO */
 
-if (hasVideo && currentImage === images.length) {
-  image.hidden = true;
-  image.removeAttribute("src");
+    if (hasVideo && currentImage === images.length) {
 
-  video.style.display = "block";
+      image.hidden = true;
+      image.removeAttribute("src");
 
-  prepareVideo(video);
+      video.style.display = "block";
 
-  video.autoplay = true;
-  video.loop = false;
+      const source = currentPiece.video;
 
-  video.setAttribute("autoplay", "");
-  video.removeAttribute("loop");
+      /*
+      Cargar el archivo únicamente cuando
+      se llega a la diapositiva del video.
+      */
 
-  const source = currentPiece.video;
+      if (video.dataset.loadedSrc !== source) {
 
-  const playWhenReady = () => {
-    if (
-      !modal.classList.contains("is-open") ||
-      !currentPiece ||
-      currentImage !== currentPiece.images.length
-    ) return;
+        releaseModalVideo();
 
-    if (video.readyState >= 3) {
-      const promise = video.play();
+        video.style.display = "block";
+        video.dataset.loadedSrc = source;
+        video.src = source;
 
-      if (promise && typeof promise.catch === "function") {
-        promise.catch(error => {
-          console.error("ERROR AL REPRODUCIR VIDEO:", error);
-        });
+        video.load();
       }
-    }
-  };
 
-  if (video.dataset.loadedSrc !== source) {
-    pauseVideo(video, true);
-
-    video.dataset.loadedSrc = source;
-    video.src = source;
-
-    video.addEventListener("canplay", playWhenReady, {
-      once: true
-    });
-
-    video.addEventListener("error", () => {
-      console.error("ERROR AL CARGAR VIDEO:", {
-        archivo: source,
-        error: video.error
-      });
-    }, { once: true });
-
-    video.load();
-
-  } else {
-    if (video.readyState >= 3) {
-      playWhenReady();
     } else {
-      video.addEventListener("canplay", playWhenReady, {
-        once: true
-      });
-    }
-  }
-}
 
       /* SI LA DIAPOSITIVA ACTUAL ES UNA FOTOGRAFÍA */
 
-      pauseVideo(video, true);
-
-      video.style.display = "none";
-
-      video.removeAttribute("autoplay");
+      releaseModalVideo();
 
       image.hidden = false;
       image.style.display = "block";
@@ -1178,10 +1159,10 @@ if (hasVideo && currentImage === images.length) {
 
     lastFocusedElement = card;
 
-    pauseVideo(video, true);
+    releaseModalVideo();
 
-    video.removeAttribute("src");
-    video.dataset.loadedSrc = "";
+    image.removeAttribute("src");
+    image.alt = "";
 
     updateImage();
 
@@ -1232,10 +1213,7 @@ if (hasVideo && currentImage === images.length) {
 
     document.body.classList.remove("independent-modal-open");
 
-    pauseVideo(video, true);
-
-    video.removeAttribute("src");
-    video.dataset.loadedSrc = "";
+    releaseModalVideo();
 
     image.removeAttribute("src");
     image.alt = "";
@@ -1313,5 +1291,3 @@ if (hasVideo && currentImage === images.length) {
   });
 
 })();
-
-});
