@@ -966,9 +966,12 @@ PIEZAS INDEPENDIENTES
     var(--font-editorial);
 }
 
+/* Cuatro columnas en escritorio y tabletas */
+
 .details.independent-pieces {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-auto-flow: row;
   gap: 10px;
   width: 100%;
   min-width: 0;
@@ -976,10 +979,11 @@ PIEZAS INDEPENDIENTES
   padding: 0;
 }
 
-.details.independent-pieces .detail-media {
+.details.independent-pieces > .detail-media {
   display: block;
   width: 100%;
   min-width: 0;
+  max-width: 100%;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -1099,7 +1103,8 @@ INDEPENDIENTES
   left: 12px;
 }
 
-/* Flecha siguiente: permanece dentro del área de imagen (58%) */
+/* Flecha siguiente: permanece dentro del área de imagen */
+
 .independent-gallery-next {
   left: auto;
   right: calc(42% + 8px);
@@ -1834,15 +1839,22 @@ MÓVIL
     object-position: center;
   }
 
-  /* Piezas independientes */
+  /* Piezas independientes: dos columnas en móvil */
 
   .details.independent-pieces {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-auto-flow: row;
     gap: 8px;
+    width: 100%;
     margin: 0 0 14vw;
   }
 
-  .details.independent-pieces .detail-media {
+  .details.independent-pieces > .detail-media {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     aspect-ratio: 4 / 5;
   }
 
@@ -2050,7 +2062,6 @@ MÓVIL
     left: 5px;
   }
 
-  /* En móvil la flecha queda dentro del borde derecho de la imagen */
   .independent-gallery-next {
     right: 5px;
     left: auto;
@@ -2087,10 +2098,9 @@ ACCESIBILIDAD
   }
 }
 
-
 /* =========================================
-   CORRECCIÓN DE FLECHAS
-   VISOR DE PIEZAS INDEPENDIENTES
+CORRECCIÓN DE FLECHAS
+VISOR DE PIEZAS INDEPENDIENTES
 ========================================= */
 
 /* Escritorio y tabletas */
@@ -2105,8 +2115,8 @@ ACCESIBILIDAD
 /* Flecha anterior */
 
 .independent-dialog > .independent-gallery-prev {
-  left: 12px;
-  right: auto;
+  left: 12px !important;
+  right: auto !important;
 }
 
 /* Flecha siguiente: límite derecho de la fotografía */
@@ -2120,12 +2130,6 @@ ACCESIBILIDAD
 }
 
 /* Respetar el atributo hidden */
-
-.independent-dialog > .independent-gallery-arrow[hidden] {
-  display: none !important;
-}
-
-/* Ocultar flechas cuando corresponda */
 
 .independent-dialog > .independent-gallery-arrow[hidden] {
   display: none !important;
