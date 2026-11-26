@@ -1050,36 +1050,73 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
     currentImage =
       (currentImage + totalSlides) % totalSlides;
 
-    /* SI LA DIAPOSITIVA ACTUAL ES EL VIDEO */
+    
+/* SI LA DIAPOSITIVA ACTUAL ES EL VIDEO */
 
-    if (hasVideo && currentImage === images.length) {
-      image.hidden = true;
-      image.removeAttribute("src");
+if (hasVideo && currentImage === images.length) {
+  image.hidden = true;
+  image.removeAttribute("src");
 
-      video.style.display = "block";
+  video.style.display = "block";
 
-      /* REPRODUCIR AUTOMÁTICAMENTE AL LLEGAR */
+  prepareVideo(video);
 
-      prepareVideo(video);
+  video.autoplay = true;
+  video.loop = false;
 
-      video.autoplay = true;
-      video.loop = false;
+  video.setAttribute("autoplay", "");
+  video.removeAttribute("loop");
 
-      video.setAttribute("autoplay", "");
-      video.removeAttribute("loop");
+  const source = currentPiece.video;
 
-      if (video.dataset.loadedSrc !== currentPiece.video) {
-        pauseVideo(video, true);
+  const playWhenReady = () => {
+    if (
+      !modal.classList.contains("is-open") ||
+      !currentPiece ||
+      currentImage !== currentPiece.images.length
+    ) return;
 
-        video.src = currentPiece.video;
-        video.dataset.loadedSrc = currentPiece.video;
+    if (video.readyState >= 3) {
+      const promise = video.play();
 
-        video.load();
+      if (promise && typeof promise.catch === "function") {
+        promise.catch(error => {
+          console.error("ERROR AL REPRODUCIR VIDEO:", error);
+        });
       }
+    }
+  };
 
-      playVideo(video);
+  if (video.dataset.loadedSrc !== source) {
+    pauseVideo(video, true);
 
+    video.dataset.loadedSrc = source;
+    video.src = source;
+
+    video.addEventListener("canplay", playWhenReady, {
+      once: true
+    });
+
+    video.addEventListener("error", () => {
+      console.error("ERROR AL CARGAR VIDEO:", {
+        archivo: source,
+        error: video.error
+      });
+    }, { once: true });
+
+    video.load();
+
+  } else {
+    if (video.readyState >= 3) {
+      playWhenReady();
     } else {
+      video.addEventListener("canplay", playWhenReady, {
+        once: true
+      });
+    }
+  }
+}
+
       /* SI LA DIAPOSITIVA ACTUAL ES UNA FOTOGRAFÍA */
 
       pauseVideo(video, true);
