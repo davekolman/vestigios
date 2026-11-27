@@ -1030,15 +1030,18 @@ INDEPENDIENTES
 }
 
 .independent-modal.is-open {
+  display: flex;
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+  z-index: 999999;
 }
 
 .independent-dialog {
   position: relative;
   display: grid;
   grid-template-columns: 58% 42%;
+  grid-template-rows: minmax(0, 1fr);
   width: 100%;
   height: 100%;
   min-height: 0;
@@ -1051,6 +1054,8 @@ INDEPENDIENTES
 
 .independent-modal-image {
   position: relative;
+  grid-column: 1;
+  grid-row: 1;
   width: 100%;
   min-width: 0;
   min-height: 0;
@@ -1063,7 +1068,7 @@ INDEPENDIENTES
   background: var(--color-bg);
 }
 
-/* FOTOGRAFÍAS: SE CONSERVAN SIN CAMBIOS */
+/* FOTOGRAFÍAS */
 
 .independent-modal-image img {
   display: block;
@@ -1076,7 +1081,11 @@ INDEPENDIENTES
   object-position: center;
 }
 
+/* INFORMACIÓN */
+
 .independent-modal-copy {
+  grid-column: 2;
+  grid-row: 1;
   align-self: center;
   min-width: 0;
   max-height: 100%;
@@ -1085,6 +1094,8 @@ INDEPENDIENTES
   overscroll-behavior: contain;
   padding: clamp(35px, 5vw, 85px);
 }
+
+/* CIERRE */
 
 .independent-modal-close {
   position: absolute;
@@ -1102,20 +1113,27 @@ INDEPENDIENTES
   -webkit-tap-highlight-color: transparent;
 }
 
-.independent-gallery-arrow {
+/* FLECHAS DEL VISOR */
+
+.independent-modal-image > .independent-gallery-arrow {
+  position: absolute;
+  top: 50%;
   z-index: 110;
-  color: var(--color-text);
+  transform: translateY(-50%);
 }
 
-.independent-gallery-prev {
+.independent-modal-image > .independent-gallery-prev {
   left: 12px;
+  right: auto;
 }
 
-/* Flecha siguiente: permanece dentro del área de imagen */
-
-.independent-gallery-next {
+.independent-modal-image > .independent-gallery-next {
   left: auto;
-  right: calc(42% + 8px);
+  right: 12px;
+}
+
+.independent-modal-image > .independent-gallery-arrow[hidden] {
+  display: none !important;
 }
 
 .independent-modal-kicker {
@@ -1134,6 +1152,16 @@ INDEPENDIENTES
 .independent-modal-description {
   font-size: 0.88rem;
   line-height: 1.8;
+}
+
+.independent-modal-description p {
+  margin: 0 0 1.25em;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.independent-modal-description p:last-child {
+  margin-bottom: 0;
 }
 
 .independent-modal-price {
@@ -2025,7 +2053,10 @@ MÓVIL
     font-size: 17px;
   }
 
-  /* Modal de piezas independientes */
+  /* =====================================
+  MODAL DE PIEZAS INDEPENDIENTES — MÓVIL
+  IMAGEN ARRIBA, INFORMACIÓN DEBAJO
+  ===================================== */
 
   .independent-modal {
     height: 100vh;
@@ -2034,9 +2065,10 @@ MÓVIL
   }
 
   .independent-dialog {
-    display: grid;
+    display: grid !important;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-rows: max-content max-content;
+    align-content: start;
     width: 100%;
     height: 100%;
     min-height: 0;
@@ -2045,7 +2077,13 @@ MÓVIL
     overscroll-behavior: contain;
   }
 
-  .independent-modal-image {
+  /* PRIMER BLOQUE: IMAGEN */
+
+  .independent-dialog > .independent-modal-image {
+    position: relative;
+    grid-column: 1;
+    grid-row: 1;
+    display: block;
     width: 100%;
     height: auto;
     min-height: 0;
@@ -2053,30 +2091,74 @@ MÓVIL
     overflow: hidden;
   }
 
-  /* FOTOGRAFÍAS: SE CONSERVAN SIN CAMBIOS */
-
-  .independent-modal-image img {
+  .independent-modal-image > img {
+    position: absolute;
+    inset: 0;
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
     object-position: center;
   }
 
-  .independent-modal-copy {
+  /* FLECHAS: CENTRO DE LA IMAGEN */
+
+  .independent-modal-image > .independent-gallery-arrow {
+    position: absolute !important;
+    top: 50% !important;
+    z-index: 110;
+    transform: translateY(-50%);
+  }
+
+  .independent-modal-image > .independent-gallery-prev {
+    left: 5px !important;
+    right: auto !important;
+  }
+
+  .independent-modal-image > .independent-gallery-next {
+    left: auto !important;
+    right: 5px !important;
+  }
+
+  /* SEGUNDO BLOQUE: INFORMACIÓN */
+
+  .independent-dialog > .independent-modal-copy {
+    position: relative;
+    grid-column: 1;
+    grid-row: 2;
+    display: block !important;
     width: 100%;
+    height: auto;
     min-width: 0;
+    min-height: 0;
     max-height: none;
+    align-self: start;
     padding: 25px 24px 45px;
     overflow: visible;
+    visibility: visible;
+    opacity: 1;
   }
 
-  .independent-gallery-prev {
-    left: 5px;
+  .independent-modal-description,
+  .independent-modal-price,
+  .independent-modal-meta,
+  .independent-modal-note,
+  .independent-size-link {
+    visibility: visible;
+    opacity: 1;
   }
 
-  .independent-gallery-next {
-    right: 5px;
-    left: auto;
+  .independent-modal-description p {
+    display: block;
+    margin: 0 0 1.25em;
+    font-size: 0.88rem;
+    line-height: 1.8;
+  }
+
+  .independent-modal-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
   }
 
   .independent-modal-close {
@@ -2088,102 +2170,32 @@ MÓVIL
     font-size: 2.5rem;
   }
 
-  .independent-modal-meta {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
-}
+  /* VIDEO OPCIONAL DENTRO DEL MODAL */
 
-/* =========================
-ACCESIBILIDAD
-========================= */
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+  .independent-modal-image .independent-modal-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block !important;
+    width: 80% !important;
+    height: 80% !important;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 0;
+    max-height: 100%;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    object-fit: contain !important;
+    object-position: center;
+    background: var(--color-bg);
+    pointer-events: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
-  }
 }
 
 /* =========================================
-CORRECCIÓN DE FLECHAS
-VISOR DE PIEZAS INDEPENDIENTES
-========================================= */
-
-/* Escritorio y tabletas */
-
-.independent-dialog > .independent-gallery-arrow {
-  position: absolute;
-  top: 50%;
-  z-index: 110;
-  transform: translateY(-50%);
-}
-
-/* Flecha anterior */
-
-.independent-dialog > .independent-gallery-prev {
-  left: 12px !important;
-  right: auto !important;
-}
-
-/* Flecha siguiente: límite derecho de la fotografía */
-
-.independent-dialog > .independent-gallery-next {
-  position: absolute !important;
-  left: calc(58% - 48px) !important;
-  right: auto !important;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* Respetar el atributo hidden */
-
-.independent-dialog > .independent-gallery-arrow[hidden] {
-  display: none !important;
-}
-
-/* Móviles */
-
-@media (max-width: 700px) {
-
-  .independent-dialog > .independent-gallery-arrow {
-    top: max(150px, 26dvh);
-  }
-
-  .independent-dialog > .independent-gallery-prev {
-    left: 5px !important;
-    right: auto !important;
-  }
-
-  .independent-dialog > .independent-gallery-next {
-    left: auto !important;
-    right: 12px !important;
-  }
-
-}
-
-/* PRUEBA TEMPORAL DEL MODAL */
-
-.independent-modal.is-open {
-  display: flex !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  z-index: 999999 !important;
-}
-
-.independent-modal.is-open .independent-dialog {
-  display: grid !important;
-}
-
-/* =========================================
-VIDEO — SOLO MODAL DE PIEZAS INDEPENDIENTES
-PROPORCIÓN 1024 × 1535
+VIDEO OPCIONAL — MODAL DE PIEZAS
+ESCRITORIO Y TABLETAS
 ========================================= */
 
 .independent-modal-image .independent-modal-video {
@@ -2212,150 +2224,18 @@ PROPORCIÓN 1024 × 1535
   display: none !important;
 }
 
-/* Móvil */
+/* =========================
+ACCESIBILIDAD
+========================= */
 
-@media (max-width: 700px) {
-  .independent-modal-image .independent-modal-video {
-    display: block !important;
-    width: 80% !important;
-    height: 80% !important;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain !important;
-    object-position: center;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
   }
 }
-
-
-/* =========================================
-CORRECCIÓN DE INFORMACIÓN
-MODAL DE PIEZAS INDEPENDIENTES — MÓVIL
-========================================= */
-
-@media (max-width: 700px) {
-
-  .independent-dialog {
-    grid-template-rows: auto auto !important;
-    align-content: start;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-
-  .independent-modal-copy {
-    display: block !important;
-    position: relative;
-    width: 100%;
-    min-width: 0;
-    height: auto;
-    min-height: max-content;
-    max-height: none;
-    padding: 25px 24px 45px;
-    overflow: visible;
-    visibility: visible;
-    opacity: 1;
-  }
-
-  .independent-modal-description,
-  .independent-modal-price,
-  .independent-modal-meta,
-  .independent-modal-note,
-  .independent-size-link {
-    display: block;
-    visibility: visible;
-    opacity: 1;
-  }
-
-  .independent-modal-description p {
-    display: block;
-    margin: 0 0 1.25em;
-    font-size: 0.88rem;
-    line-height: 1.8;
-  }
-
-  .independent-modal-meta {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* =========================================
-MODAL DE PIEZAS INDEPENDIENTES — MÓVIL
-IMAGEN ARRIBA, INFORMACIÓN DEBAJO
-========================================= */
-
-@media (max-width: 700px) {
-
-  .independent-dialog {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: max-content max-content;
-    align-content: start;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-
-  /* ÁREA DE LA FOTOGRAFÍA */
-
-  .independent-modal-image {
-    position: relative;
-    grid-column: 1;
-    grid-row: 1;
-    display: block;
-    width: 100%;
-    height: auto !important;
-    min-height: 0;
-    aspect-ratio: 1024 / 1535;
-    overflow: hidden;
-  }
-
-  .independent-modal-image img {
-    position: absolute;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
-  }
-
-  /* FLECHAS CENTRADAS EN LA FOTOGRAFÍA */
-
-  .independent-modal-image > .independent-gallery-arrow {
-    position: absolute !important;
-    top: 50% !important;
-    z-index: 110;
-    transform: translateY(-50%);
-  }
-
-  .independent-modal-image > .independent-gallery-prev {
-    left: 5px !important;
-    right: auto !important;
-  }
-
-  .independent-modal-image > .independent-gallery-next {
-    right: 5px !important;
-    left: auto !important;
-  }
-
-  /* INFORMACIÓN DEBAJO DE LA FOTOGRAFÍA */
-
-  .independent-modal-copy {
-    position: relative;
-    grid-column: 1;
-    grid-row: 2;
-    display: block !important;
-    width: 100%;
-    height: auto;
-    min-width: 0;
-    min-height: 0;
-    max-height: none;
-    align-self: start;
-    padding: 25px 24px 45px;
-    overflow: visible;
-  }
-
-}
-
