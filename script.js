@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================================================
@@ -997,10 +996,11 @@ PIEZAS SELECCIONADAS — VISOR Y CARRUSEL
   const imageContainer = modal.querySelector(
     ".independent-modal-image"
   );
-  
-/* Las flechas quedan dentro del área de imagen */
-imageContainer.append(previousButton, nextButton);
-  
+
+  /* LAS FLECHAS QUEDAN DENTRO DEL ÁREA DE IMAGEN */
+
+  imageContainer.append(previousButton, nextButton);
+
   /* =======================================================
   CONFIGURAR EL VIDEO DEL MODAL
   ======================================================= */
@@ -1017,8 +1017,6 @@ imageContainer.append(previousButton, nextButton);
   video.removeAttribute("autoplay");
   video.removeAttribute("loop");
 
-  /* TODOS LOS VÍDEOS PERMANECEN SIN SONIDO */
-
   video.muted = true;
   video.defaultMuted = true;
   video.volume = 0;
@@ -1028,8 +1026,6 @@ imageContainer.append(previousButton, nextButton);
   video.setAttribute("webkit-playsinline", "");
 
   imageContainer.style.position = "relative";
-
-  /* DIMENSIONES DEL VIDEO CUANDO ESTÁ ACTIVO */
 
   video.style.position = "absolute";
   video.style.inset = "0";
@@ -1118,8 +1114,6 @@ imageContainer.append(previousButton, nextButton);
     video.controls = false;
     video.removeAttribute("controls");
 
-    /* MANTENER EL VIDEO SIEMPRE SILENCIADO */
-
     video.muted = true;
     video.defaultMuted = true;
     video.volume = 0;
@@ -1198,8 +1192,6 @@ imageContainer.append(previousButton, nextButton);
 
     video.dataset.loadedSrc = "";
 
-    /* EL VIDEO NO DEBE OCUPAR ESPACIO SOBRE LAS FOTOGRAFÍAS */
-
     video.style.display = "none";
     video.style.visibility = "hidden";
     video.style.width = "0";
@@ -1257,7 +1249,7 @@ imageContainer.append(previousButton, nextButton);
       image.removeAttribute("src");
       image.alt = "";
       image.hidden = true;
-      image.style.display = "none";
+      image.style.setProperty("display", "none", "important");
 
       previousButton.hidden = true;
       nextButton.hidden = true;
@@ -1276,9 +1268,14 @@ imageContainer.append(previousButton, nextButton);
 
     if (hasVideo && currentImage === images.length) {
 
-      image.hidden = true;
-      image.style.display = "none";
+      /* LIMPIAR EL TEXTO DE LA FOTOGRAFÍA ANTERIOR */
+
+      image.alt = "";
+      image.removeAttribute("alt");
       image.removeAttribute("src");
+
+      image.hidden = true;
+      image.style.setProperty("display", "none", "important");
 
       const source = currentPiece.video;
 
@@ -1300,8 +1297,6 @@ imageContainer.append(previousButton, nextButton);
         video.load();
       }
 
-      /* MOSTRAR EL VIDEO DESPUÉS DE CARGAR SU FUENTE */
-
       showModalVideo();
       showModalPlayButton();
 
@@ -1312,7 +1307,7 @@ imageContainer.append(previousButton, nextButton);
       releaseModalVideo();
 
       image.hidden = false;
-      image.style.display = "block";
+      image.style.removeProperty("display");
 
       image.src = images[currentImage];
 
@@ -1425,7 +1420,7 @@ imageContainer.append(previousButton, nextButton);
     image.removeAttribute("src");
     image.alt = "";
     image.hidden = false;
-    image.style.display = "";
+    image.style.removeProperty("display");
 
     currentPiece = null;
     currentImage = 0;
