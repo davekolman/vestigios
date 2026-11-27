@@ -1,4 +1,3 @@
-
 /* =========================
 VARIABLES Y BASE
 ========================= */
@@ -2059,96 +2058,105 @@ MÓVIL
   ===================================== */
 
   .independent-modal {
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
+    height: 100vh !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
   }
 
-  /* El diálogo funciona como una columna vertical
-     y permite desplazarse por todo su contenido */
+  /* CONTENEDOR GENERAL:
+     DOS FILAS VERTICALES INDEPENDIENTES */
 
-  .independent-dialog {
-    position: relative;
-    display: flex !important;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    max-height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
+  .independent-modal .independent-dialog {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    align-content: start !important;
+    justify-content: stretch !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
     overscroll-behavior: contain;
-  }
-
-  /* PRIMER BLOQUE: IMAGEN */
-
-  .independent-dialog > .independent-modal-image {
-    position: relative;
-    display: block;
-    flex: 0 0 auto;
-    width: 100%;
-    height: min(62svh, 560px);
-    min-height: 0;
-    max-height: 560px;
-    margin: 0;
-    padding: 0;
-    aspect-ratio: auto;
-    overflow: hidden;
     background: var(--color-bg);
   }
 
-  .independent-modal-image > img {
-    position: absolute;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-    min-width: 0;
-    min-height: 0;
-    max-width: 100%;
-    object-fit: contain;
-    object-position: center;
+  /* PRIMERA FILA: IMAGEN */
+
+  .independent-modal .independent-dialog > .independent-modal-image {
+    position: relative !important;
+    display: block !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    height: min(62svh, 560px) !important;
+    min-height: 0 !important;
+    max-height: 560px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    aspect-ratio: auto !important;
+    overflow: hidden !important;
+    background: var(--color-bg);
+  }
+
+  /* FOTOGRAFÍA */
+
+  .independent-modal .independent-modal-image > img {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+    object-position: center !important;
   }
 
   /* FLECHAS: CENTRADAS EN EL ÁREA DE IMAGEN */
 
-  .independent-modal-image > .independent-gallery-arrow {
+  .independent-modal .independent-modal-image > .independent-gallery-arrow {
     position: absolute !important;
     top: 50% !important;
-    z-index: 110;
-    transform: translateY(-50%);
+    transform: translateY(-50%) !important;
+    z-index: 110 !important;
   }
 
-  .independent-modal-image > .independent-gallery-prev {
+  .independent-modal .independent-modal-image > .independent-gallery-prev {
     left: 5px !important;
     right: auto !important;
   }
 
-  .independent-modal-image > .independent-gallery-next {
+  .independent-modal .independent-modal-image > .independent-gallery-next {
     left: auto !important;
     right: 5px !important;
   }
 
-  /* SEGUNDO BLOQUE: INFORMACIÓN DEBAJO DE LA IMAGEN */
+  /* SEGUNDA FILA: INFORMACIÓN DEBAJO DE LA IMAGEN */
 
-  .independent-dialog > .independent-modal-copy {
-    position: relative;
+  .independent-modal .independent-dialog > .independent-modal-copy {
+    position: relative !important;
     display: block !important;
-    flex: 0 0 auto;
-    width: 100%;
-    height: auto;
-    min-width: 0;
-    min-height: 0;
-    max-height: none;
-    margin: 0;
-    padding: 25px 24px 45px;
-    align-self: stretch;
-    overflow: visible;
-    visibility: visible;
-    opacity: 1;
-    background: var(--color-bg);
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 25px 24px 45px !important;
+    align-self: start !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: var(--color-bg) !important;
+    transform: none !important;
+    inset: auto !important;
+    clear: both;
   }
 
   .independent-modal-description,
@@ -2156,8 +2164,8 @@ MÓVIL
   .independent-modal-meta,
   .independent-modal-note,
   .independent-size-link {
-    visibility: visible;
-    opacity: 1;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   .independent-modal-description p {
@@ -2184,21 +2192,21 @@ MÓVIL
 
   /* VIDEO OPCIONAL DENTRO DEL MODAL */
 
-  .independent-modal-image .independent-modal-video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+  .independent-modal .independent-modal-image .independent-modal-video {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
     display: block !important;
     width: 80% !important;
     height: 80% !important;
-    min-width: 0;
-    max-width: 100%;
-    min-height: 0;
-    max-height: 100%;
-    margin: 0;
-    transform: translate(-50%, -50%);
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    margin: 0 !important;
+    transform: translate(-50%, -50%) !important;
     object-fit: contain !important;
-    object-position: center;
+    object-position: center !important;
     background: var(--color-bg);
     pointer-events: auto;
   }
